@@ -446,7 +446,7 @@ const formatIDR = (value: number) => {
 // ── Excel Export (CSV with UTF-8 BOM agar terbaca Excel) ──────────────────
 const exportExcel = () => {
   const year = filterYear.value
-  let rows: string[][] = []
+  let rows: (string | number)[][] = []
   let filename = ''
 
   if (activeReportTab.value === 'pl') {
@@ -482,18 +482,18 @@ const exportExcel = () => {
       [],
       ['Kategori', 'Nominal (IDR)'],
       ['I. ARUS KAS MASUK (INFLOWS)', ''],
-      ...Object.entries(cashflowData.value.inflowCategories).map(([cat, val]) => [formatCategoryLabel(cat), val]),
+      ...Object.entries(cashflowData.value.inflowCategories).map(([cat, val]): (string | number)[] => [formatCategoryLabel(cat), val]),
       ['Total Arus Kas Masuk', cashflowData.value.totalInflow],
       [],
       ['II. ARUS KAS KELUAR (OUTFLOWS)', ''],
-      ...Object.entries(cashflowData.value.outflowCategories).map(([cat, val]) => [formatCategoryLabel(cat), -val]),
+      ...Object.entries(cashflowData.value.outflowCategories).map(([cat, val]): (string | number)[] => [formatCategoryLabel(cat), -val]),
       ['Total Arus Kas Keluar', -cashflowData.value.totalOutflow],
       [],
       ['III. PERUBAHAN KAS BERSIH', cashflowData.value.netCashFlow],
       [],
       ['RINCIAN BULANAN', ''],
       ['Bulan', 'Kas Masuk', 'Kas Keluar', 'Net Flow'],
-      ...cashflowData.value.monthly.map(m => [m.bulan, m.inflow, -m.outflow, m.net]),
+      ...cashflowData.value.monthly.map((m): (string | number)[] => [m.bulan, m.inflow, -m.outflow, m.net]),
     ]
   } else if (activeReportTab.value === 'ledger') {
     filename = `BukuBesar_${year}.csv`
@@ -505,11 +505,11 @@ const exportExcel = () => {
       rows.push(
         [formatCategoryLabel(group.kategori), '', '', '', ''],
         ['Tanggal', 'No Transaksi', 'Deskripsi', 'Referensi', 'Nominal'],
-        ...group.transactions.map(tx => [
-          tx.tanggal || '-',
+        ...group.transactions.map((tx): (string | number)[] => [
+          tx.tanggal ?? '-',
           tx.nomor_transaksi,
           tx.deskripsi,
-          tx.event || tx.vendor || '-',
+          tx.event ?? tx.vendor ?? '-',
           tx.tipe === 'kas_masuk' ? tx.nominal : -tx.nominal,
         ]),
         ['', 'Total Masuk', group.totalMasuk, 'Total Keluar', -group.totalKeluar],
@@ -532,6 +532,7 @@ const exportExcel = () => {
   URL.revokeObjectURL(url)
 }
 </script>
+
 
 <template>
   <div class="space-y-6">
