@@ -1,0 +1,23 @@
+/vendor/
+.env
+.env.backup
+.env.production
+composer.phar
+.phpunit.result.cache
+*.sqlite
+
+# Laravel storage dirs
+/storage/app/*
+!/storage/app/.gitignore
+/storage/framework/cache/*
+!/storage/framework/cache/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/storage/logs/*
+!/storage/logs/.gitignore
+
+# Bootstrap cache
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
