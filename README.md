@@ -103,11 +103,19 @@ PROJECT/EO/
    ```bash
    npm install
    ```
-3. Jalankan server pengembangan lokal frontend:
+3. Buat file konfigurasi environment dengan menyalin dari contoh yang tersedia:
+   ```bash
+   cp .env.example .env
+   ```
+   Sesuaikan `VITE_API_URL` dengan alamat backend Anda (defaultnya sudah sesuai untuk pengembangan lokal):
+   ```env
+   VITE_API_URL=http://127.0.0.1:8000/api/v1
+   ```
+4. Jalankan server pengembangan lokal frontend:
    ```bash
    npm run dev
    ```
-4. Buka browser pada alamat yang diberikan Vite (biasanya `http://localhost:5173` atau `http://localhost:5174`).
+5. Buka browser pada alamat yang diberikan Vite (biasanya `http://localhost:5173`).
 
 ---
 
@@ -124,9 +132,15 @@ Aplikasi frontend telah dilengkapi dengan file [vercel.json](file:///d:/PROJECT/
 }
 ```
 Untuk men-deploy ke Vercel:
-1. Hubungkan repositori frontend Anda ke Vercel.
+1. Hubungkan repositori **folder `frontend`** Anda ke Vercel (bukan root proyek).
 2. Atur **Build Command** menjadi `npm run build` dan **Output Directory** ke `dist`.
-3. Tambahkan environment variable yang relevan jika ada (misal: API Base URL) dan klik **Deploy**.
+3. Tambahkan **Environment Variable** berikut pada pengaturan proyek Vercel:
+
+   | Key | Value (Contoh) |
+   | :--- | :--- |
+   | `VITE_API_URL` | `https://api.eventbooks.yourdomain.com/api/v1` |
+
+4. Klik **Deploy**.
 
 ---
 
