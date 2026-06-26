@@ -1,9 +1,63 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import api from '../services/api'
 
 const authStore = useAuthStore()
+
+const tenantInfo = ref<any>(null)
+
+const subscriptionPlan = computed(() => {
+  return tenantInfo.value?.subscription_plan || authStore.user?.tenant?.subscription_plan || 'trial'
+})
+
+const trialEndsAt = computed(() => {
+  return tenantInfo.value?.trial_ends_at || authStore.user?.tenant?.trial_ends_at
+})
+
+const formatTrialEndDate = (dateStr?: string) => {
+  if (!dateStr) return '-'
+  try {
+    const trialDateStr = dateStr.includes(' ') && !dateStr.includes('T')
+      ? dateStr.replace(' ', 'T')
+      : dateStr
+    const date = new Date(trialDateStr)
+    return new Intl.DateTimeFormat('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).format(date)
+  } catch (e) {
+    return dateStr
+  }
+}
+
+const formattedTrialEndDate = computed(() => {
+  return formatTrialEndDate(trialEndsAt.value)
+})
+
+const trialRemainingDays = computed(() => {
+  const dateStr = trialEndsAt.value
+  if (!dateStr) return 0
+  try {
+    const trialDateStr = dateStr.includes(' ') && !dateStr.includes('T')
+      ? dateStr.replace(' ', 'T')
+      : dateStr
+    const endsAt = new Date(trialDateStr)
+    const now = new Date()
+    
+    // Set to start of the day for date comparison
+    const endsAtDate = new Date(endsAt.getFullYear(), endsAt.getMonth(), endsAt.getDate())
+    const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    
+    const diffTime = endsAtDate.getTime() - nowDate.getTime()
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    return diffDays > 0 ? diffDays : 0
+  } catch (e) {
+    return 0
+  }
+})
+
 
 const organization = ref({
   name: '',
@@ -67,6 +121,7 @@ const openPasswordModal = (user: any) => {
 const fetchTenant = async () => {
   try {
     const res = await api.get('/tenant')
+    tenantInfo.value = res.data.data
     organization.value = {
       name: res.data.data.name || '',
       npwp: res.data.data.npwp || '',
@@ -115,6 +170,7 @@ const saveOrganization = async () => {
       alamat: organization.value.address
     })
     
+    tenantInfo.value = res.data.data
     organization.value = {
       name: res.data.data.name || '',
       npwp: res.data.data.npwp || '',
@@ -201,34 +257,87 @@ const deleteUser = async (user: any) => {
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Organization settings -->
-      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm lg:col-span-1 space-y-4 h-fit">
-        <h3 class="font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 text-sm">Profil Organisasi</h3>
-        
-        <form @submit.prevent="saveOrganization" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-350">
-          <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Perusahaan / EO</label>
-            <input v-model="organization.name" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+      <!-- Left Column: Profile & Subscription -->
+      <div class="lg:col-span-1 space-y-6">
+        <!-- Organization settings -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm space-y-4">
+          <h3 class="font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 text-sm">Profil Organisasi</h3>
+          
+          <form @submit.prevent="saveOrganization" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-350">
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Perusahaan / EO</label>
+              <input v-model="organization.name" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+            </div>
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">NPWP Badan Usaha</label>
+              <input v-model="organization.npwp" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+            </div>
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email Korespondensi</label>
+              <input v-model="organization.email" type="email" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+            </div>
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Telepon</label>
+              <input v-model="organization.phone" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+            </div>
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Alamat Kantor Utama</label>
+              <textarea v-model="organization.address" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500"></textarea>
+            </div>
+            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Simpan Perubahan</button>
+          </form>
+        </div>
+
+        <!-- Subscription / Trial Status -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm space-y-4">
+          <h3 class="font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 text-sm">Status Langganan</h3>
+          
+          <div class="space-y-4">
+            <!-- Plan Info -->
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Paket Layanan</span>
+              <span class="px-2.5 py-0.5 rounded-full text-2xs font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                {{ subscriptionPlan === 'trial' ? 'Masa Percobaan (Trial)' : subscriptionPlan }}
+              </span>
+            </div>
+
+            <!-- Trial Details -->
+            <div v-if="subscriptionPlan === 'trial'" class="bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/60 p-4 rounded-xl space-y-3.5">
+              <!-- Sisa Hari -->
+              <div>
+                <div class="flex justify-between items-baseline mb-1">
+                  <span class="text-3xs text-slate-400 dark:text-slate-500 uppercase font-bold tracking-wider">Sisa Masa Percobaan</span>
+                  <span class="text-sm font-bold text-slate-900 dark:text-white">{{ trialRemainingDays }} Hari</span>
+                </div>
+                <!-- Progress Bar -->
+                <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div 
+                    class="bg-emerald-500 h-full rounded-full transition-all duration-500"
+                    :style="{ width: `${Math.min(100, (trialRemainingDays / 30) * 100)}%` }"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Tanggal Berakhir -->
+              <div class="flex justify-between items-center text-xs pt-2 border-t border-slate-100 dark:border-slate-800/60">
+                <span class="text-slate-500 dark:text-slate-400 font-medium">Tanggal Berakhir:</span>
+                <span class="font-bold text-slate-800 dark:text-slate-200">{{ formattedTrialEndDate }}</span>
+              </div>
+            </div>
+
+            <!-- Upgrade Info / Premium CTA -->
+            <div class="text-3xs text-slate-400 dark:text-slate-500 leading-relaxed bg-indigo-50/50 dark:bg-indigo-950/10 border border-indigo-100/50 dark:border-indigo-950/30 p-3 rounded-lg flex items-start gap-2.5">
+              <svg class="h-4 w-4 text-indigo-500 dark:text-indigo-400 shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+              <span>
+                Ingin meningkatkan kuota atau fitur? Hubungi tim support kami untuk beralih ke paket <strong>Basic</strong> atau <strong>Pro</strong>.
+              </span>
+            </div>
           </div>
-          <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">NPWP Badan Usaha</label>
-            <input v-model="organization.npwp" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
-          </div>
-          <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email Korespondensi</label>
-            <input v-model="organization.email" type="email" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
-          </div>
-          <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Telepon</label>
-            <input v-model="organization.phone" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
-          </div>
-          <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Alamat Kantor Utama</label>
-            <textarea v-model="organization.address" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500"></textarea>
-          </div>
-          <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Simpan Perubahan</button>
-        </form>
+        </div>
       </div>
+
 
       <!-- User management list -->
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm lg:col-span-2 space-y-4">
