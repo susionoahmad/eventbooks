@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { RouterView, useRouter } from 'vue-router'
+import { ref, onMounted, watch } from 'vue'
+import { RouterView, useRouter, useRoute } from 'vue-router'
 import Sidebar from '../components/Sidebar.vue'
 import Navbar from '../components/Navbar.vue'
 import BottomNav from '../components/BottomNav.vue'
@@ -16,9 +16,16 @@ const isChecking = ref(false)
 const checkMessage = ref('')
 const checkMessageType = ref<'success' | 'error' | ''>('')
 
+const route = useRoute()
+
 const toggleMobileSidebar = () => {
   isMobileSidebarOpen.value = !isMobileSidebarOpen.value
 }
+
+// Tutup sidebar mobile otomatis saat pindah halaman
+watch(() => route.path, () => {
+  isMobileSidebarOpen.value = false
+})
 
 const formatTrialEndDate = (dateStr?: string) => {
   if (!dateStr) return '-'
