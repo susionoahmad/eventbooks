@@ -442,25 +442,127 @@ const formatIDR = (value: number) => {
     minimumFractionDigits: 0
   }).format(value)
 }
+
+// ── Excel Export (CSV with UTF-8 BOM agar terbaca Excel) ──────────────────
+const exportExcel = () => {
+  const year = filterYear.value
+  let rows: string[][] = []
+  let filename = ''
+
+  if (activeReportTab.value === 'pl') {
+    filename = `LaporanLabaRugi_${year}.csv`
+    rows = [
+      ['LAPORAN LABA RUGI', year],
+      [],
+      ['Keterangan', 'Nominal (IDR)'],
+      ['I. PENDAPATAN OPERASIONAL', ''],
+      ['Pendapatan Kontrak Event', plData.value.pendapatanKontrak],
+      ['Pendapatan Lain-lain', plData.value.pendapatanLain],
+      ['Total Pendapatan Bersih', totalPendapatan.value],
+      [],
+      ['II. BIAYA OPERASIONAL & VENDOR', ''],
+      ['Biaya Pembayaran Vendor Utama', -plData.value.biayaVendor],
+      ['Operasional & Peralatan', -plData.value.biayaOperasional],
+      ['Konsumsi & Akomodasi', -plData.value.biayaKonsumsi],
+      ['Marketing & Komisi Talent', -plData.value.biayaMarketing],
+      ['Total Pengeluaran / Beban', -totalBiaya.value],
+      [],
+      ['III. LABA OPERASIONAL (KOTOR)', labaKotor.value],
+      [],
+      ['IV. BEBAN PERPAJAKAN', ''],
+      ['Taksiran Pajak (PPN & PPh)', -plData.value.bebanPajak],
+      [],
+      ['V. LABA BERSIH TAHUN BERJALAN', labaBersih.value],
+      ['Net Margin (%)', `${netMargin.value}%`],
+    ]
+  } else if (activeReportTab.value === 'cashflow') {
+    filename = `LaporanArusKas_${year}.csv`
+    rows = [
+      ['LAPORAN ARUS KAS', year],
+      [],
+      ['Kategori', 'Nominal (IDR)'],
+      ['I. ARUS KAS MASUK (INFLOWS)', ''],
+      ...Object.entries(cashflowData.value.inflowCategories).map(([cat, val]) => [formatCategoryLabel(cat), val]),
+      ['Total Arus Kas Masuk', cashflowData.value.totalInflow],
+      [],
+      ['II. ARUS KAS KELUAR (OUTFLOWS)', ''],
+      ...Object.entries(cashflowData.value.outflowCategories).map(([cat, val]) => [formatCategoryLabel(cat), -val]),
+      ['Total Arus Kas Keluar', -cashflowData.value.totalOutflow],
+      [],
+      ['III. PERUBAHAN KAS BERSIH', cashflowData.value.netCashFlow],
+      [],
+      ['RINCIAN BULANAN', ''],
+      ['Bulan', 'Kas Masuk', 'Kas Keluar', 'Net Flow'],
+      ...cashflowData.value.monthly.map(m => [m.bulan, m.inflow, -m.outflow, m.net]),
+    ]
+  } else if (activeReportTab.value === 'ledger') {
+    filename = `BukuBesar_${year}.csv`
+    rows = [
+      ['BUKU BESAR RINGKAS', year],
+      [],
+    ]
+    for (const group of ledgerData.value) {
+      rows.push(
+        [formatCategoryLabel(group.kategori), '', '', '', ''],
+        ['Tanggal', 'No Transaksi', 'Deskripsi', 'Referensi', 'Nominal'],
+        ...group.transactions.map(tx => [
+          tx.tanggal || '-',
+          tx.nomor_transaksi,
+          tx.deskripsi,
+          tx.event || tx.vendor || '-',
+          tx.tipe === 'kas_masuk' ? tx.nominal : -tx.nominal,
+        ]),
+        ['', 'Total Masuk', group.totalMasuk, 'Total Keluar', -group.totalKeluar],
+        [],
+      )
+    }
+  }
+
+  // Buat CSV string dengan BOM agar Excel bisa baca karakter Indonesia
+  const csvContent = '\uFEFF' + rows
+    .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    .join('\n')
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  link.click()
+  URL.revokeObjectURL(url)
+}
 </script>
 
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
       <div>
         <h1 class="text-xl font-bold text-slate-900 dark:text-white">Laporan Keuangan & Konsolidasi</h1>
         <p class="text-xs text-slate-500 mt-1">Konsolidasi otomatis laba rugi, arus kas, dan buku besar untuk pelaporan pajak tahunan.</p>
       </div>
-      <div class="flex items-center space-x-2">
+      <!-- Action buttons: on mobile wrap to full row below title -->
+      <div class="flex items-center gap-2 flex-wrap">
         <select v-model="filterYear" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none">
           <option value="2026">Tahun Buku 2026</option>
           <option value="2025">Tahun Buku 2025</option>
         </select>
-        <button class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-750 text-slate-750 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-xs font-bold transition-colors cursor-pointer">
+        <button
+          @click="exportExcel"
+          class="flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
           Export Excel
         </button>
-        <button @click="printReport" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer shadow-xs">
+        <button
+          @click="printReport"
+          class="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer shadow-sm"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
           Cetak PDF
         </button>
       </div>
