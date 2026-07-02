@@ -14,12 +14,16 @@ class Tax extends Model
         'tenant_id',
         'transaction_id',
         'event_id',
+        'invoice_id',
         'tipe_pajak',
         'dpp',
         'tarif',
         'nominal_pajak',
         'pihak_terkait_nama',
         'pihak_terkait_npwp',
+        'nomor_bukti_potong',
+        'nomor_faktur_pajak',
+        'kode_objek_pajak',
         'masa_pajak',
         'status'
     ];
@@ -38,5 +42,10 @@ class Tax extends Model
     public function event()
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
     }
 }

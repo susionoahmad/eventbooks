@@ -66,9 +66,14 @@ class AuthController extends Controller
                         'id'                => $tenant->id,
                         'name'              => $tenant->name,
                         'slug'              => $tenant->slug,
-                        'is_setup_complete' => $tenant->is_setup_complete,
+                        'is_setup_complete' => (bool) $tenant->is_setup_complete,
                         'subscription_plan' => $tenant->subscription_plan,
                         'trial_ends_at'     => $tenant->trial_ends_at,
+                        'alamat'            => $tenant->alamat,
+                        'email'             => $tenant->email,
+                        'telepon'           => $tenant->telepon,
+                        'npwp'              => $tenant->npwp,
+                        'default_ppn_rate'  => (float) $tenant->default_ppn_rate,
                     ],
                 ],
             ], 201);
@@ -113,6 +118,11 @@ class AuthController extends Controller
                     'is_setup_complete' => (bool) $user->tenant->is_setup_complete,
                     'subscription_plan' => $user->tenant->subscription_plan,
                     'trial_ends_at'     => $user->tenant->trial_ends_at,
+                    'alamat'            => $user->tenant->alamat,
+                    'email'             => $user->tenant->email,
+                    'telepon'           => $user->tenant->telepon,
+                    'npwp'              => $user->tenant->npwp,
+                    'default_ppn_rate'  => (float) $user->tenant->default_ppn_rate,
                 ],
             ],
         ], 200);
@@ -144,8 +154,39 @@ class AuthController extends Controller
                     'is_setup_complete' => (bool) $user->tenant->is_setup_complete,
                     'subscription_plan' => $user->tenant->subscription_plan,
                     'trial_ends_at'     => $user->tenant->trial_ends_at,
+                    'alamat'            => $user->tenant->alamat,
+                    'email'             => $user->tenant->email,
+                    'telepon'           => $user->tenant->telepon,
+                    'npwp'              => $user->tenant->npwp,
+                    'default_ppn_rate'  => (float) $user->tenant->default_ppn_rate,
                 ],
             ],
+        ], 200);
+    }
+
+    /**
+     * Change password for the currently authenticated user.
+     */
+    public function changePassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password'     => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'message' => 'Password saat ini salah.'
+            ], 422);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password berhasil diperbarui.'
         ], 200);
     }
 }

@@ -21,7 +21,8 @@ const newInvoice = ref({
   jatuh_tempo: new Date().toISOString().split('T')[0],
   jenis_invoice: 'dp',
   subtotal: 0,
-  apply_ppn: true
+  apply_ppn: true,
+  nomor_faktur_pajak: ''
 })
 
 const paymentForm = ref({
@@ -33,7 +34,8 @@ const paymentForm = ref({
 
 const invoiceTotalPreview = computed(() => {
   const sub = newInvoice.value.subtotal
-  const ppn = newInvoice.value.apply_ppn ? (sub * 11) / 100 : 0
+  const rate = authStore.user?.tenant?.default_ppn_rate !== undefined ? parseFloat(authStore.user.tenant.default_ppn_rate as any) : 12.00
+  const ppn = newInvoice.value.apply_ppn ? (sub * rate) / 100 : 0
   return { sub, ppn, total: sub + ppn }
 })
 
@@ -125,7 +127,8 @@ const saveInvoice = async () => {
       jatuh_tempo: new Date().toISOString().split('T')[0],
       jenis_invoice: 'dp',
       subtotal: 0,
-      apply_ppn: true
+      apply_ppn: true,
+      nomor_faktur_pajak: ''
     }
     isCreateModalOpen.value = false
     fetchInvoices()
@@ -177,6 +180,7 @@ const printInvoice = (invoice: any) => {
   const subtotal = Number(invoice.subtotal)
   const ppn = Number(invoice.ppn)
   const total = subtotal + ppn
+  const ppnRateUsed = subtotal > 0 ? Math.round((ppn / subtotal) * 100) : 12
   const paid = Number(invoice.paid_amount || 0)
   const outstanding = total - paid
   const clientName = invoice.client?.nama || '-'
@@ -188,6 +192,11 @@ const printInvoice = (invoice: any) => {
 
   const eventName = invoice.event?.nama_event || '-'
   const eventNo = invoice.event?.nomor_event || '-'
+
+  const tenantName = authStore.user?.tenant?.name || 'EventBooks Organizer'
+  const tenantAddress = authStore.user?.tenant?.alamat || 'Alamat belum dikonfigurasi'
+  const tenantEmail = authStore.user?.tenant?.email || ''
+  const tenantPhone = authStore.user?.tenant?.telepon || ''
 
   printWindow.document.write(`
     <html>
@@ -214,9 +223,9 @@ const printInvoice = (invoice: any) => {
               <p class="text-xs text-slate-400 font-mono mt-1">NO: ${invoice.nomor_invoice}</p>
             </div>
             <div class="text-right text-xs">
-              <h2 class="font-bold text-slate-900 text-sm">Royal Event Organizer</h2>
-              <p class="text-slate-500 mt-1">Kuningan Tower Lt. 12, Sudirman, Jakarta Selatan</p>
-              <p class="text-slate-500">Email: info@royalevent.co.id | Tel: 021-88887777</p>
+              <h2 class="font-bold text-slate-900 text-sm">${tenantName}</h2>
+              <p class="text-slate-500 mt-1">${tenantAddress}</p>
+              <p class="text-slate-500">${tenantEmail ? 'Email: ' + tenantEmail : ''} ${tenantPhone ? '| Tel: ' + tenantPhone : ''}</p>
             </div>
           </div>
 
@@ -236,6 +245,7 @@ const printInvoice = (invoice: any) => {
               <p class="text-slate-600 mt-0.5"><span class="font-bold text-slate-800">Jatuh Tempo:</span> ${invoice.jatuh_tempo ? invoice.jatuh_tempo.split('T')[0] : '-'}</p>
               <p class="text-slate-600 mt-0.5"><span class="font-bold text-slate-800">Termin/Jenis:</span> <span class="uppercase font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/50">${invoice.jenis_invoice}</span></p>
               <p class="text-slate-600 mt-2"><span class="font-bold text-slate-800">Event Referensi:</span> ${eventName} (${eventNo})</p>
+              ${invoice.nomor_faktur_pajak ? `<p class="text-slate-600 mt-1"><span class="font-bold text-slate-800">Faktur Pajak (NSFP):</span> <span class="font-mono text-3xs">${invoice.nomor_faktur_pajak}</span></p>` : ''}
             </div>
           </div>
 
@@ -264,7 +274,7 @@ const printInvoice = (invoice: any) => {
               </div>
               ${ppn > 0 ? `
               <div class="flex justify-between text-slate-500 border-b border-slate-100 pb-1.5">
-                <span>PPN Keluaran (11%)</span>
+                <span>PPN Keluaran (${ppnRateUsed}%)</span>
                 <span class="font-mono font-semibold">+ ${formatIDRLocal(ppn)}</span>
               </div>
               ` : ''}
@@ -420,8 +430,19 @@ const printInvoice = (invoice: any) => {
           <div class="border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-3 bg-slate-50/50 dark:bg-slate-800/20">
             <label class="flex items-center space-x-2 cursor-pointer text-xs font-semibold">
               <input v-model="newInvoice.apply_ppn" type="checkbox" class="rounded text-emerald-600 focus:ring-emerald-500" />
-              <span>Kenakan PPN Indonesia (11% DPP)</span>
+              <span>Kenakan PPN Indonesia ({{ authStore.user?.tenant?.default_ppn_rate || 12 }}% DPP)</span>
             </label>
+
+            <!-- NSFP Input (muncul hanya jika apply_ppn dicentang) -->
+            <div v-if="newInvoice.apply_ppn" class="space-y-1 pt-1">
+              <label class="block text-3xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nomor Seri Faktur Pajak (NSFP)</label>
+              <input 
+                v-model="newInvoice.nomor_faktur_pajak" 
+                type="text" 
+                placeholder="Contoh: 002.26.12345678" 
+                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-emerald-500" 
+              />
+            </div>
             
             <div class="text-xs space-y-1.5 pt-1.5 border-t border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
               <div class="flex justify-between">
@@ -429,7 +450,7 @@ const printInvoice = (invoice: any) => {
                 <span>{{ formatIDR(invoiceTotalPreview.sub) }}</span>
               </div>
               <div class="flex justify-between">
-                <span>PPN Keluaran (11%)</span>
+                <span>PPN Keluaran ({{ authStore.user?.tenant?.default_ppn_rate || 12 }}%)</span>
                 <span>+ {{ formatIDR(invoiceTotalPreview.ppn) }}</span>
               </div>
               <div class="flex justify-between text-sm font-bold text-slate-900 dark:text-slate-200 pt-1.5 border-t border-dashed border-slate-200 dark:border-slate-800">

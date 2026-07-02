@@ -20,6 +20,7 @@ class Invoice extends Model
         'jenis_invoice',
         'subtotal',
         'ppn',
+        'nomor_faktur_pajak',
     ];
 
     protected $casts = [

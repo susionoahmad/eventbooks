@@ -20,12 +20,14 @@ class Transaction extends Model
         'kategori',
         'deskripsi',
         'nominal',
+        'nominal_gross',
         'metode_pembayaran'
     ];
 
     protected $casts = [
         'tanggal' => 'date',
         'nominal' => 'decimal:2',
+        'nominal_gross' => 'decimal:2',
     ];
 
     public function event()

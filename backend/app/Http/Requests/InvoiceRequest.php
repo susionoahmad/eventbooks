@@ -38,7 +38,8 @@ class InvoiceRequest extends FormRequest
             'jatuh_tempo' => 'required|date|after_or_equal:tanggal',
             'jenis_invoice' => 'required|in:dp,termin,pelunasan',
             'subtotal' => 'required|numeric|min:0',
-            'apply_ppn' => 'nullable|boolean'
+            'apply_ppn' => 'nullable|boolean',
+            'nomor_faktur_pajak' => 'nullable|string|max:30'
         ];
     }
 }

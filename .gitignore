@@ -19,3 +19,5 @@ yarn-error.log*
 
 analisis_kepatuhan_pajak.md
 .gitignore
+implementation_plan_lanjutan
+implementation_plan_modul_pajak

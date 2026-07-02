@@ -68,62 +68,73 @@ class TransactionController extends Controller
             }
             $nomorTransaksi = "TRX-{$yearMonth}-" . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
-            // Create Transaction
+            $nominalGross = $validated['nominal'];
+            $nominalNet = $nominalGross;
+            $pphAmount = 0;
+            $ppnAmount = 0;
+
+            $hasNpwp = !empty($validated['pihak_terkait_npwp']);
+            if (!$hasNpwp && !empty($validated['vendor_id'])) {
+                $vendor = \App\Models\Vendor::find($validated['vendor_id']);
+                $hasNpwp = $vendor && !empty($vendor->npwp);
+            }
+            
+            $pphCalc = null;
+            $ppnCalc = null;
+            $pphType = null;
+            $ppnRate = 12.00;
+
+            if ($validated['tipe'] === 'kas_keluar') {
+                if ($request->boolean('calculate_pph23')) {
+                    $pphCalc = $this->taxService->calculatePPh23($nominalGross, $hasNpwp);
+                    $pphAmount = $pphCalc['nominal_pajak'];
+                    $pphType = 'pph_23';
+                } elseif ($request->boolean('calculate_pph21')) {
+                    $pphCalc = $this->taxService->calculatePPh21Freelancer($nominalGross, $hasNpwp);
+                    $pphAmount = $pphCalc['nominal_pajak'];
+                    $pphType = 'pph_21';
+                }
+
+                if ($request->boolean('calculate_ppn_masukan')) {
+                    $ppnRate = $this->taxService->getPPNRateForDate($validated['tanggal']);
+                    $ppnCalc = $this->taxService->calculatePPN($nominalGross, $ppnRate);
+                    $ppnAmount = $ppnCalc['nominal_pajak'];
+                }
+
+                // Net Payout Formula
+                $nominalNet = $nominalGross + $ppnAmount - $pphAmount;
+            }
+
+            // Create Transaction with Net Payout
             $transaction = Transaction::create(array_merge($validated, [
                 'tenant_id' => $tenantId,
-                'nomor_transaksi' => $nomorTransaksi
+                'nomor_transaksi' => $nomorTransaksi,
+                'nominal' => $nominalNet,
+                'nominal_gross' => $nominalGross
             ]));
 
             // Automatic Withholding Tax & PPN Masukan Calculations
             $masaPajak = $date->format('Y-m');
 
-            if ($request->boolean('calculate_pph23')) {
-                // Determine NPWP status
-                $hasNpwp = !empty($validated['pihak_terkait_npwp']);
-                
-                $pphCalc = $this->taxService->calculatePPh23($transaction->nominal, $hasNpwp);
-                
+            if ($pphCalc) {
                 Tax::create([
                     'tenant_id' => $tenantId,
                     'transaction_id' => $transaction->id,
                     'event_id' => $transaction->event_id,
-                    'tipe_pajak' => 'pph_23',
+                    'tipe_pajak' => $pphType,
                     'dpp' => $pphCalc['dpp'],
                     'tarif' => $pphCalc['tarif'],
                     'nominal_pajak' => $pphCalc['nominal_pajak'],
                     'pihak_terkait_nama' => $validated['pihak_terkait_nama'] ?? $transaction->vendor->nama_vendor ?? null,
                     'pihak_terkait_npwp' => $validated['pihak_terkait_npwp'] ?? $transaction->vendor->npwp ?? null,
                     'nomor_bukti_potong' => $validated['nomor_bukti_potong'] ?? null,
-                    'kode_objek_pajak' => $validated['kode_objek_pajak'] ?? '24-104-14', // Default Jasa EO
-                    'masa_pajak' => $masaPajak,
-                    'status' => 'terutang'
-                ]);
-            } elseif ($request->boolean('calculate_pph21')) {
-                $hasNpwp = !empty($validated['pihak_terkait_npwp']);
-                
-                $pphCalc = $this->taxService->calculatePPh21Freelancer($transaction->nominal, $hasNpwp);
-                
-                Tax::create([
-                    'tenant_id' => $tenantId,
-                    'transaction_id' => $transaction->id,
-                    'event_id' => $transaction->event_id,
-                    'tipe_pajak' => 'pph_21',
-                    'dpp' => $pphCalc['dpp'],
-                    'tarif' => $pphCalc['tarif'],
-                    'nominal_pajak' => $pphCalc['nominal_pajak'],
-                    'pihak_terkait_nama' => $validated['pihak_terkait_nama'] ?? null,
-                    'pihak_terkait_npwp' => $validated['pihak_terkait_npwp'] ?? null,
-                    'nomor_bukti_potong' => $validated['nomor_bukti_potong'] ?? null,
-                    'kode_objek_pajak' => $validated['kode_objek_pajak'] ?? '21-100-09', // Default Bukan Pegawai / Jasa Lainnya
+                    'kode_objek_pajak' => $validated['kode_objek_pajak'] ?? ($pphType === 'pph_23' ? '24-104-14' : '21-100-09'),
                     'masa_pajak' => $masaPajak,
                     'status' => 'terutang'
                 ]);
             }
 
-            if ($request->boolean('calculate_ppn_masukan')) {
-                $ppnRate = $this->taxService->getPPNRateForDate($validated['tanggal']);
-                $ppnCalc = $this->taxService->calculatePPN($transaction->nominal, $ppnRate);
-
+            if ($ppnCalc) {
                 Tax::create([
                     'tenant_id' => $tenantId,
                     'transaction_id' => $transaction->id,

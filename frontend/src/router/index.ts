@@ -60,6 +60,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Settings',
         component: () => import('../views/SettingsView.vue'),
         meta: { roles: ['owner', 'admin'] }
+      },
+      {
+        path: 'change-password',
+        name: 'ChangePassword',
+        component: () => import('../views/ChangePasswordView.vue'),
+        meta: { roles: ['owner', 'finance_manager', 'admin', 'staff'] }
       }
     ]
   },

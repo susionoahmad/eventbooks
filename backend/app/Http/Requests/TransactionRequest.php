@@ -37,6 +37,7 @@ class TransactionRequest extends FormRequest
             ],
             'deskripsi' => 'required|string',
             'nominal' => 'required|numeric|min:0.01',
+            'nominal_gross' => 'nullable|numeric|min:0',
             'metode_pembayaran' => 'required|in:cash,transfer_bank,card,e_wallet',
             
             // Tax Calculation parameters

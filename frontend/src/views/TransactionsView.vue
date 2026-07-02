@@ -23,8 +23,10 @@ const newTrx = ref({
   metode_pembayaran: 'transfer_bank',
   calculate_pph23: false,
   calculate_pph21: false,
+  calculate_ppn_masukan: false,
   pihak_terkait_nama: '',
-  pihak_terkait_npwp: ''
+  pihak_terkait_npwp: '',
+  nomor_faktur_pajak: ''
 })
 
 const getKategoriLabel = (kat: string) => {
@@ -95,19 +97,48 @@ const onKategoriChange = () => {
 
 // Dynamic tax preview inside form
 const taxPreview = computed(() => {
+  const nominalGross = parseFloat(newTrx.value.nominal as any) || 0
+  if (!nominalGross) return null
+
   const hasNpwp = !!newTrx.value.pihak_terkait_npwp
+  let pphAmount = 0
+  let pphRateText = ''
+  let pphType = ''
+
+  let ppnAmount = 0
+  let ppnRateText = ''
+
   if (newTrx.value.calculate_pph23) {
     const rate = hasNpwp ? 2.00 : 4.00
-    const nominalTax = (newTrx.value.nominal * rate) / 100
-    return { type: 'PPh 23', rate: `${rate}%`, amount: nominalTax, net: newTrx.value.nominal - nominalTax }
-  }
-  if (newTrx.value.calculate_pph21) {
+    pphAmount = (nominalGross * rate) / 100
+    pphRateText = `${rate}%`
+    pphType = 'PPh 23'
+  } else if (newTrx.value.calculate_pph21) {
     const rate = hasNpwp ? 5.00 : 6.00
-    const dpp = newTrx.value.nominal * 0.50
-    const nominalTax = (dpp * rate) / 100
-    return { type: 'PPh 21 (Freelance)', rate: `${rate}% (dari 50% DPP)`, amount: nominalTax, net: newTrx.value.nominal - nominalTax }
+    const dpp = nominalGross * 0.50
+    pphAmount = (dpp * rate) / 100
+    pphRateText = `${rate}% (dari 50% DPP)`
+    pphType = 'PPh 21'
   }
-  return null
+
+  if (newTrx.value.calculate_ppn_masukan) {
+    const rate = 12.00
+    ppnAmount = (nominalGross * rate) / 100
+    ppnRateText = `${rate}%`
+  }
+
+  const netPayout = nominalGross + ppnAmount - pphAmount
+
+  if (pphAmount === 0 && ppnAmount === 0) return null
+
+  return {
+    pphAmount,
+    pphRateText,
+    pphType,
+    ppnAmount,
+    ppnRateText,
+    netPayout
+  }
 })
 
 watch(() => newTrx.value.tipe, (newTipe) => {
@@ -138,8 +169,10 @@ const saveTransaction = async () => {
       metode_pembayaran: 'transfer_bank',
       calculate_pph23: false,
       calculate_pph21: false,
+      calculate_ppn_masukan: false,
       pihak_terkait_nama: '',
-      pihak_terkait_npwp: ''
+      pihak_terkait_npwp: '',
+      nomor_faktur_pajak: ''
     }
     
     isModalOpen.value = false
@@ -210,6 +243,9 @@ const formatIDR = (value: number) => {
               <td class="p-4 text-right font-extrabold">
                 <span :class="trx.tipe === 'kas_masuk' ? 'text-emerald-500' : 'text-rose-500'">
                   {{ trx.tipe === 'kas_masuk' ? '+' : '-' }} {{ formatIDR(trx.nominal) }}
+                </span>
+                <span v-if="trx.nominal_gross && Math.abs(trx.nominal_gross - trx.nominal) > 0.01" class="text-3xs text-slate-400 font-semibold block mt-0.5">
+                  Gross: {{ formatIDR(trx.nominal_gross) }}
                 </span>
               </td>
             </tr>
@@ -299,41 +335,67 @@ const formatIDR = (value: number) => {
 
           <!-- Tax Action Box (Outflows only) -->
           <div v-if="newTrx.tipe === 'kas_keluar'" class="border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-3 bg-slate-50/50 dark:bg-slate-800/20">
-            <h4 class="font-bold text-2xs uppercase tracking-wider text-slate-400">Pemotongan Pajak Vendor / Talent</h4>
+            <h4 class="font-bold text-2xs uppercase tracking-wider text-slate-400">Integrasi Pajak Vendor & Payout</h4>
             
-            <div class="flex items-center space-x-4 text-xs font-semibold">
+            <div class="flex flex-wrap items-center gap-4 text-xs font-semibold">
               <label class="flex items-center space-x-2 cursor-pointer">
                 <input v-model="newTrx.calculate_pph23" type="checkbox" :disabled="newTrx.calculate_pph21" class="rounded text-emerald-600 focus:ring-emerald-500" />
-                <span>Potong PPh 23 (Jasa/Sewa)</span>
+                <span>PPh 23 (Jasa/Sewa)</span>
               </label>
               <label class="flex items-center space-x-2 cursor-pointer">
                 <input v-model="newTrx.calculate_pph21" type="checkbox" :disabled="newTrx.calculate_pph23" class="rounded text-emerald-600 focus:ring-emerald-500" />
-                <span>Potong PPh 21 (Talent/MC)</span>
+                <span>PPh 21 (Freelancer)</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input v-model="newTrx.calculate_ppn_masukan" type="checkbox" class="rounded text-emerald-600 focus:ring-emerald-500" />
+                <span>PPN Masukan (12%)</span>
               </label>
             </div>
 
-            <div v-if="newTrx.calculate_pph23 || newTrx.calculate_pph21" class="space-y-3 pt-2">
+            <div v-if="newTrx.calculate_pph23 || newTrx.calculate_pph21 || newTrx.calculate_ppn_masukan" class="space-y-3 pt-2">
               <div class="grid grid-cols-2 gap-2">
                 <div>
-                  <label class="block text-3xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Pihak Terhutang</label>
+                  <label class="block text-3xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Vendor/Penerima</label>
                   <input v-model="newTrx.pihak_terkait_nama" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 rounded-lg text-xs" required />
                 </div>
                 <div>
-                  <label class="block text-3xs font-bold text-slate-400 uppercase tracking-wider mb-1">NPWP Pihak Terhutang</label>
-                  <input v-model="newTrx.pihak_terkait_npwp" type="text" placeholder="Jika tidak ada, tarif 2x lipat" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 rounded-lg text-xs" />
+                  <label class="block text-3xs font-bold text-slate-400 uppercase tracking-wider mb-1">NPWP Vendor/Penerima</label>
+                  <input v-model="newTrx.pihak_terkait_npwp" type="text" placeholder="Jika tidak ada, PPh 2x lipat" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 rounded-lg text-xs" />
+                </div>
+              </div>
+
+              <div v-if="newTrx.calculate_ppn_masukan" class="grid grid-cols-1 gap-2">
+                <div>
+                  <label class="block text-3xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nomor Faktur Pajak Masukan</label>
+                  <input v-model="newTrx.nomor_faktur_pajak" type="text" placeholder="Masukkan 16 digit Nomor Seri Faktur Pajak" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 rounded-lg text-xs" />
                 </div>
               </div>
 
               <!-- Dynamic Preview -->
-              <div v-if="taxPreview" class="bg-emerald-950/30 border border-emerald-900/50 p-3 rounded-lg text-xs flex justify-between items-center text-emerald-400 font-medium">
-                <div>
-                  <span>{{ taxPreview.type }} ({{ taxPreview.rate }})</span>
-                  <span class="block text-3xs text-slate-400 mt-0.5">Potongan dipotong dari kas keluar</span>
+              <div v-if="taxPreview" class="bg-emerald-950/30 border border-emerald-900/50 p-4 rounded-xl text-xs space-y-2 text-emerald-400">
+                <div class="flex justify-between items-center border-b border-emerald-900/40 pb-2">
+                  <span class="font-semibold">Buku Kas Bersih (Net Payout Ledger)</span>
+                  <span class="text-3xs text-slate-400 uppercase font-bold tracking-wider">Kalkulasi Otomatis</span>
                 </div>
-                <div class="text-right">
-                  <span class="font-bold block">{{ formatIDR(taxPreview.amount) }}</span>
-                  <span class="text-3xs text-slate-400 block mt-0.5">Bersih dibayar: {{ formatIDR(taxPreview.net) }}</span>
+                <div class="space-y-1.5 text-slate-350">
+                  <div class="flex justify-between">
+                    <span>Nominal Bruto (Gross Contract):</span>
+                    <span class="font-mono">{{ formatIDR(newTrx.nominal) }}</span>
+                  </div>
+                  <div v-if="taxPreview.pphAmount > 0" class="flex justify-between text-rose-400">
+                    <span>Potongan {{ taxPreview.pphType }} ({{ taxPreview.pphRateText }}):</span>
+                    <span class="font-mono">- {{ formatIDR(taxPreview.pphAmount) }}</span>
+                  </div>
+                  <div v-if="taxPreview.ppnAmount > 0" class="flex justify-between text-emerald-400">
+                    <span>Tambahan PPN Masukan ({{ taxPreview.ppnRateText }}):</span>
+                    <span class="font-mono">+ {{ formatIDR(taxPreview.ppnAmount) }}</span>
+                  </div>
                 </div>
+                <div class="flex justify-between items-center border-t border-emerald-900/40 pt-2 font-extrabold text-sm text-emerald-400">
+                  <span>Kas Bersih Ditransfer (Net Payout):</span>
+                  <span class="font-mono">{{ formatIDR(taxPreview.netPayout) }}</span>
+                </div>
+                <span class="block text-3xs text-slate-400 italic">Ledger akan membukukan nominal Net Payout untuk sinkronisasi mutasi bank yang presisi. Selisih PPh akan diposting ke Utang Pajak.</span>
               </div>
             </div>
           </div>

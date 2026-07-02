@@ -24,6 +24,7 @@ const navigationItems = [
   { name: 'Rekap Pajak', path: '/taxes', icon: 'ScaleIcon', roles: ['owner', 'finance_manager'] },
   { name: 'Laporan Keuangan', path: '/reports', icon: 'PresentationChartBarIcon', roles: ['owner', 'finance_manager'] },
   { name: 'Pengaturan', path: '/settings', icon: 'CogIcon', roles: ['owner', 'admin'] },
+  { name: 'Ganti Password', path: '/change-password', icon: 'KeyIcon', roles: ['owner', 'finance_manager', 'admin', 'staff'] },
 ]
 
 const handleLogout = () => {

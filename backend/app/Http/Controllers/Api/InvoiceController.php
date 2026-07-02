@@ -86,12 +86,14 @@ class InvoiceController extends Controller
                     'tenant_id' => $tenantId,
                     'transaction_id' => null, // Will link when paid
                     'event_id' => $invoice->event_id,
+                    'invoice_id' => $invoice->id,
                     'tipe_pajak' => 'ppn_keluaran',
                     'dpp' => $subtotal,
                     'tarif' => $ppnRate,
                     'nominal_pajak' => $ppn,
                     'pihak_terkait_nama' => $invoice->client->nama,
                     'pihak_terkait_npwp' => $invoice->client->npwp,
+                    'nomor_faktur_pajak' => $invoice->nomor_faktur_pajak,
                     'masa_pajak' => $date->format('Y-m'),
                     'status' => 'terutang'
                 ]);

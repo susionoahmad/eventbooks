@@ -17,6 +17,7 @@ class TransactionResource extends JsonResource
             'kategori' => $this->kategori,
             'deskripsi' => $this->deskripsi,
             'nominal' => (float) $this->nominal,
+            'nominal_gross' => (float) ($this->nominal_gross ?? $this->nominal),
             'metode_pembayaran' => $this->metode_pembayaran,
             'event' => [
                 'id' => $this->event->id ?? null,

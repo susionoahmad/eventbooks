@@ -9,6 +9,11 @@ interface TenantInfo {
   is_setup_complete: boolean
   subscription_plan?: string
   trial_ends_at?: string
+  alamat?: string
+  email?: string
+  telepon?: string
+  npwp?: string
+  default_ppn_rate?: number
 }
 
 interface User {

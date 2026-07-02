@@ -14,7 +14,7 @@ class TaxController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Tax::with(['transaction', 'event']);
+        $query = Tax::with(['transaction', 'event', 'invoice']);
 
         if ($request->filled('tipe_pajak')) {
             $query->where('tipe_pajak', $request->input('tipe_pajak'));
