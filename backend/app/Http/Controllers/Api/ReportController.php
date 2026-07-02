@@ -39,8 +39,17 @@ class ReportController extends Controller
             ->where('kategori', 'konsumsi')
             ->sum('nominal');
             
-        $bebanPajak = (float) Tax::whereYear('created_at', $year)
+        // PPh 21/23 are withholding taxes, already included in gross expenses (vendor/freelancer payouts).
+        // Net PPN expense is PPN Keluaran - PPN Masukan.
+        $ppnKeluaran = (float) Tax::whereYear('created_at', $year)
+            ->where('tipe_pajak', 'ppn_keluaran')
             ->sum('nominal_pajak');
+            
+        $ppnMasukan = (float) Tax::whereYear('created_at', $year)
+            ->where('tipe_pajak', 'ppn_masukan')
+            ->sum('nominal_pajak');
+
+        $bebanPajak = $ppnKeluaran - $ppnMasukan;
 
         return response()->json([
             'pendapatanKontrak' => $pendapatanKontrak,

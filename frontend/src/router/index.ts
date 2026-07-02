@@ -59,7 +59,7 @@ const routes: Array<RouteRecordRaw> = [
         path: 'settings',
         name: 'Settings',
         component: () => import('../views/SettingsView.vue'),
-        meta: { roles: ['owner'] }
+        meta: { roles: ['owner', 'admin'] }
       }
     ]
   },

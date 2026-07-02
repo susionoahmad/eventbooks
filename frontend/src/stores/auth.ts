@@ -33,18 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
   const setupComplete   = computed(() => user.value?.tenant?.is_setup_complete === true)
 
   const isTrialExpired = computed(() => {
-    if (!user.value || !user.value.tenant) return false
-    const tenant = user.value.tenant
-    if (tenant.subscription_plan !== 'trial') return false
-    if (!tenant.trial_ends_at) return false
-    
-    // Parse the DB datetime (which is usually UTC or local from API)
-    // Replace space with T to make it standard ISO if it is in YYYY-MM-DD HH:MM:SS format
-    const trialDateStr = tenant.trial_ends_at.includes(' ') && !tenant.trial_ends_at.includes('T')
-      ? tenant.trial_ends_at.replace(' ', 'T')
-      : tenant.trial_ends_at
-    const endsAt = new Date(trialDateStr)
-    return endsAt < new Date()
+    return false // Trial check disabled for single tenant custom deployment
   })
 
   const login = (newToken: string, newUser: User) => {

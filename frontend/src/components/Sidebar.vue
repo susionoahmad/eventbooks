@@ -23,7 +23,7 @@ const navigationItems = [
   { name: 'Invoices', path: '/invoices', icon: 'DocumentTextIcon', roles: ['owner', 'finance_manager', 'admin'] },
   { name: 'Rekap Pajak', path: '/taxes', icon: 'ScaleIcon', roles: ['owner', 'finance_manager'] },
   { name: 'Laporan Keuangan', path: '/reports', icon: 'PresentationChartBarIcon', roles: ['owner', 'finance_manager'] },
-  { name: 'Pengaturan', path: '/settings', icon: 'CogIcon', roles: ['owner'] },
+  { name: 'Pengaturan', path: '/settings', icon: 'CogIcon', roles: ['owner', 'admin'] },
 ]
 
 const handleLogout = () => {

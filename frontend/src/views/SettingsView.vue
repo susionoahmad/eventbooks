@@ -64,7 +64,8 @@ const organization = ref({
   npwp: '',
   email: '',
   phone: '',
-  address: ''
+  address: '',
+  default_ppn_rate: 12.00
 })
 
 const users = ref<any[]>([])
@@ -127,7 +128,8 @@ const fetchTenant = async () => {
       npwp: res.data.data.npwp || '',
       email: res.data.data.email || '',
       phone: res.data.data.telepon || '',
-      address: res.data.data.alamat || ''
+      address: res.data.data.alamat || '',
+      default_ppn_rate: res.data.data.default_ppn_rate !== null ? parseFloat(res.data.data.default_ppn_rate) : 12.00
     }
   } catch (err) {
     console.error('Error fetching tenant details:', err)
@@ -167,7 +169,8 @@ const saveOrganization = async () => {
       npwp: organization.value.npwp,
       email: organization.value.email,
       telepon: organization.value.phone,
-      alamat: organization.value.address
+      alamat: organization.value.address,
+      default_ppn_rate: organization.value.default_ppn_rate
     })
     
     tenantInfo.value = res.data.data
@@ -176,7 +179,8 @@ const saveOrganization = async () => {
       npwp: res.data.data.npwp || '',
       email: res.data.data.email || '',
       phone: res.data.data.telepon || '',
-      address: res.data.data.alamat || ''
+      address: res.data.data.alamat || '',
+      default_ppn_rate: res.data.data.default_ppn_rate !== null ? parseFloat(res.data.data.default_ppn_rate) : 12.00
     }
     
     triggerNotif('Profil organisasi berhasil diperbarui.')
@@ -284,58 +288,15 @@ const deleteUser = async (user: any) => {
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Alamat Kantor Utama</label>
               <textarea v-model="organization.address" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500"></textarea>
             </div>
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Tarif PPN Default (%)</label>
+              <input v-model="organization.default_ppn_rate" type="number" step="0.01" min="0" max="99.99" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+            </div>
             <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Simpan Perubahan</button>
           </form>
         </div>
 
-        <!-- Subscription / Trial Status -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm space-y-4">
-          <h3 class="font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 text-sm">Status Langganan</h3>
-          
-          <div class="space-y-4">
-            <!-- Plan Info -->
-            <div class="flex items-center justify-between">
-              <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Paket Layanan</span>
-              <span class="px-2.5 py-0.5 rounded-full text-2xs font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
-                {{ subscriptionPlan === 'trial' ? 'Masa Percobaan (Trial)' : subscriptionPlan }}
-              </span>
-            </div>
 
-            <!-- Trial Details -->
-            <div v-if="subscriptionPlan === 'trial'" class="bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/60 p-4 rounded-xl space-y-3.5">
-              <!-- Sisa Hari -->
-              <div>
-                <div class="flex justify-between items-baseline mb-1">
-                  <span class="text-3xs text-slate-400 dark:text-slate-500 uppercase font-bold tracking-wider">Sisa Masa Percobaan</span>
-                  <span class="text-sm font-bold text-slate-900 dark:text-white">{{ trialRemainingDays }} Hari</span>
-                </div>
-                <!-- Progress Bar -->
-                <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div 
-                    class="bg-emerald-500 h-full rounded-full transition-all duration-500"
-                    :style="{ width: `${Math.min(100, (trialRemainingDays / 30) * 100)}%` }"
-                  ></div>
-                </div>
-              </div>
-
-              <!-- Tanggal Berakhir -->
-              <div class="flex justify-between items-center text-xs pt-2 border-t border-slate-100 dark:border-slate-800/60">
-                <span class="text-slate-500 dark:text-slate-400 font-medium">Tanggal Berakhir:</span>
-                <span class="font-bold text-slate-800 dark:text-slate-200">{{ formattedTrialEndDate }}</span>
-              </div>
-            </div>
-
-            <!-- Upgrade Info / Premium CTA -->
-            <div class="text-3xs text-slate-400 dark:text-slate-500 leading-relaxed bg-indigo-50/50 dark:bg-indigo-950/10 border border-indigo-100/50 dark:border-indigo-950/30 p-3 rounded-lg flex items-start gap-2.5">
-              <svg class="h-4 w-4 text-indigo-500 dark:text-indigo-400 shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-              </svg>
-              <span>
-                Ingin meningkatkan kuota atau fitur? Hubungi tim support kami untuk beralih ke paket <strong>Basic</strong> atau <strong>Pro</strong>.
-              </span>
-            </div>
-          </div>
-        </div>
       </div>
 
 

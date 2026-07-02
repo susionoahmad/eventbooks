@@ -58,10 +58,11 @@ class InvoiceController extends Controller
             
             $subtotal = $validated['subtotal'];
             $ppn = 0.00;
+            $ppnRate = $this->taxService->getPPNRateForDate($validated['tanggal']);
 
             // Compute PPN if checked
             if ($request->boolean('apply_ppn')) {
-                $ppnCalc = $this->taxService->calculatePPN($subtotal, 11.00); // Standard indonesian PPN is 11%
+                $ppnCalc = $this->taxService->calculatePPN($subtotal, $ppnRate);
                 $ppn = $ppnCalc['nominal_pajak'];
             }
 
@@ -87,7 +88,7 @@ class InvoiceController extends Controller
                     'event_id' => $invoice->event_id,
                     'tipe_pajak' => 'ppn_keluaran',
                     'dpp' => $subtotal,
-                    'tarif' => 11.00,
+                    'tarif' => $ppnRate,
                     'nominal_pajak' => $ppn,
                     'pihak_terkait_nama' => $invoice->client->nama,
                     'pihak_terkait_npwp' => $invoice->client->npwp,

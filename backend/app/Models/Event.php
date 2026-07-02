@@ -73,9 +73,10 @@ class Event extends Model
 
     public function getNetProfitAttribute(): float
     {
-        // Profit = Contract Value - Actual Cash Outflow - Outstanding Taxes
-        $taxPaidOrOwed = (float) $this->taxes()->sum('nominal_pajak');
-        return $this->nilai_kontrak - $this->total_actual_cost - $taxPaidOrOwed;
+        // Profit = Contract Value - Actual Cash Outflow
+        // Note: Withholding taxes (PPh 21/23) are already part of total_actual_cost as transactions are gross.
+        // PPN is a pass-through tax and should not be treated as a direct event expense.
+        return $this->nilai_kontrak - $this->total_actual_cost;
     }
 
     public function getProfitMarginPercentageAttribute(): float

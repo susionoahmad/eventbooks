@@ -15,22 +15,7 @@ class CheckTrialExpiration
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = Auth::user();
-        
-        if ($user && $user->tenant) {
-            $tenant = $user->tenant;
-            
-            // Check if plan is trial and trial_ends_at is in the past
-            if ($tenant->subscription_plan === 'trial' && $tenant->trial_ends_at) {
-                if (Carbon::now()->gt(Carbon::parse($tenant->trial_ends_at))) {
-                    return response()->json([
-                        'message' => 'Masa trial 30 hari Anda telah berakhir. Silakan hubungi administrator untuk memperbarui langganan.',
-                        'trial_expired' => true
-                    ], 403);
-                }
-            }
-        }
-
+        // Trial & subscription checks disabled for custom single-tenant deployment
         return $next($request);
     }
 }

@@ -70,7 +70,7 @@ class DashboardController extends Controller
             $taxPaid = (float) Tax::where('event_id', $event->id)
                 ->sum('nominal_pajak');
                 
-            $labaBersih = (float) $event->nilai_kontrak - $totalCost - $taxPaid;
+            $labaBersih = (float) $event->nilai_kontrak - $totalCost;
             $margin = $event->nilai_kontrak > 0 ? ($labaBersih / (float) $event->nilai_kontrak) * 100 : 0.00;
             
             return [

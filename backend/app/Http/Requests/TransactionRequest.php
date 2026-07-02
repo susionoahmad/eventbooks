@@ -42,8 +42,12 @@ class TransactionRequest extends FormRequest
             // Tax Calculation parameters
             'calculate_pph23' => 'nullable|boolean',
             'calculate_pph21' => 'nullable|boolean',
+            'calculate_ppn_masukan' => 'nullable|boolean',
             'pihak_terkait_nama' => 'nullable|string|max:255',
-            'pihak_terkait_npwp' => 'nullable|string|max:20'
+            'pihak_terkait_npwp' => 'nullable|string|max:20',
+            'nomor_bukti_potong' => 'nullable|string|max:50',
+            'nomor_faktur_pajak' => 'nullable|string|max:50',
+            'kode_objek_pajak' => 'nullable|string|max:20'
         ];
     }
 }

@@ -74,7 +74,7 @@ class TransactionController extends Controller
                 'nomor_transaksi' => $nomorTransaksi
             ]));
 
-            // Automatic Withholding Tax Calculations
+            // Automatic Withholding Tax & PPN Masukan Calculations
             $masaPajak = $date->format('Y-m');
 
             if ($request->boolean('calculate_pph23')) {
@@ -93,6 +93,8 @@ class TransactionController extends Controller
                     'nominal_pajak' => $pphCalc['nominal_pajak'],
                     'pihak_terkait_nama' => $validated['pihak_terkait_nama'] ?? $transaction->vendor->nama_vendor ?? null,
                     'pihak_terkait_npwp' => $validated['pihak_terkait_npwp'] ?? $transaction->vendor->npwp ?? null,
+                    'nomor_bukti_potong' => $validated['nomor_bukti_potong'] ?? null,
+                    'kode_objek_pajak' => $validated['kode_objek_pajak'] ?? '24-104-14', // Default Jasa EO
                     'masa_pajak' => $masaPajak,
                     'status' => 'terutang'
                 ]);
@@ -111,6 +113,28 @@ class TransactionController extends Controller
                     'nominal_pajak' => $pphCalc['nominal_pajak'],
                     'pihak_terkait_nama' => $validated['pihak_terkait_nama'] ?? null,
                     'pihak_terkait_npwp' => $validated['pihak_terkait_npwp'] ?? null,
+                    'nomor_bukti_potong' => $validated['nomor_bukti_potong'] ?? null,
+                    'kode_objek_pajak' => $validated['kode_objek_pajak'] ?? '21-100-09', // Default Bukan Pegawai / Jasa Lainnya
+                    'masa_pajak' => $masaPajak,
+                    'status' => 'terutang'
+                ]);
+            }
+
+            if ($request->boolean('calculate_ppn_masukan')) {
+                $ppnRate = $this->taxService->getPPNRateForDate($validated['tanggal']);
+                $ppnCalc = $this->taxService->calculatePPN($transaction->nominal, $ppnRate);
+
+                Tax::create([
+                    'tenant_id' => $tenantId,
+                    'transaction_id' => $transaction->id,
+                    'event_id' => $transaction->event_id,
+                    'tipe_pajak' => 'ppn_masukan',
+                    'dpp' => $ppnCalc['dpp'],
+                    'tarif' => $ppnRate,
+                    'nominal_pajak' => $ppnCalc['nominal_pajak'],
+                    'pihak_terkait_nama' => $validated['pihak_terkait_nama'] ?? $transaction->vendor->nama_vendor ?? null,
+                    'pihak_terkait_npwp' => $validated['pihak_terkait_npwp'] ?? $transaction->vendor->npwp ?? null,
+                    'nomor_faktur_pajak' => $validated['nomor_faktur_pajak'] ?? null,
                     'masa_pajak' => $masaPajak,
                     'status' => 'terutang'
                 ]);

@@ -35,6 +35,7 @@ class TenantController extends Controller
             'kota'     => 'nullable|string|max:100',
             'provinsi' => 'nullable|string|max:100',
             'kode_pos' => 'nullable|string|max:10',
+            'default_ppn_rate' => 'nullable|numeric|between:0,99.99',
         ]);
 
         $tenant->update($validated);

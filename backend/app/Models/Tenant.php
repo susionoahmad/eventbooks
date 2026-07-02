@@ -24,11 +24,13 @@ class Tenant extends Model
         'is_setup_complete',
         'subscription_plan',
         'trial_ends_at',
+        'default_ppn_rate',
     ];
 
     protected $casts = [
         'is_setup_complete' => 'boolean',
         'trial_ends_at'     => 'datetime',
+        'default_ppn_rate'  => 'decimal:2',
     ];
 
     public function users()
