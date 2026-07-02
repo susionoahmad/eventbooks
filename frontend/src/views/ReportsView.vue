@@ -15,7 +15,13 @@ const plData = ref({
   biayaOperasional: 0,
   biayaMarketing: 0,
   biayaKonsumsi: 0,
-  bebanPajak: 0
+  bebanPajak: 0,
+  bebanPajakPpn: 0,
+  bebanPajakPph: 0,
+  ppnKeluaran: 0,
+  ppnMasukan: 0,
+  pph21: 0,
+  pph23: 0,
 })
 
 const cashflowData = ref({
@@ -119,6 +125,7 @@ const formatCategoryLabel = (cat: string) => {
     case 'transportasi': return 'Biaya Transportasi'
     case 'konsumsi': return 'Biaya Konsumsi'
     case 'marketing': return 'Biaya Marketing'
+    case 'pajak': return 'Penyetoran Pajak DJP'
     case 'beban_pajak': return 'Beban Pajak'
     default: return cat.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())
   }
@@ -200,7 +207,21 @@ const printReport = () => {
               <td></td>
             </tr>
             <tr>
-              <td class="p-3 pl-8">Taksiran Pajak (PPN & PPh Terhutang)</td>
+              <td class="p-3 pl-8 text-slate-700">
+                PPh 21 &amp; PPh 23 (Withheld — Utang Pajak ke DJP)
+                <span class="text-2xs text-slate-400 block font-normal">Dipotong dari pembayaran vendor/freelancer, belum disetor DJP</span>
+              </td>
+              <td class="p-3 text-right font-mono">(${formatIDR(plData.value.bebanPajakPph)})</td>
+            </tr>
+            <tr>
+              <td class="p-3 pl-8 text-slate-700">
+                PPN Terutang Bersih (Keluaran − Masukan)
+                <span class="text-2xs text-slate-400 block font-normal">PPN Keluaran ${formatIDR(plData.value.ppnKeluaran)} − PPN Masukan ${formatIDR(plData.value.ppnMasukan)}</span>
+              </td>
+              <td class="p-3 text-right font-mono">(${formatIDR(plData.value.bebanPajakPpn)})</td>
+            </tr>
+            <tr class="font-semibold bg-amber-50 text-amber-800">
+              <td class="p-3 pl-8">Total Beban Perpajakan</td>
               <td class="p-3 text-right font-mono">(${formatIDR(plData.value.bebanPajak)})</td>
             </tr>
 
@@ -470,7 +491,9 @@ const exportExcel = () => {
       ['III. LABA OPERASIONAL (KOTOR)', labaKotor.value],
       [],
       ['IV. BEBAN PERPAJAKAN', ''],
-      ['Taksiran Pajak (PPN & PPh)', -plData.value.bebanPajak],
+      ['PPh 21 & PPh 23 (Withheld - Utang Pajak ke DJP)', -plData.value.bebanPajakPph],
+      ['PPN Terutang Bersih (Keluaran - Masukan)', -plData.value.bebanPajakPpn],
+      ['Total Beban Perpajakan', -plData.value.bebanPajak],
       [],
       ['V. LABA BERSIH TAHUN BERJALAN', labaBersih.value],
       ['Net Margin (%)', `${netMargin.value}%`],
@@ -650,8 +673,22 @@ const exportExcel = () => {
         <!-- Taxes -->
         <div class="pt-6 space-y-2">
           <h3 class="font-bold text-amber-500 text-2xs uppercase tracking-wider">IV. BEBAN PERPAJAKAN</h3>
-          <div class="flex justify-between pl-4 text-slate-700 dark:text-slate-350">
-            <span>Taksiran Pajak (PPN & PPh Terhutang)</span>
+          <div class="flex justify-between pl-4 text-slate-700 dark:text-slate-350 text-xs">
+            <span>
+              PPh 21 & PPh 23 (Withheld)
+              <span class="text-slate-400 block text-3xs">Dipotong dari vendor/freelancer, utang ke DJP</span>
+            </span>
+            <span class="font-mono">({{ formatIDR(plData.bebanPajakPph) }})</span>
+          </div>
+          <div class="flex justify-between pl-4 text-slate-700 dark:text-slate-350 text-xs">
+            <span>
+              PPN Terutang Bersih
+              <span class="text-slate-400 block text-3xs">Keluaran {{ formatIDR(plData.ppnKeluaran) }} − Masukan {{ formatIDR(plData.ppnMasukan) }}</span>
+            </span>
+            <span class="font-mono">({{ formatIDR(plData.bebanPajakPpn) }})</span>
+          </div>
+          <div class="flex justify-between pl-4 font-semibold text-amber-700 dark:text-amber-400 border-t border-amber-100 dark:border-amber-900/30 pt-1.5">
+            <span>Total Beban Perpajakan</span>
             <span>({{ formatIDR(plData.bebanPajak) }})</span>
           </div>
         </div>

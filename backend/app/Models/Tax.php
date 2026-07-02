@@ -13,6 +13,7 @@ class Tax extends Model
     protected $fillable = [
         'tenant_id',
         'transaction_id',
+        'payment_transaction_id',
         'event_id',
         'invoice_id',
         'tipe_pajak',
@@ -24,6 +25,8 @@ class Tax extends Model
         'nomor_bukti_potong',
         'nomor_faktur_pajak',
         'kode_objek_pajak',
+        'file_arsip',
+        'nama_file_arsip',
         'masa_pajak',
         'status'
     ];
@@ -47,5 +50,10 @@ class Tax extends Model
     public function invoice()
     {
         return $this->belongsTo(Invoice::class);
+    }
+
+    public function paymentTransaction()
+    {
+        return $this->belongsTo(Transaction::class, 'payment_transaction_id');
     }
 }

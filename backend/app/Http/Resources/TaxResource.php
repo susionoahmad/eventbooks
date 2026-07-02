@@ -20,12 +20,20 @@ class TaxResource extends JsonResource
             'nomor_bukti_potong' => $this->nomor_bukti_potong,
             'nomor_faktur_pajak' => $this->nomor_faktur_pajak,
             'kode_objek_pajak' => $this->kode_objek_pajak,
+            'file_arsip' => $this->file_arsip,
+            'nama_file_arsip' => $this->nama_file_arsip,
             'masa_pajak' => $this->masa_pajak,
             'status' => $this->status,
             'transaction' => [
                 'id' => $this->transaction->id ?? null,
                 'nomor_transaksi' => $this->transaction->nomor_transaksi ?? null,
                 'nominal' => $this->transaction ? (float) $this->transaction->nominal : null,
+            ],
+            'payment_transaction_id' => $this->payment_transaction_id,
+            'payment_transaction' => [
+                'id' => $this->paymentTransaction->id ?? null,
+                'nomor_transaksi' => $this->paymentTransaction->nomor_transaksi ?? null,
+                'nominal' => $this->paymentTransaction ? (float) $this->paymentTransaction->nominal : null,
             ],
             'event' => [
                 'id' => $this->event->id ?? null,

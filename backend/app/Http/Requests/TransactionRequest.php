@@ -24,7 +24,7 @@ class TransactionRequest extends FormRequest
                 'required',
                 Rule::in([
                     'dp_event', 'pelunasan_event', 'pendapatan_lain',
-                    'pembayaran_vendor', 'transportasi', 'konsumsi', 'operasional', 'marketing'
+                    'pembayaran_vendor', 'transportasi', 'konsumsi', 'operasional', 'marketing', 'pajak'
                 ])
             ],
             'event_id' => [

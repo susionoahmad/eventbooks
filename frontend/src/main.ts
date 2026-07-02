@@ -10,4 +10,9 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 
+// Initialize Theme (Dark/Light Mode) globally
+import { useThemeStore } from './stores/theme'
+const themeStore = useThemeStore()
+themeStore.initTheme()
+
 app.mount('#app')

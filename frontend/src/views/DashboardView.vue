@@ -106,6 +106,18 @@ onMounted(() => {
   fetchDashboardData()
 })
 
+// ── Kalkulator PPN/PPh 23 Dinamis ────────────────────────────────────────────
+const kalkulatorDpp = ref<number>(10_000_000)
+const pph23Rate = 2 // PPh 23 tarif standar jasa 2% (PMK 141/2015)
+
+const ppnRate = computed(() => {
+  const rate = authStore.user?.tenant?.default_ppn_rate
+  return rate !== undefined && rate !== null ? parseFloat(rate as any) : 12
+})
+
+const kalkulatorPpn = computed(() => Math.round((kalkulatorDpp.value || 0) * ppnRate.value / 100))
+const kalkulatorPph23 = computed(() => Math.round((kalkulatorDpp.value || 0) * pph23Rate / 100))
+
 const formatIDR = (value: number) => {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -259,17 +271,29 @@ const trendPolyline = (key: 'kas_masuk' | 'kas_keluar' | 'net', w = 300, h = 60)
           <div class="space-y-3">
             <div>
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nilai Transaksi (DPP)</label>
-              <input type="number" value="10000000" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
+              <input
+                v-model.number="kalkulatorDpp"
+                type="number"
+                min="0"
+                step="100000"
+                placeholder="0"
+                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500"
+              />
             </div>
             <div class="grid grid-cols-2 gap-2 text-xs">
-              <div class="bg-slate-50 dark:bg-slate-800 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
-                <span class="text-slate-400 block font-semibold text-3xs uppercase mb-0.5">PPN (11%)</span>
-                <span class="font-bold text-slate-800 dark:text-slate-200">Rp 1.100.000</span>
+              <div class="bg-slate-50 dark:bg-slate-800 p-2.5 rounded-lg border border-slate-100 dark:border-slate-700">
+                <span class="text-slate-400 block font-semibold text-3xs uppercase mb-0.5">PPN ({{ ppnRate }}%)</span>
+                <span class="font-bold text-slate-800 dark:text-slate-200">{{ formatIDR(kalkulatorPpn) }}</span>
               </div>
-              <div class="bg-slate-50 dark:bg-slate-800 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
-                <span class="text-slate-400 block font-semibold text-3xs uppercase mb-0.5">PPh 23 (2%)</span>
-                <span class="font-bold text-rose-500">Rp 200.000</span>
+              <div class="bg-slate-50 dark:bg-slate-800 p-2.5 rounded-lg border border-slate-100 dark:border-slate-700">
+                <span class="text-slate-400 block font-semibold text-3xs uppercase mb-0.5">PPh 23 ({{ pph23Rate }}%)</span>
+                <span class="font-bold text-rose-500">{{ formatIDR(kalkulatorPph23) }}</span>
               </div>
+            </div>
+            <!-- Ringkasan Net -->
+            <div class="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 p-2.5 rounded-lg">
+              <span class="text-slate-400 block font-semibold text-3xs uppercase mb-0.5">Total Tagihan Klien (DPP + PPN)</span>
+              <span class="font-bold text-emerald-600 dark:text-emerald-400 text-sm">{{ formatIDR((kalkulatorDpp || 0) + kalkulatorPpn) }}</span>
             </div>
           </div>
         </div>

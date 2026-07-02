@@ -5,6 +5,9 @@ import api from '../services/api'
 
 const authStore = useAuthStore()
 
+const storageUrl = (import.meta.env.VITE_STORAGE_URL || 'http://127.0.0.1:8000/storage').replace(/\/$/, '')
+const getArsipUrl = (path: string) => `${storageUrl}/${path}`
+
 const taxes = ref<any[]>([])
 const summaries = ref<any[]>([])
 const filterMasa = ref('2026-06')
@@ -75,6 +78,59 @@ const toggleTaxStatus = async (tax: any) => {
     loadData()
   } catch (err) {
     console.error('Error updating tax status:', err)
+  }
+}
+
+// ========== ARSIP DOKUMEN PAJAK ==========
+const uploadingArsipId = ref<number | null>(null)
+
+const getArsipLabel = (tipe: string) => {
+  switch (tipe) {
+    case 'pph_21': return 'Bukti Potong PPh 21'
+    case 'pph_23': return 'Bukti Potong PPh 23'
+    case 'ppn_masukan': return 'Faktur Pajak Masukan (dari Vendor)'
+    case 'ppn_keluaran': return 'Faktur Pajak Keluaran (untuk Klien)'
+    default: return 'Dokumen Pajak'
+  }
+}
+
+const triggerFileInput = (taxId: number) => {
+  const input = document.getElementById(`arsip-input-${taxId}`) as HTMLInputElement
+  if (input) input.click()
+}
+
+const handleArsipUpload = async (event: Event, tax: any) => {
+  const input = event.target as HTMLInputElement
+  if (!input.files || !input.files[0]) return
+
+  uploadingArsipId.value = tax.id
+  const formData = new FormData()
+  formData.append('file', input.files[0])
+
+  try {
+    const res = await api.post(`/taxes/${tax.id}/arsip`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    // Update lokal supaya langsung tampil tanpa refresh
+    const idx = taxes.value.findIndex((t: any) => t.id === tax.id)
+    if (idx !== -1) taxes.value[idx] = res.data.data
+  } catch (err) {
+    console.error('Error uploading arsip:', err)
+    alert('Gagal mengunggah dokumen. Pastikan ukuran file < 5MB dan berformat PDF/JPG/PNG.')
+  } finally {
+    uploadingArsipId.value = null
+    input.value = ''
+  }
+}
+
+const deleteArsip = async (tax: any) => {
+  if (!confirm(`Hapus dokumen arsip "${tax.nama_file_arsip}"?`)) return
+  try {
+    const res = await api.delete(`/taxes/${tax.id}/arsip`)
+    const idx = taxes.value.findIndex((t: any) => t.id === tax.id)
+    if (idx !== -1) taxes.value[idx] = res.data.data
+  } catch (err) {
+    console.error('Error deleting arsip:', err)
   }
 }
 
@@ -485,12 +541,12 @@ const exportToPDF = () => {
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
       <div>
         <h1 class="text-xl font-bold text-slate-900 dark:text-white">Rekapitulasi Perpajakan Bulanan</h1>
         <p class="text-xs text-slate-500 mt-1">Lacak kewajiban pemotongan pajak PPN Keluaran/Masukan, PPh 21, dan PPh 23.</p>
       </div>
-      <div class="flex items-center space-x-2">
+      <div class="flex flex-wrap items-center gap-2">
         <button 
           @click="exportToExcel" 
           class="flex items-center space-x-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
@@ -594,6 +650,7 @@ const exportToPDF = () => {
               <th class="p-4">Pihak Terkait / NPWP</th>
               <th class="p-4">Masa Pajak / DPP</th>
               <th class="p-4">Tarif & Nominal</th>
+              <th class="p-4">Arsip Dokumen</th>
               <th class="p-4">Status</th>
               <th class="p-4 text-right">Aksi</th>
             </tr>
@@ -616,6 +673,52 @@ const exportToPDF = () => {
                 <span class="text-xs font-semibold block">{{ tax.tarif }}%</span>
                 <span class="text-xs text-amber-500 font-bold block mt-0.5">{{ formatIDR(tax.nominal_pajak) }}</span>
               </td>
+              <!-- Kolom Arsip Dokumen -->
+              <td class="p-4">
+                <!-- Sudah ada file arsip -->
+                <div v-if="tax.file_arsip" class="space-y-1.5">
+                  <a
+                    :href="getArsipUrl(tax.file_arsip)"
+                    target="_blank"
+                    class="flex items-center gap-1.5 text-2xs text-emerald-500 hover:text-emerald-400 font-semibold truncate max-w-[160px] transition-colors"
+                    :title="tax.nama_file_arsip"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    {{ tax.nama_file_arsip }}
+                  </a>
+                  <div class="flex items-center gap-2">
+                    <button @click="triggerFileInput(tax.id)" class="text-2xs text-slate-400 hover:text-blue-400 transition-colors cursor-pointer">Ganti</button>
+                    <span class="text-slate-600">·</span>
+                    <button @click="deleteArsip(tax)" class="text-2xs text-slate-400 hover:text-rose-400 transition-colors cursor-pointer">Hapus</button>
+                  </div>
+                </div>
+
+                <!-- Belum ada file arsip -->
+                <div v-else>
+                  <button
+                    v-if="uploadingArsipId !== tax.id"
+                    @click="triggerFileInput(tax.id)"
+                    class="flex items-center gap-1.5 text-2xs text-slate-400 hover:text-emerald-400 border border-dashed border-slate-300 dark:border-slate-700 hover:border-emerald-500 px-2.5 py-1.5 rounded-lg transition-all cursor-pointer"
+                    :title="getArsipLabel(tax.tipe_pajak)"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                    Unggah Dokumen
+                  </button>
+                  <span v-else class="text-2xs text-slate-400 italic">Mengunggah...</span>
+                </div>
+
+                <!-- Hidden file input per row -->
+                <input
+                  :id="`arsip-input-${tax.id}`"
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  class="hidden"
+                  @change="handleArsipUpload($event, tax)"
+                />
+
+                <span class="block text-3xs text-slate-500 mt-1.5 italic">{{ getArsipLabel(tax.tipe_pajak) }}</span>
+              </td>
+
               <td class="p-4">
                 <span :class="[tax.status === 'terutang' ? 'bg-amber-950 text-amber-450 border-amber-900/50' : 'bg-emerald-950 text-emerald-450 border-emerald-900/50', 'px-2 py-0.5 border rounded text-3xs font-bold uppercase tracking-wider']">
                   {{ tax.status }}

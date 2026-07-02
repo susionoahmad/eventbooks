@@ -39,26 +39,46 @@ class ReportController extends Controller
             ->where('kategori', 'konsumsi')
             ->sum('nominal');
             
-        // PPh 21/23 are withholding taxes, already included in gross expenses (vendor/freelancer payouts).
-        // Net PPN expense is PPN Keluaran - PPN Masukan.
+        // ─── BEBAN PERPAJAKAN ───────────────────────────────────────────────
+        // PPN Net = Keluaran - Masukan (kewajiban setor ke DJP atas selisih PPN)
         $ppnKeluaran = (float) Tax::whereYear('created_at', $year)
             ->where('tipe_pajak', 'ppn_keluaran')
             ->sum('nominal_pajak');
-            
+
         $ppnMasukan = (float) Tax::whereYear('created_at', $year)
             ->where('tipe_pajak', 'ppn_masukan')
             ->sum('nominal_pajak');
 
-        $bebanPajak = $ppnKeluaran - $ppnMasukan;
+        // PPh 21 & PPh 23: perusahaan MEMOTONG dari pembayaran vendor/freelancer.
+        // Nilai ini TIDAK ikut keluar ke vendor (sudah di-net di Net Payout Ledger),
+        // sehingga harus diakui di sini sebagai beban pajak tersendiri agar L/R akurat.
+        $pph21 = (float) Tax::whereYear('created_at', $year)
+            ->where('tipe_pajak', 'pph_21')
+            ->sum('nominal_pajak');
+
+        $pph23 = (float) Tax::whereYear('created_at', $year)
+            ->where('tipe_pajak', 'pph_23')
+            ->sum('nominal_pajak');
+
+        $bebanPajakPpn  = $ppnKeluaran - $ppnMasukan;
+        $bebanPajakPph  = $pph21 + $pph23;
+        $bebanPajakTotal = $bebanPajakPpn + $bebanPajakPph;
 
         return response()->json([
-            'pendapatanKontrak' => $pendapatanKontrak,
-            'pendapatanLain' => $pendapatanLain,
-            'biayaVendor' => $biayaVendor,
-            'biayaOperasional' => $biayaOperasional,
-            'biayaMarketing' => $biayaMarketing,
-            'biayaKonsumsi' => $biayaKonsumsi,
-            'bebanPajak' => $bebanPajak
+            'pendapatanKontrak'  => $pendapatanKontrak,
+            'pendapatanLain'     => $pendapatanLain,
+            'biayaVendor'        => $biayaVendor,
+            'biayaOperasional'   => $biayaOperasional,
+            'biayaMarketing'     => $biayaMarketing,
+            'biayaKonsumsi'      => $biayaKonsumsi,
+            // Breakdown beban perpajakan
+            'bebanPajak'         => $bebanPajakTotal,
+            'bebanPajakPpn'      => $bebanPajakPpn,
+            'bebanPajakPph'      => $bebanPajakPph,
+            'ppnKeluaran'        => $ppnKeluaran,
+            'ppnMasukan'         => $ppnMasukan,
+            'pph21'              => $pph21,
+            'pph23'              => $pph23,
         ]);
     }
 

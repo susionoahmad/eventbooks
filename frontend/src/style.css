@@ -21,3 +21,7 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #10b981;
 }
+
+/* Enable manual class-based dark mode in Tailwind v4 */
+@variant dark (&:where(.dark, .dark *));
+

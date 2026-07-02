@@ -126,20 +126,6 @@ const moreIsActive = computed(() =>
             <span class="text-xs font-semibold leading-tight">{{ item.name }}</span>
           </button>
         </div>
-
-        <!-- Logout -->
-        <div class="mt-4 pt-4 border-t border-slate-800">
-          <button
-            @click="() => { authStore.logout(); showMoreDrawer = false; router.push('/login') }"
-            class="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-rose-950/40 border border-rose-900/40 text-rose-400 text-sm font-semibold"
-          >
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-            </svg>
-            Keluar
-          </button>
-        </div>
-
       </div>
     </Transition>
 

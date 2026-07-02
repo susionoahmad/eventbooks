@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\TenantController;
 use App\Http\Controllers\Api\DocumentController;
+use App\Http\Controllers\Api\SearchController;
 
 Route::prefix('v1')->group(function () {
     // Public routes
@@ -61,11 +62,16 @@ Route::prefix('v1')->group(function () {
             Route::get('taxes', [TaxController::class, 'index']);
             Route::get('taxes/summary', [TaxController::class, 'summary']);
             Route::put('taxes/{tax}/status', [TaxController::class, 'updateStatus']);
+            Route::post('taxes/{tax}/arsip', [TaxController::class, 'uploadArsip']);
+            Route::delete('taxes/{tax}/arsip', [TaxController::class, 'deleteArsip']);
 
             // Dashboard Stats
             Route::get('dashboard/summary', [DashboardController::class, 'summary']);
             Route::get('dashboard/event-profitability', [DashboardController::class, 'eventProfitability']);
             Route::get('dashboard/cash-flow-by-method', [DashboardController::class, 'cashFlowByMethod']);
+
+            // Global Search
+            Route::get('search', [SearchController::class, 'globalSearch']);
 
             // Financial Reports
             Route::get('reports/profit-loss', [ReportController::class, 'profitLoss']);

@@ -270,27 +270,27 @@ const deleteUser = async (user: any) => {
           <form @submit.prevent="saveOrganization" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-350">
             <div>
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Perusahaan / EO</label>
-              <input v-model="organization.name" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <input v-model="organization.name" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500" required />
             </div>
             <div>
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">NPWP Badan Usaha</label>
-              <input v-model="organization.npwp" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <input v-model="organization.npwp" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500" required />
             </div>
             <div>
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email Korespondensi</label>
-              <input v-model="organization.email" type="email" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <input v-model="organization.email" type="email" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500" required />
             </div>
             <div>
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Telepon</label>
-              <input v-model="organization.phone" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <input v-model="organization.phone" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500" required />
             </div>
             <div>
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Alamat Kantor Utama</label>
-              <textarea v-model="organization.address" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500"></textarea>
+              <textarea v-model="organization.address" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500"></textarea>
             </div>
             <div>
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Tarif PPN Default (%)</label>
-              <input v-model="organization.default_ppn_rate" type="number" step="0.01" min="0" max="99.99" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <input v-model="organization.default_ppn_rate" type="number" step="0.01" min="0" max="99.99" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500" required />
             </div>
             <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Simpan Perubahan</button>
           </form>

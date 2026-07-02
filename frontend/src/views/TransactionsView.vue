@@ -10,6 +10,8 @@ const events = ref<any[]>([])
 const vendors = ref<any[]>([])
 
 const filterTipe = ref('all')
+const filterStartDate = ref('')
+const filterEndDate = ref('')
 const isModalOpen = ref(false)
 
 const newTrx = ref({
@@ -38,7 +40,8 @@ const getKategoriLabel = (kat: string) => {
     transportasi: 'Transportasi',
     konsumsi: 'Konsumsi',
     operasional: 'Operasional',
-    marketing: 'Marketing'
+    marketing: 'Marketing',
+    pajak: 'Setor Pajak DJP'
   }
   return map[kat] || kat
 }
@@ -49,11 +52,26 @@ const fetchTransactions = async () => {
     if (filterTipe.value !== 'all') {
       params.tipe = filterTipe.value
     }
+    if (filterStartDate.value) {
+      params.start_date = filterStartDate.value
+    }
+    if (filterEndDate.value) {
+      params.end_date = filterEndDate.value
+    }
     const res = await api.get('/transactions', { params })
     transactions.value = res.data.data
   } catch (err) {
     console.error('Error fetching transactions:', err)
   }
+}
+
+watch([filterStartDate, filterEndDate], () => {
+  fetchTransactions()
+})
+
+const clearDateFilter = () => {
+  filterStartDate.value = ''
+  filterEndDate.value = ''
 }
 
 const fetchEventsAndVendors = async () => {
@@ -208,10 +226,39 @@ const formatIDR = (value: number) => {
     </div>
 
     <!-- Filters -->
-    <div class="flex space-x-1.5">
-      <button @click="changeFilterTipe('all')" :class="[filterTipe === 'all' ? 'bg-slate-900 dark:bg-slate-800 text-white' : 'bg-white dark:bg-slate-900 text-slate-400', 'px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold cursor-pointer']">Semua</button>
-      <button @click="changeFilterTipe('kas_masuk')" :class="[filterTipe === 'kas_masuk' ? 'bg-emerald-950 text-emerald-400 border-emerald-800' : 'bg-white dark:bg-slate-900 text-slate-400', 'px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold cursor-pointer']">Kas Masuk</button>
-      <button @click="changeFilterTipe('kas_keluar')" :class="[filterTipe === 'kas_keluar' ? 'bg-rose-950 text-rose-400 border-rose-800' : 'bg-white dark:bg-slate-900 text-slate-400', 'px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold cursor-pointer']">Kas Keluar</button>
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex space-x-1.5">
+        <button @click="changeFilterTipe('all')" :class="[filterTipe === 'all' ? 'bg-slate-900 dark:bg-slate-800 text-white' : 'bg-white dark:bg-slate-900 text-slate-400', 'px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800/85 text-xs font-semibold cursor-pointer']">Semua</button>
+        <button @click="changeFilterTipe('kas_masuk')" :class="[filterTipe === 'kas_masuk' ? 'bg-emerald-950 text-emerald-400 border-emerald-800' : 'bg-white dark:bg-slate-900 text-slate-400', 'px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800/85 text-xs font-semibold cursor-pointer']">Kas Masuk</button>
+        <button @click="changeFilterTipe('kas_keluar')" :class="[filterTipe === 'kas_keluar' ? 'bg-rose-950 text-rose-400 border-rose-800' : 'bg-white dark:bg-slate-900 text-slate-400', 'px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800/85 text-xs font-semibold cursor-pointer']">Kas Keluar</button>
+      </div>
+
+      <!-- Date Range Filters -->
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-xl">
+          <span class="text-3xs font-extrabold text-slate-400 uppercase tracking-wider">Mulai</span>
+          <input
+            v-model="filterStartDate"
+            type="date"
+            class="bg-transparent border-none text-slate-850 dark:text-slate-100 outline-none text-xs font-semibold focus:ring-0 w-28 sm:w-auto"
+          />
+        </div>
+        <div class="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-xl">
+          <span class="text-3xs font-extrabold text-slate-400 uppercase tracking-wider">Akhir</span>
+          <input
+            v-model="filterEndDate"
+            type="date"
+            class="bg-transparent border-none text-slate-850 dark:text-slate-100 outline-none text-xs font-semibold focus:ring-0 w-28 sm:w-auto"
+          />
+        </div>
+        <button
+          v-if="filterStartDate || filterEndDate"
+          @click="clearDateFilter"
+          class="text-xs text-rose-500 hover:text-rose-400 font-bold transition-colors cursor-pointer px-2 py-1"
+        >
+          Reset Filter
+        </button>
+      </div>
     </div>
 
     <!-- Ledger Table -->
