@@ -419,30 +419,30 @@ const formatIDR = (value: number) => {
               </div>
 
               <!-- Dynamic Preview -->
-              <div v-if="taxPreview" class="bg-emerald-950/30 border border-emerald-900/50 p-4 rounded-xl text-xs space-y-2 text-emerald-400">
-                <div class="flex justify-between items-center border-b border-emerald-900/40 pb-2">
-                  <span class="font-semibold">Buku Kas Bersih (Net Payout Ledger)</span>
-                  <span class="text-3xs text-slate-400 uppercase font-bold tracking-wider">Kalkulasi Otomatis</span>
+              <div v-if="taxPreview" class="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 p-4 rounded-xl text-xs space-y-2 text-emerald-800 dark:text-emerald-400">
+                <div class="flex justify-between items-center border-b border-emerald-200 dark:border-emerald-900/40 pb-2">
+                  <span class="font-bold">Buku Kas Bersih (Net Payout Ledger)</span>
+                  <span class="text-3xs text-emerald-600 dark:text-slate-500 uppercase font-extrabold tracking-wider">Kalkulasi Otomatis</span>
                 </div>
-                <div class="space-y-1.5 text-slate-350">
+                <div class="space-y-1.5 text-emerald-700 dark:text-slate-350">
                   <div class="flex justify-between">
                     <span>Nominal Bruto (Gross Contract):</span>
-                    <span class="font-mono">{{ formatIDR(newTrx.nominal) }}</span>
+                    <span class="font-mono font-bold text-slate-800 dark:text-slate-200">{{ formatIDR(newTrx.nominal) }}</span>
                   </div>
-                  <div v-if="taxPreview.pphAmount > 0" class="flex justify-between text-rose-400">
+                  <div v-if="taxPreview.pphAmount > 0" class="flex justify-between text-rose-600 dark:text-rose-400 font-medium">
                     <span>Potongan {{ taxPreview.pphType }} ({{ taxPreview.pphRateText }}):</span>
                     <span class="font-mono">- {{ formatIDR(taxPreview.pphAmount) }}</span>
                   </div>
-                  <div v-if="taxPreview.ppnAmount > 0" class="flex justify-between text-emerald-400">
+                  <div v-if="taxPreview.ppnAmount > 0" class="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
                     <span>Tambahan PPN Masukan ({{ taxPreview.ppnRateText }}):</span>
                     <span class="font-mono">+ {{ formatIDR(taxPreview.ppnAmount) }}</span>
                   </div>
                 </div>
-                <div class="flex justify-between items-center border-t border-emerald-900/40 pt-2 font-extrabold text-sm text-emerald-400">
+                <div class="flex justify-between items-center border-t border-emerald-200 dark:border-emerald-900/40 pt-2 font-extrabold text-sm text-emerald-800 dark:text-emerald-400">
                   <span>Kas Bersih Ditransfer (Net Payout):</span>
                   <span class="font-mono">{{ formatIDR(taxPreview.netPayout) }}</span>
                 </div>
-                <span class="block text-3xs text-slate-400 italic">Ledger akan membukukan nominal Net Payout untuk sinkronisasi mutasi bank yang presisi. Selisih PPh akan diposting ke Utang Pajak.</span>
+                <span class="block text-3xs text-emerald-600/90 dark:text-slate-400 italic">Ledger akan membukukan nominal Net Payout untuk sinkronisasi mutasi bank yang presisi. Selisih PPh akan diposting ke Utang Pajak.</span>
               </div>
             </div>
           </div>
