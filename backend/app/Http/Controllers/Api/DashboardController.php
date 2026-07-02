@@ -60,16 +60,26 @@ class DashboardController extends Controller
 
     public function eventProfitability(): JsonResponse
     {
+        $tenant = auth()->user()->tenant;
+        $ppnRate = $tenant && $tenant->default_ppn_rate !== null ? (float) $tenant->default_ppn_rate : 12.0;
+
         $events = Event::get();
         
-        $profitability = $events->map(function ($event) {
+        $profitability = $events->map(function ($event) use ($ppnRate) {
             $totalCost = (float) Transaction::where('event_id', $event->id)
                 ->where('tipe', 'kas_keluar')
                 ->sum('nominal');
                 
             $taxPaid = (float) Tax::where('event_id', $event->id)
                 ->sum('nominal_pajak');
-                
+
+            $totalAnggaran = (float) $event->rabItems()->sum('subtotal');
+            
+            // Estimasi Pajak
+            $estimasiPpnKontrak = (float) $event->nilai_kontrak * $ppnRate / 100;
+            $estimasiPphAnggaran = $totalAnggaran * 0.02; // PPh Jasa/Freelancer 2%
+            $estimasiPpnMasukanAnggaran = $totalAnggaran * $ppnRate / 100; // PPN Masukan Anggaran
+            
             $labaBersih = (float) $event->nilai_kontrak - $totalCost;
             $margin = $event->nilai_kontrak > 0 ? ($labaBersih / (float) $event->nilai_kontrak) * 100 : 0.00;
             
@@ -79,7 +89,11 @@ class DashboardController extends Controller
                 'jenis_event' => $event->jenis_event,
                 'nilai_kontrak' => (float) $event->nilai_kontrak,
                 'total_biaya' => $totalCost,
+                'total_anggaran' => $totalAnggaran,
                 'pajak_dikeluarkan' => $taxPaid,
+                'estimasi_ppn_kontrak' => $estimasiPpnKontrak,
+                'estimasi_pph_anggaran' => $estimasiPphAnggaran,
+                'estimasi_ppn_masukan_anggaran' => $estimasiPpnMasukanAnggaran,
                 'laba_bersih' => $labaBersih,
                 'margin_persentase' => round($margin, 2)
             ];

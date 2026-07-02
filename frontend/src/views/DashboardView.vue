@@ -590,9 +590,22 @@ const trendPolyline = (key: 'kas_masuk' | 'kas_keluar' | 'net', w = 300, h = 60)
                 <span class="font-semibold block text-slate-900 dark:text-white leading-tight">{{ ev.nama_event }}</span>
                 <span class="text-3xs uppercase font-semibold text-slate-400 tracking-wider inline-block mt-1">{{ ev.jenis_event }}</span>
               </td>
-              <td class="py-3.5 font-medium">{{ formatIDR(ev.nilai_kontrak) }}</td>
-              <td class="py-3.5 text-slate-500 dark:text-slate-400">{{ formatIDR(ev.total_biaya) }}</td>
-              <td class="py-3.5 text-amber-500 font-medium">{{ formatIDR(ev.pajak_dikeluarkan) }}</td>
+              <td class="py-3.5">
+                <span class="font-medium block text-slate-800 dark:text-white leading-tight">{{ formatIDR(ev.nilai_kontrak) }}</span>
+                <span class="text-3xs text-slate-400 dark:text-slate-500 block mt-0.5" title="Estimasi PPN Keluaran 12%">Est. PPN: {{ formatIDR(ev.estimasi_ppn_kontrak) }}</span>
+              </td>
+              <td class="py-3.5">
+                <span class="font-medium block text-slate-700 dark:text-slate-300 leading-tight">{{ formatIDR(ev.total_biaya) }}</span>
+                <span class="text-3xs text-slate-400 dark:text-slate-500 block mt-0.5">Budget (RAB): {{ formatIDR(ev.total_anggaran) }}</span>
+              </td>
+              <td class="py-3.5">
+                <span class="font-semibold block text-amber-600 dark:text-amber-400 leading-tight" title="Estimasi PPh Jasa 2% dari Anggaran">
+                  Est. PPh: {{ formatIDR(ev.estimasi_pph_anggaran) }}
+                </span>
+                <span class="text-3xs text-slate-400 dark:text-slate-500 block mt-0.5" title="Realisasi Pajak Disetor">
+                  Disetor: {{ formatIDR(ev.pajak_dikeluarkan) }}
+                </span>
+              </td>
               <td class="py-3.5 text-emerald-500 font-semibold">{{ formatIDR(ev.laba_bersih) }}</td>
               <td class="py-3.5 text-right">
                 <span :class="[
