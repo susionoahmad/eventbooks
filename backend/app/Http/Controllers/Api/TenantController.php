@@ -27,7 +27,7 @@ class TenantController extends Controller
 
         $validated = $request->validate([
             'name'     => 'required|string|max:255',
-            'npwp'     => 'nullable|string|max:20',
+            'npwp'     => 'nullable|string|max:30',
             'email'    => 'nullable|email|max:255',
             'telepon'  => 'nullable|string|max:20',
             'alamat'   => 'nullable|string',
@@ -65,7 +65,7 @@ class TenantController extends Controller
 
         } elseif ($step === 2) {
             $validated = $request->validate([
-                'npwp'     => 'nullable|string|max:20',
+                'npwp'     => 'nullable|string|max:30',
                 'email'    => 'nullable|email|max:255',
                 'telepon'  => 'nullable|string|max:20',
                 'alamat'   => 'nullable|string',

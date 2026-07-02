@@ -29,7 +29,7 @@ class ClientRequest extends FormRequest
             ],
             'nama' => 'required|string|max:255',
             'perusahaan' => 'nullable|string|max:255',
-            'npwp' => 'nullable|string|max:20',
+            'npwp' => 'nullable|string|max:30',
             'email' => 'nullable|email|max:255',
             'telepon' => 'nullable|string|max:50',
             'alamat' => 'nullable|string'

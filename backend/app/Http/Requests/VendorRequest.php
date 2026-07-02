@@ -56,7 +56,7 @@ class VendorRequest extends FormRequest
                 'required',
                 Rule::in(['dekorasi', 'sound_system', 'lighting', 'catering', 'venue', 'talent', 'mc', 'dokumentasi', 'transportasi', 'lainnya'])
             ],
-            'npwp' => 'nullable|string|max:20',
+            'npwp' => 'nullable|string|max:30',
             'email' => 'nullable|email|max:255',
             'telepon' => 'nullable|string|max:50',
             'alamat' => 'nullable|string'

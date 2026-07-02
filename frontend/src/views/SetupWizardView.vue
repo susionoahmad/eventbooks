@@ -31,10 +31,26 @@ const s2 = ref({
   kode_pos: '',
 })
 
-// NPWP auto-format: 00.000.000.0-000.000
+// NPWP auto-format: support 15-digit (00.000.000.0-000.000) and 16-digit (000.000.000.0-000.000 / flat NIK)
 const rawNpwp = ref('')
 const formatNpwp = (val: string) => {
-  const digits = val.replace(/\D/g, '').slice(0, 15)
+  const digits = val.replace(/\D/g, '').slice(0, 16)
+  
+  if (digits.length === 16) {
+    if (digits.startsWith('0')) {
+      let out = ''
+      digits.split('').forEach((c, i) => {
+        if (i === 3 || i === 6 || i === 9 || i === 10 || i === 13) {
+          out += i === 10 ? '-' : '.'
+        }
+        out += c
+      })
+      return out
+    } else {
+      return digits
+    }
+  }
+  
   let out = ''
   digits.split('').forEach((c, i) => {
     if (i === 2 || i === 5 || i === 8 || i === 9 || i === 12) {
@@ -46,7 +62,7 @@ const formatNpwp = (val: string) => {
 }
 const onNpwpInput = (e: Event) => {
   const raw = (e.target as HTMLInputElement).value
-  rawNpwp.value = raw.replace(/\D/g, '')
+  rawNpwp.value = raw.replace(/\D/g, '').slice(0, 16)
   s2.value.npwp = formatNpwp(rawNpwp.value)
 }
 
