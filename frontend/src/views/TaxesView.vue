@@ -12,6 +12,15 @@ const taxes = ref<any[]>([])
 const summaries = ref<any[]>([])
 const filterMasa = ref('2026-06')
 
+const currentTab = ref('table') // 'table' atau 'calendar'
+const alerts = ref<any[]>([])
+const calendarEvents = ref<any[]>([])
+
+// State Pembantu Kalender
+const calendarYear = ref(new Date().getFullYear())
+const calendarMonth = ref(new Date().getMonth() + 1)
+const selectedEvent = ref<any | null>(null)
+
 // Calculate summaries for active filter period
 const activeSummary = computed(() => {
   const found = summaries.value.find(s => s.masa_pajak === filterMasa.value)
@@ -57,9 +66,34 @@ const fetchSummaries = async () => {
   }
 }
 
+const fetchAlerts = async () => {
+  try {
+    const res = await api.get('/taxes/alerts')
+    alerts.value = res.data
+  } catch (err) {
+    console.error('Error fetching tax alerts:', err)
+  }
+}
+
+const fetchCalendarEvents = async () => {
+  try {
+    const res = await api.get('/taxes/calendar-events', {
+      params: {
+        year: calendarYear.value,
+        month: calendarMonth.value
+      }
+    })
+    calendarEvents.value = res.data
+  } catch (err) {
+    console.error('Error fetching calendar events:', err)
+  }
+}
+
 const loadData = () => {
   fetchSummaries()
   fetchTaxes()
+  fetchAlerts()
+  fetchCalendarEvents()
 }
 
 onMounted(() => {
@@ -70,6 +104,71 @@ onMounted(() => {
 watch(filterMasa, () => {
   fetchTaxes()
 })
+
+// Properti Kalender
+const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+
+const calendarTitle = computed(() => {
+  return `${monthNames[calendarMonth.value - 1]} ${calendarYear.value}`
+})
+
+const calendarDays = computed(() => {
+  const daysInMonth = new Date(calendarYear.value, calendarMonth.value, 0).getDate()
+  const firstDayIndex = new Date(calendarYear.value, calendarMonth.value - 1, 1).getDay()
+  
+  const days = []
+  
+  const prevMonthDays = new Date(calendarYear.value, calendarMonth.value - 1, 0).getDate()
+  for (let i = firstDayIndex - 1; i >= 0; i--) {
+    days.push({
+      day: prevMonthDays - i,
+      isCurrentMonth: false,
+      dateString: ''
+    })
+  }
+  
+  for (let i = 1; i <= daysInMonth; i++) {
+    const dateStr = `${calendarYear.value}-${String(calendarMonth.value).padStart(2, '0')}-${String(i).padStart(2, '0')}`
+    days.push({
+      day: i,
+      isCurrentMonth: true,
+      dateString: dateStr,
+      events: calendarEvents.value.filter(e => e.date === dateStr)
+    })
+  }
+  
+  const totalSlots = 42
+  const nextMonthPadding = totalSlots - days.length
+  for (let i = 1; i <= nextMonthPadding; i++) {
+    days.push({
+      day: i,
+      isCurrentMonth: false,
+      dateString: ''
+    })
+  }
+  
+  return days
+})
+
+const nextMonth = () => {
+  if (calendarMonth.value === 12) {
+    calendarMonth.value = 1
+    calendarYear.value++
+  } else {
+    calendarMonth.value++
+  }
+  fetchCalendarEvents()
+}
+
+const prevMonth = () => {
+  if (calendarMonth.value === 1) {
+    calendarMonth.value = 12
+    calendarYear.value--
+  } else {
+    calendarMonth.value--
+  }
+  fetchCalendarEvents()
+}
 
 const toggleTaxStatus = async (tax: any) => {
   const targetStatus = tax.status === 'terutang' ? 'dibayar' : 'terutang'
@@ -536,17 +635,61 @@ const exportToPDF = () => {
   printWindow.document.write(htmlContent);
   printWindow.document.close();
 }
+
+const dateFormatted = (dateStr: string) => {
+  if (!dateStr) return '-'
+  const d = new Date(dateStr)
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
+const toggleTaxStatusCalendar = async (eventObj: any) => {
+  const targetStatus = eventObj.status === 'terutang' ? 'dibayar' : 'terutang'
+  try {
+    await api.put(`/taxes/${eventObj.tax_id}/status`, { status: targetStatus })
+    selectedEvent.value = null
+    loadData()
+  } catch (err) {
+    console.error('Error updating tax status from calendar:', err)
+  }
+}
 </script>
 
 <template>
   <div class="space-y-6">
+    <!-- Alert Banner Jatuh Tempo -->
+    <div v-if="alerts.length > 0" class="space-y-2">
+      <div 
+        v-for="alert in alerts" 
+        :key="alert.id" 
+        :class="[
+          alert.severity === 'danger' 
+            ? 'bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/50 text-rose-800 dark:text-rose-400' 
+            : 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/50 text-amber-800 dark:text-amber-400',
+          'flex items-start gap-3 p-3.5 border rounded-xl text-xs font-medium shadow-sm transition-all'
+        ]"
+      >
+        <span class="text-base flex-shrink-0">⚠️</span>
+        <div class="flex-1">
+          <p class="font-bold leading-tight">{{ alert.severity === 'danger' ? 'PENTING: Jatuh Tempo Sangat Dekat' : 'Peringatan Jatuh Tempo' }}</p>
+          <p class="mt-0.5 opacity-90 leading-relaxed">{{ alert.message }}</p>
+        </div>
+        <button 
+          @click="currentTab = 'calendar'; calendarYear = parseInt(alert.masa_pajak.split('-')[0]); calendarMonth = parseInt(alert.masa_pajak.split('-')[1]) === 12 ? 1 : parseInt(alert.masa_pajak.split('-')[1]) + 1; if (parseInt(alert.masa_pajak.split('-')[1]) === 12) calendarYear++; fetchCalendarEvents()"
+          class="px-2.5 py-1 bg-white/70 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-3xs font-bold transition-all flex-shrink-0 cursor-pointer text-slate-800 dark:text-slate-200"
+        >
+          Lihat Kalender
+        </button>
+      </div>
+    </div>
+
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
       <div>
         <h1 class="text-xl font-bold text-slate-900 dark:text-white">Rekapitulasi Perpajakan Bulanan</h1>
         <p class="text-xs text-slate-500 mt-1">Lacak kewajiban pemotongan pajak PPN Keluaran/Masukan, PPh 21, dan PPh 23.</p>
       </div>
-      <div class="flex flex-wrap items-center gap-2">
+      
+      <div v-if="currentTab === 'table'" class="flex flex-wrap items-center gap-2">
         <button 
           @click="exportToExcel" 
           class="flex items-center space-x-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
@@ -615,6 +758,26 @@ const exportToPDF = () => {
         </select>
       </div>
     </div>
+
+    <!-- Tab Navigation -->
+    <div class="flex border-b border-slate-200 dark:border-slate-800">
+      <button 
+        @click="currentTab = 'table'" 
+        :class="currentTab === 'table' ? 'border-emerald-500 text-emerald-650 dark:text-emerald-400 font-bold border-b-2' : 'border-transparent text-slate-450 font-semibold hover:text-slate-600 dark:hover:text-slate-300'"
+        class="px-4 py-2.5 text-xs transition-all cursor-pointer"
+      >
+        Daftar Kewajiban Pajak
+      </button>
+      <button 
+        @click="currentTab = 'calendar'" 
+        :class="currentTab === 'calendar' ? 'border-emerald-500 text-emerald-650 dark:text-emerald-400 font-bold border-b-2' : 'border-transparent text-slate-455 font-semibold hover:text-slate-600 dark:hover:text-slate-300'"
+        class="px-4 py-2.5 text-xs transition-all cursor-pointer"
+      >
+        📅 Kalender Perpajakan
+      </button>
+    </div>
+
+    <div v-if="currentTab === 'table'" class="space-y-6">
 
     <!-- Tax Summary Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -741,6 +904,120 @@ const exportToPDF = () => {
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+    </div> <!-- Tutup currentTab === 'table' -->
+
+    <!-- Kalender Perpajakan Tab -->
+    <div v-else class="space-y-6">
+      <!-- Calendar Container -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden p-6">
+        <!-- Calendar Header -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">{{ calendarTitle }}</h3>
+            <p class="text-2xs text-slate-400 mt-0.5">Jadwal jatuh tempo penyetoran (tanggal 10) &amp; pelaporan (tanggal 20 / akhir bulan).</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button @click="prevMonth" class="p-2 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-slate-655 dark:text-slate-350 transition-colors cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </button>
+            <button @click="nextMonth" class="p-2 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-slate-655 dark:text-slate-350 transition-colors cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="grid grid-cols-7 gap-px bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 rounded-xl overflow-hidden text-xs">
+          <!-- Days of Week Header -->
+          <div v-for="d in ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab']" :key="d" class="bg-slate-50 dark:bg-slate-900 py-3 text-center font-bold text-slate-400 uppercase tracking-wider text-3xs">
+            {{ d }}
+          </div>
+
+          <!-- Calendar Days cells -->
+          <div 
+            v-for="(day, idx) in calendarDays" 
+            :key="idx" 
+            :class="[
+              day.isCurrentMonth ? 'bg-white dark:bg-slate-900 min-h-[100px] p-2' : 'bg-slate-50/50 dark:bg-slate-900/20 text-slate-300 dark:text-slate-700 min-h-[100px] p-2',
+              'transition-colors flex flex-col justify-between border-b border-r border-slate-100 dark:border-slate-800/40'
+            ]"
+          >
+            <!-- Date Number -->
+            <div class="flex justify-between items-start">
+              <span :class="[day.isCurrentMonth ? 'font-bold text-slate-750 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600', 'text-2xs']">
+                {{ day.day }}
+              </span>
+            </div>
+
+            <!-- Events List inside Day Cell -->
+            <div v-if="day.events && day.events.length > 0" class="mt-2 space-y-1">
+              <button 
+                v-for="ev in day.events" 
+                :key="ev.id"
+                @click="selectedEvent = ev"
+                :class="[
+                  ev.color,
+                  'w-full text-left p-1 rounded border text-3xs font-semibold leading-tight truncate hover:opacity-85 transition-opacity block cursor-pointer'
+                ]"
+                :title="ev.title"
+              >
+                {{ ev.title }}
+              </button>
+            </div>
+            <div v-else class="flex-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Event Drawer/Modal (Overlay) -->
+      <div v-if="selectedEvent" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div @click="selectedEvent = null" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"></div>
+        <div class="relative w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-xl space-y-4">
+          <div class="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-3">
+            <div>
+              <span class="text-3xs uppercase font-extrabold text-slate-400 tracking-wider">Detail Kewajiban Pajak</span>
+              <h4 class="text-sm font-bold text-slate-950 dark:text-white mt-1">{{ selectedEvent.title }}</h4>
+            </div>
+            <button @click="selectedEvent = null" class="text-slate-455 hover:text-slate-500 cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+          
+          <div class="text-xs space-y-2.5 text-slate-750 dark:text-slate-300">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Tanggal Jatuh Tempo:</span>
+              <span class="font-semibold text-slate-900 dark:text-slate-100">{{ dateFormatted(selectedEvent.date) }}</span>
+            </div>
+            <div v-if="selectedEvent.nominal" class="flex justify-between">
+              <span class="text-slate-400">Nominal Pajak:</span>
+              <span class="font-bold text-amber-500">{{ formatIDR(selectedEvent.nominal) }}</span>
+            </div>
+            <div class="flex flex-col gap-1 pt-1 border-t border-slate-100 dark:border-slate-800 mt-2">
+              <span class="text-slate-400 text-3xs uppercase font-bold tracking-wider">Keterangan:</span>
+              <p class="leading-relaxed bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800 text-3xs font-medium">{{ selectedEvent.description }}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end space-x-2 border-t border-slate-100 dark:border-slate-800 pt-3">
+            <button @click="selectedEvent = null" class="px-4 py-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-655 dark:text-slate-350 rounded-lg text-xs font-bold transition-all cursor-pointer">Tutup</button>
+            <button 
+              v-if="selectedEvent.type === 'tax' && authStore.userRole !== 'staff'"
+              @click="toggleTaxStatusCalendar(selectedEvent)"
+              :class="[
+                selectedEvent.status === 'terutang' ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-rose-600 hover:bg-rose-500 text-white',
+                'px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer'
+              ]"
+            >
+              Set {{ selectedEvent.status === 'terutang' ? 'Lunas (Dibayar)' : 'Belum Bayar' }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

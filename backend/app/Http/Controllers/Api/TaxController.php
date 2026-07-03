@@ -183,4 +183,171 @@ class TaxController extends Controller
             'data' => new TaxResource($tax->load(['transaction', 'event', 'invoice']))
         ], 200);
     }
+
+    /**
+     * Get active tax alerts for unpaid taxes approaching due dates.
+     */
+    public function alerts(): JsonResponse
+    {
+        $unpaidTaxes = Tax::where('status', 'terutang')->get();
+        $alerts = [];
+        $today = \Carbon\Carbon::today();
+
+        foreach ($unpaidTaxes as $tax) {
+            try {
+                $parts = explode('-', $tax->masa_pajak);
+                if (count($parts) !== 2) continue;
+                
+                $year = (int)$parts[0];
+                $month = (int)$parts[1];
+                $nextMonthDate = \Carbon\Carbon::create($year, $month, 1)->addMonth();
+
+                if (in_array($tax->tipe_pajak, ['pph_21', 'pph_23'])) {
+                    // Setor PPh: 10th of next month
+                    $payDeadline = \Carbon\Carbon::create($nextMonthDate->year, $nextMonthDate->month, 10);
+                } else {
+                    // PPN: End of next month (Setor & Lapor)
+                    $payDeadline = \Carbon\Carbon::create($nextMonthDate->year, $nextMonthDate->month, 1)->endOfMonth();
+                }
+
+                $diffDays = $today->diffInDays($payDeadline, false);
+
+                // Show warning alerts for due dates within 10 days
+                if ($diffDays <= 10) {
+                    $label = match ($tax->tipe_pajak) {
+                        'ppn_keluaran' => 'PPN Keluaran',
+                        'ppn_masukan' => 'PPN Masukan',
+                        'pph_21' => 'PPh 21',
+                        'pph_23' => 'PPh 23',
+                        default => 'Pajak'
+                    };
+
+                    $dueText = $diffDays < 0 
+                        ? 'Terlambat ' . abs($diffDays) . ' hari' 
+                        : ($diffDays === 0 ? 'Hari ini!' : $diffDays . ' hari lagi');
+
+                    $type = $diffDays <= 3 ? 'danger' : 'warning';
+
+                    $alerts[] = [
+                        'id' => $tax->id,
+                        'tipe_pajak' => $tax->tipe_pajak,
+                        'masa_pajak' => $tax->masa_pajak,
+                        'nominal_pajak' => (float) $tax->nominal_pajak,
+                        'deadline_date' => $payDeadline->format('Y-m-d'),
+                        'remaining_days' => $diffDays,
+                        'due_text' => $dueText,
+                        'severity' => $type,
+                        'message' => "{$label} Masa {$tax->masa_pajak} senilai " . number_format($tax->nominal_pajak, 0, ',', '.') . " belum disetor. Batas setor: " . $payDeadline->format('d M Y') . " ({$dueText})."
+                    ];
+                }
+            } catch (\Exception $e) {
+                // Ignore parsing errors
+            }
+        }
+
+        // Sort alerts by urgency
+        usort($alerts, function ($a, $b) {
+            if ($a['remaining_days'] === $b['remaining_days']) {
+                return $b['nominal_pajak'] <=> $a['nominal_pajak'];
+            }
+            return $a['remaining_days'] <=> $b['remaining_days'];
+        });
+
+        return response()->json($alerts);
+    }
+
+    /**
+     * Get tax calendar events.
+     */
+    public function calendarEvents(Request $request): JsonResponse
+    {
+        $year = $request->input('year', \Carbon\Carbon::now()->year);
+        $month = $request->input('month', \Carbon\Carbon::now()->month);
+
+        $startDate = \Carbon\Carbon::create($year, $month, 1)->startOfMonth();
+
+        // 1. Fetch actual taxes for this tenant
+        $taxes = Tax::with(['event', 'invoice', 'transaction'])->get();
+        $events = [];
+
+        // General Indonesian tax guidelines
+        $prevMonth = $startDate->copy()->subMonth();
+        $prevMonthName = $prevMonth->translatedFormat('F Y');
+
+        $events[] = [
+            'id' => 'rule-pph-setor',
+            'type' => 'guideline',
+            'title' => 'Setor PPh Masa ' . $prevMonth->format('Y-m'),
+            'description' => 'Batas akhir pembayaran & penyetoran PPh Pasal 21 dan 23 Masa Pajak ' . $prevMonthName,
+            'date' => $startDate->copy()->day(10)->format('Y-m-d'),
+            'color' => 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900',
+        ];
+
+        $events[] = [
+            'id' => 'rule-pph-lapor',
+            'type' => 'guideline',
+            'title' => 'Lapor PPh Masa ' . $prevMonth->format('Y-m'),
+            'description' => 'Batas akhir pelaporan SPT Masa PPh Pasal 21 dan 23 Masa Pajak ' . $prevMonthName,
+            'date' => $startDate->copy()->day(20)->format('Y-m-d'),
+            'color' => 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900',
+        ];
+
+        $events[] = [
+            'id' => 'rule-ppn-lapor',
+            'type' => 'guideline',
+            'title' => 'Setor & Lapor PPN Masa ' . $prevMonth->format('Y-m'),
+            'description' => 'Batas akhir penyetoran dan pelaporan SPT Masa PPN Masa Pajak ' . $prevMonthName,
+            'date' => $startDate->copy()->endOfMonth()->format('Y-m-d'),
+            'color' => 'bg-indigo-100 text-indigo-800 border-indigo-300 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-900',
+        ];
+
+        // 2. Put dynamic events based on actual tenant taxes
+        foreach ($taxes as $tax) {
+            try {
+                $parts = explode('-', $tax->masa_pajak);
+                if (count($parts) !== 2) continue;
+                
+                $tYear = (int)$parts[0];
+                $tMonth = (int)$parts[1];
+                $nextMonthDate = \Carbon\Carbon::create($tYear, $tMonth, 1)->addMonth();
+
+                if (in_array($tax->tipe_pajak, ['pph_21', 'pph_23'])) {
+                    $deadlineDate = \Carbon\Carbon::create($nextMonthDate->year, $nextMonthDate->month, 10);
+                } else {
+                    $deadlineDate = \Carbon\Carbon::create($nextMonthDate->year, $nextMonthDate->month, 1)->endOfMonth();
+                }
+
+                if ($deadlineDate->year == $year && $deadlineDate->month == $month) {
+                    $label = match ($tax->tipe_pajak) {
+                        'ppn_keluaran' => 'PPN Keluaran',
+                        'ppn_masukan' => 'PPN Masukan',
+                        'pph_21' => 'PPh 21',
+                        'pph_23' => 'PPh 23',
+                        default => 'Pajak'
+                    };
+
+                    $statusLabel = $tax->status === 'dibayar' ? 'LUNAS' : 'TERUTANG';
+                    $colorClass = $tax->status === 'dibayar'
+                        ? 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-450 dark:border-emerald-900'
+                        : 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950/40 dark:text-rose-450 dark:border-rose-900';
+
+                    $events[] = [
+                        'id' => 'tax-' . $tax->id,
+                        'type' => 'tax',
+                        'tax_id' => $tax->id,
+                        'title' => "{$label} ({$statusLabel})",
+                        'description' => "Pajak {$label} Masa {$tax->masa_pajak} senilai Rp " . number_format($tax->nominal_pajak, 0, ',', '.') . " untuk pihak " . ($tax->pihak_terkait_nama ?: '-') . ". Status: {$tax->status}.",
+                        'date' => $deadlineDate->format('Y-m-d'),
+                        'color' => $colorClass,
+                        'status' => $tax->status,
+                        'nominal' => (float)$tax->nominal_pajak
+                    ];
+                }
+            } catch (\Exception $e) {
+                // Ignore errors
+            }
+        }
+
+        return response()->json($events);
+    }
 }

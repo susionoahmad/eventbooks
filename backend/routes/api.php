@@ -59,6 +59,8 @@ Route::prefix('v1')->group(function () {
             Route::post('invoices/{invoice}/payments', [InvoiceController::class, 'recordPayment']);
 
             // Tax Obligations
+            Route::get('taxes/alerts', [TaxController::class, 'alerts']);
+            Route::get('taxes/calendar-events', [TaxController::class, 'calendarEvents']);
             Route::get('taxes', [TaxController::class, 'index']);
             Route::get('taxes/summary', [TaxController::class, 'summary']);
             Route::put('taxes/{tax}/status', [TaxController::class, 'updateStatus']);

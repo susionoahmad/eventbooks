@@ -76,12 +76,15 @@ const methodConfig: Record<string, { icon: string; color: string; bg: string; bo
   e_wallet:      { icon: '📱', color: 'text-amber-600 dark:text-amber-400',  bg: 'bg-amber-50 dark:bg-amber-950/50',  border: 'border-amber-200 dark:border-amber-800',  dot: '#f59e0b' },
 }
 
+const alerts = ref<any[]>([])
+
 const fetchDashboardData = async () => {
   try {
-    const [summaryRes, profitabilityRes, cfRes] = await Promise.all([
+    const [summaryRes, profitabilityRes, cfRes, alertsRes] = await Promise.all([
       api.get('/dashboard/summary'),
       api.get('/dashboard/event-profitability'),
       api.get('/dashboard/cash-flow-by-method'),
+      api.get('/taxes/alerts'),
     ])
 
     stats.value = {
@@ -97,6 +100,7 @@ const fetchDashboardData = async () => {
 
     eventProfitability.value = profitabilityRes.data
     cashFlow.value = cfRes.data
+    alerts.value = alertsRes.data
   } catch (err) {
     console.error('Error loading dashboard data:', err)
   }
@@ -166,6 +170,34 @@ const trendPolyline = (key: 'kas_masuk' | 'kas_keluar' | 'net', w = 300, h = 60)
           </svg>
           Buat Event Baru
         </button>
+      </div>
+    </div>
+
+    <!-- Alert Banner Jatuh Tempo Pajak -->
+    <div v-if="alerts.length > 0" class="space-y-2">
+      <div 
+        v-for="alert in alerts" 
+        :key="alert.id" 
+        :class="[
+          alert.severity === 'danger' 
+            ? 'bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/50 text-rose-800 dark:text-rose-450' 
+            : 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/50 text-amber-800 dark:text-amber-450',
+          'flex items-center justify-between p-3.5 border rounded-xl text-xs font-semibold shadow-sm transition-all'
+        ]"
+      >
+        <div class="flex items-start gap-3">
+          <span class="text-base flex-shrink-0">⚠️</span>
+          <div>
+            <p class="font-bold leading-tight">{{ alert.severity === 'danger' ? 'PENTING: Jatuh Tempo Sangat Dekat' : 'Peringatan Jatuh Tempo' }}</p>
+            <p class="mt-0.5 opacity-90 leading-relaxed font-medium">{{ alert.message }}</p>
+          </div>
+        </div>
+        <router-link 
+          to="/taxes" 
+          class="px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-3xs font-bold transition-all flex-shrink-0 cursor-pointer text-slate-800 dark:text-slate-200"
+        >
+          Buka Modul Pajak
+        </router-link>
       </div>
     </div>
 
