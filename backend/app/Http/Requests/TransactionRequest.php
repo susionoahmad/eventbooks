@@ -27,6 +27,7 @@ class TransactionRequest extends FormRequest
                     'pembayaran_vendor', 'transportasi', 'konsumsi', 'operasional', 'marketing', 'pajak'
                 ])
             ],
+            'sub_kategori' => 'nullable|string|max:100',
             'event_id' => [
                 'nullable',
                 Rule::exists('events', 'id')->where('tenant_id', $tenantId)

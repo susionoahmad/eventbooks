@@ -18,6 +18,7 @@ const newTrx = ref({
   tanggal: new Date().toISOString().split('T')[0],
   tipe: 'kas_keluar',
   kategori: 'operasional',
+  sub_kategori: '',
   event_id: '',
   vendor_id: '',
   deskripsi: '',
@@ -44,6 +45,18 @@ const getKategoriLabel = (kat: string) => {
     pajak: 'Setor Pajak DJP'
   }
   return map[kat] || kat
+}
+
+const getSubKategoriLabel = (sub: string) => {
+  const map: Record<string, string> = {
+    sewa_kantor_utilitas: 'Sewa Kantor & Utilitas',
+    gaji_honor_staff: 'Gaji & Honor Staf',
+    perlengkapan_alat_tulis: 'Perlengkapan & ATK',
+    komunikasi_internet: 'Komunikasi & Internet',
+    perizinan_admin: 'Perizinan & Administrasi',
+    operasional_lainnya: 'Operasional Lainnya'
+  }
+  return map[sub] || sub
 }
 
 const fetchTransactions = async () => {
@@ -110,6 +123,9 @@ const onVendorChange = () => {
 const onKategoriChange = () => {
   if (newTrx.value.kategori !== 'pembayaran_vendor') {
     newTrx.value.vendor_id = ''
+  }
+  if (newTrx.value.kategori !== 'operasional') {
+    newTrx.value.sub_kategori = ''
   }
 }
 
@@ -180,6 +196,7 @@ const saveTransaction = async () => {
       tanggal: new Date().toISOString().split('T')[0],
       tipe: 'kas_keluar',
       kategori: 'operasional',
+      sub_kategori: '',
       event_id: '',
       vendor_id: '',
       deskripsi: '',
@@ -284,7 +301,12 @@ const formatIDR = (value: number) => {
                 <span class="text-xs text-slate-500 block mt-0.5 truncate max-w-sm">{{ trx.deskripsi }}</span>
               </td>
               <td class="p-4">
-                <span class="text-xs font-semibold block">{{ getKategoriLabel(trx.kategori) }}</span>
+                <span class="text-xs font-semibold block">
+                  {{ getKategoriLabel(trx.kategori) }}
+                  <span v-if="trx.sub_kategori" class="text-slate-400 font-normal">
+                    ({{ getSubKategoriLabel(trx.sub_kategori) }})
+                  </span>
+                </span>
                 <span class="text-3xs uppercase text-slate-400 tracking-wider block mt-0.5">{{ trx.metode_pembayaran.replace('_', ' ') }}</span>
               </td>
               <td class="p-4 text-right font-extrabold">
@@ -361,6 +383,21 @@ const formatIDR = (value: number) => {
               <select v-model="newTrx.event_id" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
                 <option value="">-- Tanpa Event --</option>
                 <option v-for="ev in events" :key="ev.id" :value="ev.id">{{ ev.nama_event }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div v-if="newTrx.tipe === 'kas_keluar' && newTrx.kategori === 'operasional'" class="grid grid-cols-1 gap-3">
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Sub-Kategori Biaya Operasional</label>
+              <select v-model="newTrx.sub_kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500" required>
+                <option value="">-- Pilih Sub-Kategori --</option>
+                <option value="gaji_honor_staff">Gaji & Honor Staf</option>
+                <option value="sewa_kantor_utilitas">Sewa Kantor & Utilitas</option>
+                <option value="perlengkapan_alat_tulis">Perlengkapan & ATK</option>
+                <option value="komunikasi_internet">Komunikasi & Internet</option>
+                <option value="perizinan_admin">Perizinan & Administrasi</option>
+                <option value="operasional_lainnya">Operasional Lainnya</option>
               </select>
             </div>
           </div>

@@ -105,6 +105,10 @@ class TransactionController extends Controller
                 $nominalNet = $nominalGross + $ppnAmount - $pphAmount;
             }
 
+            if (($validated['kategori'] ?? '') !== 'operasional') {
+                $validated['sub_kategori'] = null;
+            }
+
             // Create Transaction with Net Payout
             $transaction = Transaction::create(array_merge($validated, [
                 'tenant_id' => $tenantId,

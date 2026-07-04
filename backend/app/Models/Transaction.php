@@ -19,6 +19,7 @@ class Transaction extends Model
         'tanggal',
         'tipe',
         'kategori',
+        'sub_kategori',
         'deskripsi',
         'nominal',
         'nominal_gross',

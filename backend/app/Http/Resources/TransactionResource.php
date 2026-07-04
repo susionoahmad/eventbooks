@@ -15,6 +15,7 @@ class TransactionResource extends JsonResource
             'tanggal' => $this->tanggal->format('Y-m-d'),
             'tipe' => $this->tipe,
             'kategori' => $this->kategori,
+            'sub_kategori' => $this->sub_kategori,
             'deskripsi' => $this->deskripsi,
             'nominal' => (float) $this->nominal,
             'nominal_gross' => (float) ($this->nominal_gross ?? $this->nominal),
