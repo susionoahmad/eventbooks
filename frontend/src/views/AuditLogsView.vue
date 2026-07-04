@@ -469,14 +469,14 @@ onMounted(() => {
         <!-- Log Description & Overview -->
         <div class="bg-slate-50 dark:bg-slate-800/40 p-4 rounded-xl border border-slate-150 dark:border-slate-800/80 space-y-2">
           <p class="text-sm font-bold text-slate-900 dark:text-white leading-relaxed">{{ selectedLog.description }}</p>
-          <div class="grid grid-cols-2 gap-4 pt-2 text-3xs text-slate-400 font-medium">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 text-3xs text-slate-400 font-medium">
             <div>
               <span class="block uppercase tracking-wider text-4xs">Waktu Kejadian</span>
               <span class="text-slate-700 dark:text-slate-300 font-bold text-2xs block mt-0.5">{{ formatDate(selectedLog.created_at) }}</span>
             </div>
             <div>
               <span class="block uppercase tracking-wider text-4xs">Dipicu Oleh</span>
-              <span class="text-slate-700 dark:text-slate-300 font-bold text-2xs block mt-0.5">
+              <span class="text-slate-700 dark:text-slate-300 font-bold text-2xs block mt-0.5 break-all">
                 {{ selectedLog.user ? selectedLog.user.name : 'System' }} ({{ selectedLog.user ? selectedLog.user.email : '-' }})
               </span>
             </div>
@@ -502,8 +502,8 @@ onMounted(() => {
         <!-- Metadata Changes Visualizer (For CRUD updates) -->
         <div v-if="selectedLog.metadata && selectedLog.metadata.changed_fields" class="space-y-2.5">
           <label class="block text-3xs font-bold text-slate-400 uppercase tracking-wider">Perubahan Nilai Data (Lama vs Baru)</label>
-          <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden text-2xs">
-            <table class="w-full text-left border-collapse">
+          <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-xl text-2xs">
+            <table class="w-full text-left border-collapse min-w-[500px]">
               <thead>
                 <tr class="bg-slate-50 dark:bg-slate-800/60 text-slate-400 font-bold text-3xs uppercase tracking-wider border-b border-slate-200 dark:border-slate-850">
                   <th class="py-2.5 px-3.5">Nama Kolom / Field</th>
