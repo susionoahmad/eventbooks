@@ -20,6 +20,10 @@ Route::prefix('v1')->group(function () {
     // Public routes
     Route::post('auth/login', [AuthController::class, 'login']);
     Route::post('auth/register', [AuthController::class, 'register']);
+    
+    // Secure token query routes for streaming PII files
+    Route::get('vendors/{vendor}/ktp', [VendorController::class, 'showKtp']);
+    Route::get('vendors/{vendor}/npwp', [VendorController::class, 'showNpwp']);
 
 
     // Authenticated routes
@@ -35,8 +39,6 @@ Route::prefix('v1')->group(function () {
             Route::get('vendors/next-code', [VendorController::class, 'getNextCode']);
             Route::apiResource('clients', ClientController::class);
             Route::apiResource('vendors', VendorController::class);
-            Route::get('vendors/{vendor}/ktp', [VendorController::class, 'showKtp']);
-            Route::get('vendors/{vendor}/npwp', [VendorController::class, 'showNpwp']);
             
             // Event CRUD
             Route::apiResource('events', EventController::class);

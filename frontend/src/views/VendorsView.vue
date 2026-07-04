@@ -142,27 +142,12 @@ const deleteVendor = async (id: number) => {
   }
 }
 
-const viewVendorFile = async (url: string, filename: string) => {
-  try {
-    const res = await api.get(url, { responseType: 'blob' })
-    const fileType = res.data.type
-    const blob = new Blob([res.data], { type: fileType })
-    const blobUrl = window.URL.createObjectURL(blob)
-    
-    if (fileType.includes('image') || fileType.includes('pdf')) {
-      window.open(blobUrl, '_blank')
-    } else {
-      const link = document.createElement('a')
-      link.href = blobUrl
-      link.setAttribute('download', filename)
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-    }
-  } catch (err) {
-    console.error('Error viewing file:', err)
-    alert('Gagal memuat berkas. Pastikan Anda memiliki akses.')
-  }
+const viewVendorFile = (url: string, filename: string) => {
+  const token = authStore.token || localStorage.getItem('token') || ''
+  const baseUrl = api.defaults.baseURL || import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1'
+  const cleanUrl = url.startsWith('/') ? url : '/' + url
+  const fullUrl = `${baseUrl}${cleanUrl}?token=${token}`
+  window.open(fullUrl, '_blank')
 }
 </script>
 

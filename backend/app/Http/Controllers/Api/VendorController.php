@@ -131,8 +131,16 @@ class VendorController extends Controller
         ], 200);
     }
 
-    public function showKtp(Vendor $vendor)
+    public function showKtp(Request $request, Vendor $vendor)
     {
+        // Try authenticating using token query parameter if not already authenticated
+        if (!\Illuminate\Support\Facades\Auth::check() && $request->filled('token')) {
+            $accessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($request->query('token'));
+            if ($accessToken && $accessToken->tokenable) {
+                \Illuminate\Support\Facades\Auth::login($accessToken->tokenable);
+            }
+        }
+
         Gate::authorize('view', $vendor);
 
         if (!$vendor->file_ktp || !Storage::disk('public')->exists($vendor->file_ktp)) {
@@ -142,8 +150,16 @@ class VendorController extends Controller
         return Storage::disk('public')->response($vendor->file_ktp);
     }
 
-    public function showNpwp(Vendor $vendor)
+    public function showNpwp(Request $request, Vendor $vendor)
     {
+        // Try authenticating using token query parameter if not already authenticated
+        if (!\Illuminate\Support\Facades\Auth::check() && $request->filled('token')) {
+            $accessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($request->query('token'));
+            if ($accessToken && $accessToken->tokenable) {
+                \Illuminate\Support\Facades\Auth::login($accessToken->tokenable);
+            }
+        }
+
         Gate::authorize('view', $vendor);
 
         if (!$vendor->file_npwp || !Storage::disk('public')->exists($vendor->file_npwp)) {
