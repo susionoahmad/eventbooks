@@ -13,6 +13,7 @@ class EventTaskResource extends JsonResource
             'id' => $this->id,
             'event_id' => $this->event_id,
             'nama_task' => $this->nama_task,
+            'pic' => $this->pic,
             'target_date' => $this->target_date ? $this->target_date->format('Y-m-d') : null,
             'status' => $this->status,
             'keterangan' => $this->keterangan,

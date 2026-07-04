@@ -282,6 +282,7 @@ const isEditTask = ref(false)
 const currentTaskId = ref<number | null>(null)
 const taskForm = ref({
   nama_task: '',
+  pic: '',
   target_date: '',
   status: 'pending',
   keterangan: ''
@@ -301,6 +302,7 @@ const openAddTaskModal = () => {
   currentTaskId.value = null
   taskForm.value = {
     nama_task: '',
+    pic: '',
     target_date: '',
     status: 'pending',
     keterangan: ''
@@ -313,6 +315,7 @@ const openEditTaskModal = (task: any) => {
   currentTaskId.value = task.id
   taskForm.value = {
     nama_task: task.nama_task,
+    pic: task.pic || '',
     target_date: task.target_date || '',
     status: task.status,
     keterangan: task.keterangan || ''
@@ -358,6 +361,7 @@ const toggleTaskStatus = async (task: any) => {
   try {
     await api.put(`/events/${props.id}/tasks/${task.id}`, {
       nama_task: task.nama_task,
+      pic: task.pic,
       target_date: task.target_date,
       keterangan: task.keterangan,
       status: nextStatus
@@ -650,6 +654,7 @@ const formatDate = (dateString: string) => {
               <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-400 text-3xs font-bold uppercase tracking-wider">
                 <th class="p-4 w-28 text-center">Status</th>
                 <th class="p-4">Nama Tugas</th>
+                <th class="p-4">PIC</th>
                 <th class="p-4">Target Selesai</th>
                 <th class="p-4">Keterangan</th>
                 <th class="p-4 text-right">Aksi</th>
@@ -668,6 +673,12 @@ const formatDate = (dateString: string) => {
                   <span :class="{ 'line-through text-slate-400 dark:text-slate-500': task.status === 'completed' }">
                     {{ task.nama_task }}
                   </span>
+                </td>
+                <td class="p-4 text-xs font-semibold text-slate-700 dark:text-slate-350">
+                  <span v-if="task.pic" class="inline-flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-2xs text-slate-650 dark:text-slate-350">
+                    👤 {{ task.pic }}
+                  </span>
+                  <span v-else class="text-slate-400 dark:text-slate-600 font-mono text-2xs">-</span>
                 </td>
                 <td class="p-4 text-xs font-medium font-mono">
                   <span v-if="task.target_date" :class="{ 'text-rose-500 font-bold': isOverdue(task.target_date) && task.status !== 'completed' }">
@@ -866,6 +877,11 @@ const formatDate = (dateString: string) => {
           <div>
             <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Tugas</label>
             <input v-model="taskForm.nama_task" type="text" placeholder="e.g. Booking Sound System" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+          </div>
+
+          <div>
+            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">PIC (Penanggung Jawab)</label>
+            <input v-model="taskForm.pic" type="text" placeholder="e.g. John Doe" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
           </div>
 
           <div>

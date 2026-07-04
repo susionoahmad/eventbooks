@@ -17,6 +17,7 @@ class EventTask extends Model
         'tenant_id',
         'event_id',
         'nama_task',
+        'pic',
         'target_date',
         'status',
         'keterangan'

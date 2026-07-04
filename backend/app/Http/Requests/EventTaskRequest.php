@@ -16,6 +16,7 @@ class EventTaskRequest extends FormRequest
     {
         return [
             'nama_task' => 'required|string|max:255',
+            'pic' => 'nullable|string|max:100',
             'target_date' => 'nullable|date',
             'status' => 'nullable|string|in:pending,in_progress,completed',
             'keterangan' => 'nullable|string'
