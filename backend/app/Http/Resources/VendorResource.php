@@ -21,8 +21,8 @@ class VendorResource extends JsonResource
             'alamat' => $this->alamat,
             'file_ktp' => $this->file_ktp,
             'file_npwp' => $this->file_npwp,
-            'file_ktp_url' => $this->file_ktp ? Storage::disk('public')->url($this->file_ktp) : null,
-            'file_npwp_url' => $this->file_npwp ? Storage::disk('public')->url($this->file_npwp) : null,
+            'file_ktp_url' => $this->file_ktp ? "/vendors/{$this->id}/ktp" : null,
+            'file_npwp_url' => $this->file_npwp ? "/vendors/{$this->id}/npwp" : null,
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),
         ];

@@ -35,6 +35,8 @@ Route::prefix('v1')->group(function () {
             Route::get('vendors/next-code', [VendorController::class, 'getNextCode']);
             Route::apiResource('clients', ClientController::class);
             Route::apiResource('vendors', VendorController::class);
+            Route::get('vendors/{vendor}/ktp', [VendorController::class, 'showKtp']);
+            Route::get('vendors/{vendor}/npwp', [VendorController::class, 'showNpwp']);
             
             // Event CRUD
             Route::apiResource('events', EventController::class);

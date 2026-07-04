@@ -130,4 +130,26 @@ class VendorController extends Controller
             'message' => 'Vendor deleted successfully'
         ], 200);
     }
+
+    public function showKtp(Vendor $vendor)
+    {
+        Gate::authorize('view', $vendor);
+
+        if (!$vendor->file_ktp || !Storage::disk('public')->exists($vendor->file_ktp)) {
+            return response()->json(['message' => 'Berkas KTP tidak ditemukan'], 404);
+        }
+
+        return Storage::disk('public')->response($vendor->file_ktp);
+    }
+
+    public function showNpwp(Vendor $vendor)
+    {
+        Gate::authorize('view', $vendor);
+
+        if (!$vendor->file_npwp || !Storage::disk('public')->exists($vendor->file_npwp)) {
+            return response()->json(['message' => 'Berkas NPWP tidak ditemukan'], 404);
+        }
+
+        return Storage::disk('public')->response($vendor->file_npwp);
+    }
 }

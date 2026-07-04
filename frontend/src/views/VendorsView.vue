@@ -141,6 +141,29 @@ const deleteVendor = async (id: number) => {
     }
   }
 }
+
+const viewVendorFile = async (url: string, filename: string) => {
+  try {
+    const res = await api.get(url, { responseType: 'blob' })
+    const fileType = res.data.type
+    const blob = new Blob([res.data], { type: fileType })
+    const blobUrl = window.URL.createObjectURL(blob)
+    
+    if (fileType.includes('image') || fileType.includes('pdf')) {
+      window.open(blobUrl, '_blank')
+    } else {
+      const link = document.createElement('a')
+      link.href = blobUrl
+      link.setAttribute('download', filename)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    }
+  } catch (err) {
+    console.error('Error viewing file:', err)
+    alert('Gagal memuat berkas. Pastikan Anda memiliki akses.')
+  }
+}
 </script>
 
 <template>
@@ -198,12 +221,12 @@ const deleteVendor = async (id: number) => {
               <td class="p-4 text-xs font-semibold text-slate-500 dark:text-slate-400">
                 <span class="block">{{ vendor.npwp || 'Tidak Ada NPWP' }}</span>
                 <div class="flex items-center space-x-2 mt-1.5" v-if="vendor.file_ktp_url || vendor.file_npwp_url">
-                  <a v-if="vendor.file_ktp_url" :href="vendor.file_ktp_url" target="_blank" class="text-3xs text-emerald-500 hover:text-emerald-400 font-bold uppercase tracking-wider flex items-center bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700/60 transition-colors">
+                  <button v-if="vendor.file_ktp_url" @click="viewVendorFile(vendor.file_ktp_url, 'KTP_' + vendor.nama_vendor)" class="text-3xs text-emerald-500 hover:text-emerald-400 font-bold uppercase tracking-wider flex items-center bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700/60 transition-colors cursor-pointer">
                     📄 KTP
-                  </a>
-                  <a v-if="vendor.file_npwp_url" :href="vendor.file_npwp_url" target="_blank" class="text-3xs text-emerald-500 hover:text-emerald-400 font-bold uppercase tracking-wider flex items-center bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700/60 transition-colors">
+                  </button>
+                  <button v-if="vendor.file_npwp_url" @click="viewVendorFile(vendor.file_npwp_url, 'NPWP_' + vendor.nama_vendor)" class="text-3xs text-emerald-500 hover:text-emerald-400 font-bold uppercase tracking-wider flex items-center bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700/60 transition-colors cursor-pointer">
                     📄 NPWP
-                  </a>
+                  </button>
                 </div>
               </td>
               <td class="p-4">
@@ -286,14 +309,14 @@ const deleteVendor = async (id: number) => {
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Unggah KTP (PDF/Gambar)</label>
               <input type="file" @change="handleKtpFileChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-emerald-500" />
               <span v-if="activeVendor.file_ktp_url" class="text-3xs text-slate-400 mt-1 block">
-                Sudah terunggah: <a :href="activeVendor.file_ktp_url" target="_blank" class="text-emerald-500 hover:text-emerald-400 font-bold underline">Lihat File</a>
+                Sudah terunggah: <button @click.prevent="viewVendorFile(activeVendor.file_ktp_url, 'KTP_' + activeVendor.nama_vendor)" class="text-emerald-500 hover:text-emerald-400 font-bold underline cursor-pointer">Lihat File</button>
               </span>
             </div>
             <div>
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Unggah Kartu NPWP (PDF/Gambar)</label>
               <input type="file" @change="handleNpwpFileChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-emerald-500" />
               <span v-if="activeVendor.file_npwp_url" class="text-3xs text-slate-400 mt-1 block">
-                Sudah terunggah: <a :href="activeVendor.file_npwp_url" target="_blank" class="text-emerald-500 hover:text-emerald-400 font-bold underline">Lihat File</a>
+                Sudah terunggah: <button @click.prevent="viewVendorFile(activeVendor.file_npwp_url, 'NPWP_' + activeVendor.nama_vendor)" class="text-emerald-500 hover:text-emerald-400 font-bold underline cursor-pointer">Lihat File</button>
               </span>
             </div>
           </div>
