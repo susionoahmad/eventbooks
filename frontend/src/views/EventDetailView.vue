@@ -13,7 +13,7 @@ const props = defineProps({
 })
 
 // Active tab
-const activeTab = ref<'detail' | 'rab' | 'transactions' | 'documents'>('rab')
+const activeTab = ref<'detail' | 'rab' | 'transactions' | 'documents' | 'tasks'>('rab')
 
 // Event reactive state initialized with placeholders to prevent mount exceptions
 const event = ref<any>({
@@ -173,6 +173,7 @@ const fetchEventAndRab = async () => {
 onMounted(() => {
   fetchEventAndRab()
   fetchDocuments()
+  fetchTasks()
 })
 
 // RAB Calculations
@@ -273,6 +274,134 @@ const updateEvent = async () => {
     alert('Gagal memperbarui event')
   }
 }
+
+// Tasks state and methods
+const tasks = ref<any[]>([])
+const isTaskModalOpen = ref(false)
+const isEditTask = ref(false)
+const currentTaskId = ref<number | null>(null)
+const taskForm = ref({
+  nama_task: '',
+  target_date: '',
+  status: 'pending',
+  keterangan: ''
+})
+
+const fetchTasks = async () => {
+  try {
+    const res = await api.get(`/events/${props.id}/tasks`)
+    tasks.value = res.data.items
+  } catch (err) {
+    console.error('Error fetching tasks:', err)
+  }
+}
+
+const openAddTaskModal = () => {
+  isEditTask.value = false
+  currentTaskId.value = null
+  taskForm.value = {
+    nama_task: '',
+    target_date: '',
+    status: 'pending',
+    keterangan: ''
+  }
+  isTaskModalOpen.value = true
+}
+
+const openEditTaskModal = (task: any) => {
+  isEditTask.value = true
+  currentTaskId.value = task.id
+  taskForm.value = {
+    nama_task: task.nama_task,
+    target_date: task.target_date || '',
+    status: task.status,
+    keterangan: task.keterangan || ''
+  }
+  isTaskModalOpen.value = true
+}
+
+const saveTask = async () => {
+  try {
+    if (isEditTask.value && currentTaskId.value) {
+      await api.put(`/events/${props.id}/tasks/${currentTaskId.value}`, taskForm.value)
+    } else {
+      await api.post(`/events/${props.id}/tasks`, taskForm.value)
+    }
+    fetchTasks()
+    isTaskModalOpen.value = false
+  } catch (err) {
+    console.error('Error saving task:', err)
+    alert('Gagal menyimpan tugas')
+  }
+}
+
+const deleteTask = async (taskId: number) => {
+  if (confirm('Hapus tugas ini?')) {
+    try {
+      await api.delete(`/events/${props.id}/tasks/${taskId}`)
+      fetchTasks()
+    } catch (err) {
+      console.error('Error deleting task:', err)
+      alert('Gagal menghapus tugas')
+    }
+  }
+}
+
+const toggleTaskStatus = async (task: any) => {
+  const nextStatusMap: Record<string, string> = {
+    pending: 'in_progress',
+    in_progress: 'completed',
+    completed: 'pending'
+  }
+  const nextStatus = nextStatusMap[task.status] || 'pending'
+  
+  try {
+    await api.put(`/events/${props.id}/tasks/${task.id}`, {
+      nama_task: task.nama_task,
+      target_date: task.target_date,
+      keterangan: task.keterangan,
+      status: nextStatus
+    })
+    fetchTasks()
+  } catch (err) {
+    console.error('Error updating task status:', err)
+    alert('Gagal memperbarui status tugas')
+  }
+}
+
+const getTaskStatusLabel = (status: string) => {
+  const labels: Record<string, string> = {
+    pending: 'Belum Mulai',
+    in_progress: 'Dalam Proses',
+    completed: 'Selesai'
+  }
+  return labels[status] || status
+}
+
+const getTaskStatusClass = (status: string) => {
+  const classes: Record<string, string> = {
+    pending: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700',
+    in_progress: 'bg-amber-50 text-amber-700 dark:bg-amber-950/45 dark:text-amber-400 border-amber-250 dark:border-amber-900/50',
+    completed: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/45 dark:text-emerald-400 border-emerald-250 dark:border-emerald-900/50'
+  }
+  return classes[status] || ''
+}
+
+const isOverdue = (dateString: string) => {
+  if (!dateString) return false
+  const target = new Date(dateString)
+  target.setHours(23, 59, 59, 999)
+  return target < new Date()
+}
+
+const formatDate = (dateString: string) => {
+  if (!dateString) return '-'
+  return new Date(dateString).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  })
+}
 </script>
 
 <template>
@@ -318,6 +447,12 @@ const updateEvent = async () => {
           :class="[activeTab === 'documents' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer']"
         >
           Berkas Lampiran ({{ documents.length }})
+        </button>
+        <button 
+          @click="activeTab = 'tasks'"
+          :class="[activeTab === 'tasks' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer']"
+        >
+          Daftar Tugas ({{ tasks.length }})
         </button>
       </div>
     </div>
@@ -495,6 +630,74 @@ const updateEvent = async () => {
       </div>
     </div>
 
+    <!-- Tab 4: Tasks (Daftar Tugas) -->
+    <div v-if="activeTab === 'tasks'" class="space-y-6">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
+          <h3 class="font-bold text-slate-900 dark:text-white text-sm">Daftar Tugas Event</h3>
+          <button @click="openAddTaskModal" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-800 dark:border-slate-700 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer">
+            + Tambah Tugas
+          </button>
+        </div>
+
+        <div v-if="tasks.length === 0" class="text-center py-10 text-xs text-slate-500 dark:text-slate-400">
+          Belum ada tugas untuk event ini. Klik "+ Tambah Tugas" untuk membuat tugas baru.
+        </div>
+
+        <div v-else class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-400 text-3xs font-bold uppercase tracking-wider">
+                <th class="p-4 w-28 text-center">Status</th>
+                <th class="p-4">Nama Tugas</th>
+                <th class="p-4">Target Selesai</th>
+                <th class="p-4">Keterangan</th>
+                <th class="p-4 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50 text-sm">
+              <tr v-for="task in tasks" :key="task.id" class="text-slate-700 dark:text-slate-350 hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-colors">
+                <td class="p-4 text-center">
+                  <button @click="toggleTaskStatus(task)" class="focus:outline-none cursor-pointer" title="Klik untuk mengubah status">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold border" :class="getTaskStatusClass(task.status)">
+                      {{ getTaskStatusLabel(task.status) }}
+                    </span>
+                  </button>
+                </td>
+                <td class="p-4 font-semibold text-xs text-slate-900 dark:text-white">
+                  <span :class="{ 'line-through text-slate-400 dark:text-slate-500': task.status === 'completed' }">
+                    {{ task.nama_task }}
+                  </span>
+                </td>
+                <td class="p-4 text-xs font-medium font-mono">
+                  <span v-if="task.target_date" :class="{ 'text-rose-500 font-bold': isOverdue(task.target_date) && task.status !== 'completed' }">
+                    {{ formatDate(task.target_date) }}
+                    <span v-if="isOverdue(task.target_date) && task.status !== 'completed'" class="text-3xs block font-semibold uppercase tracking-wider text-rose-500">Terlambat</span>
+                  </span>
+                  <span v-else class="text-slate-400 dark:text-slate-600">-</span>
+                </td>
+                <td class="p-4 text-xs text-slate-500 dark:text-slate-400 max-w-xs truncate" :title="task.keterangan">
+                  {{ task.keterangan || '-' }}
+                </td>
+                <td class="p-4 text-right space-x-2">
+                  <button @click="openEditTaskModal(task)" class="text-emerald-500 hover:text-emerald-400 p-1 inline-block cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                    </svg>
+                  </button>
+                  <button @click="deleteTask(task.id)" class="text-rose-450 hover:text-rose-400 p-1 inline-block cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal Anggaran Item -->
     <div v-if="isRabModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div @click="isRabModalOpen = false" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"></div>
@@ -648,6 +851,45 @@ const updateEvent = async () => {
           <div class="flex items-center justify-end space-x-2 pt-2">
             <button type="button" @click="isEditModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-655 dark:text-slate-350 cursor-pointer">Batal</button>
             <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Simpan Perubahan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Tambah/Edit Tugas -->
+    <div v-if="isTaskModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div @click="isTaskModalOpen = false" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"></div>
+      <div class="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-xl space-y-4">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">{{ isEditTask ? 'Edit Tugas' : 'Tambah Tugas Baru' }}</h3>
+
+        <form @submit.prevent="saveTask" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-350">
+          <div>
+            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Tugas</label>
+            <input v-model="taskForm.nama_task" type="text" placeholder="e.g. Booking Sound System" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+          </div>
+
+          <div>
+            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Target Tanggal Selesai</label>
+            <input v-model="taskForm.target_date" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
+          </div>
+
+          <div>
+            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Status</label>
+            <select v-model="taskForm.status" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+              <option value="pending">Belum Mulai</option>
+              <option value="in_progress">Dalam Proses</option>
+              <option value="completed">Selesai</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Keterangan / Catatan</label>
+            <textarea v-model="taskForm.keterangan" rows="3" placeholder="Detail deskripsi tugas..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500"></textarea>
+          </div>
+
+          <div class="flex items-center justify-end space-x-2 pt-2">
+            <button type="button" @click="isTaskModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-655 dark:text-slate-350 cursor-pointer">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Simpan</button>
           </div>
         </form>
       </div>

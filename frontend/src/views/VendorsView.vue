@@ -24,8 +24,10 @@ const activeCategoryFilter = ref('all')
 const isModalOpen = ref(false)
 const modalMode = ref<'create' | 'edit'>('create')
 const activeVendor = ref<any>({
-  id: null, kode_vendor: '', nama_vendor: '', kategori: 'lainnya', npwp: '', email: '', telepon: '', alamat: ''
+  id: null, kode_vendor: '', nama_vendor: '', kategori: 'lainnya', npwp: '', email: '', telepon: '', alamat: '', file_ktp_url: null, file_npwp_url: null
 })
+const fileKtpInput = ref<File | null>(null)
+const fileNpwpInput = ref<File | null>(null)
 
 const fetchVendors = async () => {
   try {
@@ -54,7 +56,9 @@ const filteredVendors = () => {
 
 const openCreateModal = async () => {
   modalMode.value = 'create'
-  activeVendor.value = { id: null, kode_vendor: 'Loading...', nama_vendor: '', kategori: 'lainnya', npwp: '', email: '', telepon: '', alamat: '' }
+  activeVendor.value = { id: null, kode_vendor: 'Loading...', nama_vendor: '', kategori: 'lainnya', npwp: '', email: '', telepon: '', alamat: '', file_ktp_url: null, file_npwp_url: null }
+  fileKtpInput.value = null
+  fileNpwpInput.value = null
   isModalOpen.value = true
   try {
     const res = await api.get('/vendors/next-code')
@@ -68,20 +72,62 @@ const openCreateModal = async () => {
 const openEditModal = (vendor: any) => {
   modalMode.value = 'edit'
   activeVendor.value = { ...vendor }
+  fileKtpInput.value = null
+  fileNpwpInput.value = null
   isModalOpen.value = true
+}
+
+const handleKtpFileChange = (e: any) => {
+  const files = e.target.files
+  if (files && files.length > 0) {
+    fileKtpInput.value = files[0]
+  }
+}
+
+const handleNpwpFileChange = (e: any) => {
+  const files = e.target.files
+  if (files && files.length > 0) {
+    fileNpwpInput.value = files[0]
+  }
 }
 
 const saveVendor = async () => {
   try {
+    const formData = new FormData()
+    formData.append('kode_vendor', activeVendor.value.kode_vendor)
+    formData.append('nama_vendor', activeVendor.value.nama_vendor)
+    formData.append('kategori', activeVendor.value.kategori)
+    formData.append('npwp', activeVendor.value.npwp || '')
+    formData.append('email', activeVendor.value.email || '')
+    formData.append('telepon', activeVendor.value.telepon)
+    formData.append('alamat', activeVendor.value.alamat || '')
+    
+    if (fileKtpInput.value) {
+      formData.append('file_ktp', fileKtpInput.value)
+    }
+    if (fileNpwpInput.value) {
+      formData.append('file_npwp', fileNpwpInput.value)
+    }
+
     if (modalMode.value === 'create') {
-      await api.post('/vendors', activeVendor.value)
+      await api.post('/vendors', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
     } else {
-      await api.put(`/vendors/${activeVendor.value.id}`, activeVendor.value)
+      formData.append('_method', 'PUT')
+      await api.post(`/vendors/${activeVendor.value.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
     }
     fetchVendors()
     isModalOpen.value = false
   } catch (err) {
     console.error('Error saving vendor:', err)
+    alert('Gagal menyimpan data vendor')
   }
 }
 
@@ -150,7 +196,15 @@ const deleteVendor = async (id: number) => {
                 <span class="text-3xs uppercase font-semibold text-slate-400 tracking-wider inline-block mt-1 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{{ vendor.kategori }}</span>
               </td>
               <td class="p-4 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                {{ vendor.npwp || 'Tidak Ada NPWP' }}
+                <span class="block">{{ vendor.npwp || 'Tidak Ada NPWP' }}</span>
+                <div class="flex items-center space-x-2 mt-1.5" v-if="vendor.file_ktp_url || vendor.file_npwp_url">
+                  <a v-if="vendor.file_ktp_url" :href="vendor.file_ktp_url" target="_blank" class="text-3xs text-emerald-500 hover:text-emerald-400 font-bold uppercase tracking-wider flex items-center bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700/60 transition-colors">
+                    📄 KTP
+                  </a>
+                  <a v-if="vendor.file_npwp_url" :href="vendor.file_npwp_url" target="_blank" class="text-3xs text-emerald-500 hover:text-emerald-400 font-bold uppercase tracking-wider flex items-center bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700/60 transition-colors">
+                    📄 NPWP
+                  </a>
+                </div>
               </td>
               <td class="p-4">
                 <span class="block text-xs font-medium">{{ vendor.email || '-' }}</span>
@@ -225,6 +279,23 @@ const deleteVendor = async (id: number) => {
           <div>
             <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Alamat Kantor/Studio</label>
             <textarea v-model="activeVendor.alamat" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500"></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Unggah KTP (PDF/Gambar)</label>
+              <input type="file" @change="handleKtpFileChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-emerald-500" />
+              <span v-if="activeVendor.file_ktp_url" class="text-3xs text-slate-400 mt-1 block">
+                Sudah terunggah: <a :href="activeVendor.file_ktp_url" target="_blank" class="text-emerald-500 hover:text-emerald-400 font-bold underline">Lihat File</a>
+              </span>
+            </div>
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Unggah Kartu NPWP (PDF/Gambar)</label>
+              <input type="file" @change="handleNpwpFileChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-emerald-500" />
+              <span v-if="activeVendor.file_npwp_url" class="text-3xs text-slate-400 mt-1 block">
+                Sudah terunggah: <a :href="activeVendor.file_npwp_url" target="_blank" class="text-emerald-500 hover:text-emerald-400 font-bold underline">Lihat File</a>
+              </span>
+            </div>
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">

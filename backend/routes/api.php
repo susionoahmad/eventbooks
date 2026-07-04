@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\TenantController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\EventTaskController;
 
 Route::prefix('v1')->group(function () {
     // Public routes
@@ -49,6 +50,12 @@ Route::prefix('v1')->group(function () {
             Route::post('events/{event}/documents', [DocumentController::class, 'store']);
             Route::get('events/{event}/documents/{document}/download', [DocumentController::class, 'download']);
             Route::delete('events/{event}/documents/{document}', [DocumentController::class, 'destroy']);
+
+            // Event Tasks routes
+            Route::get('events/{event}/tasks', [EventTaskController::class, 'index']);
+            Route::post('events/{event}/tasks', [EventTaskController::class, 'store']);
+            Route::put('events/{event}/tasks/{task}', [EventTaskController::class, 'update']);
+            Route::delete('events/{event}/tasks/{task}', [EventTaskController::class, 'destroy']);
 
             // Bookkeeping Ledger routes
             Route::apiResource('transactions', TransactionController::class);

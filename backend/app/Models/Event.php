@@ -59,6 +59,11 @@ class Event extends Model
         return $this->hasMany(Document::class);
     }
 
+    public function tasks()
+    {
+        return $this->hasMany(EventTask::class);
+    }
+
     // Dynamic Financial Calculations
     public function getTotalRabBudgetAttribute(): float
     {

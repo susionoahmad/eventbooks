@@ -9,6 +9,7 @@ use App\Models\Vendor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class VendorController extends Controller
@@ -46,7 +47,23 @@ class VendorController extends Controller
     {
         Gate::authorize('create', Vendor::class);
 
-        $vendor = Vendor::create($request->validated());
+        $validatedData = $request->validated();
+
+        if ($request->hasFile('file_ktp')) {
+            $fileKtp = $request->file('file_ktp');
+            $filenameKtp = time() . '_ktp_' . $fileKtp->getClientOriginalName();
+            $pathKtp = $fileKtp->storeAs('vendors/ktp', $filenameKtp, 'public');
+            $validatedData['file_ktp'] = $pathKtp;
+        }
+
+        if ($request->hasFile('file_npwp')) {
+            $fileNpwp = $request->file('file_npwp');
+            $filenameNpwp = time() . '_npwp_' . $fileNpwp->getClientOriginalName();
+            $pathNpwp = $fileNpwp->storeAs('vendors/npwp', $filenameNpwp, 'public');
+            $validatedData['file_npwp'] = $pathNpwp;
+        }
+
+        $vendor = Vendor::create($validatedData);
 
         return response()->json([
             'message' => 'Vendor created successfully',
@@ -65,7 +82,29 @@ class VendorController extends Controller
     {
         Gate::authorize('update', $vendor);
 
-        $vendor->update($request->validated());
+        $validatedData = $request->validated();
+
+        if ($request->hasFile('file_ktp')) {
+            if ($vendor->file_ktp && Storage::disk('public')->exists($vendor->file_ktp)) {
+                Storage::disk('public')->delete($vendor->file_ktp);
+            }
+            $fileKtp = $request->file('file_ktp');
+            $filenameKtp = time() . '_ktp_' . $fileKtp->getClientOriginalName();
+            $pathKtp = $fileKtp->storeAs('vendors/ktp', $filenameKtp, 'public');
+            $validatedData['file_ktp'] = $pathKtp;
+        }
+
+        if ($request->hasFile('file_npwp')) {
+            if ($vendor->file_npwp && Storage::disk('public')->exists($vendor->file_npwp)) {
+                Storage::disk('public')->delete($vendor->file_npwp);
+            }
+            $fileNpwp = $request->file('file_npwp');
+            $filenameNpwp = time() . '_npwp_' . $fileNpwp->getClientOriginalName();
+            $pathNpwp = $fileNpwp->storeAs('vendors/npwp', $filenameNpwp, 'public');
+            $validatedData['file_npwp'] = $pathNpwp;
+        }
+
+        $vendor->update($validatedData);
 
         return response()->json([
             'message' => 'Vendor updated successfully',
@@ -76,6 +115,14 @@ class VendorController extends Controller
     public function destroy(Vendor $vendor): JsonResponse
     {
         Gate::authorize('delete', $vendor);
+
+        // Delete files from storage
+        if ($vendor->file_ktp && Storage::disk('public')->exists($vendor->file_ktp)) {
+            Storage::disk('public')->delete($vendor->file_ktp);
+        }
+        if ($vendor->file_npwp && Storage::disk('public')->exists($vendor->file_npwp)) {
+            Storage::disk('public')->delete($vendor->file_npwp);
+        }
 
         $vendor->delete();
 

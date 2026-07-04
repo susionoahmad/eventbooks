@@ -59,7 +59,9 @@ class VendorRequest extends FormRequest
             'npwp' => 'nullable|string|max:30',
             'email' => 'nullable|email|max:255',
             'telepon' => 'nullable|string|max:50',
-            'alamat' => 'nullable|string'
+            'alamat' => 'nullable|string',
+            'file_ktp' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'file_npwp' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120'
         ];
     }
 }

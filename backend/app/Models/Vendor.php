@@ -18,7 +18,9 @@ class Vendor extends Model
         'npwp',
         'email',
         'telepon',
-        'alamat'
+        'alamat',
+        'file_ktp',
+        'file_npwp'
     ];
 
     public function transactions()
