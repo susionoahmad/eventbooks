@@ -915,7 +915,7 @@ const exportExcel = () => {
           <h3 class="font-bold text-amber-500 text-2xs uppercase tracking-wider">IV. BEBAN PERPAJAKAN</h3>
           <div class="flex justify-between pl-4 text-slate-700 dark:text-slate-350 text-xs">
             <span>
-              PPh 21 & PPh 23 (Withheld)
+              PPh 21 & PPh 23
               <span class="text-slate-400 block text-3xs">Dipotong dari vendor/freelancer, utang ke DJP</span>
             </span>
             <span class="font-mono">({{ formatIDR(plData.bebanPajakPph) }})</span>
