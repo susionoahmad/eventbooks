@@ -62,6 +62,12 @@ const routes: Array<RouteRecordRaw> = [
         meta: { roles: ['owner', 'admin'] }
       },
       {
+        path: 'audit-logs',
+        name: 'AuditLogs',
+        component: () => import('../views/AuditLogsView.vue'),
+        meta: { roles: ['owner', 'admin'] }
+      },
+      {
         path: 'change-password',
         name: 'ChangePassword',
         component: () => import('../views/ChangePasswordView.vue'),

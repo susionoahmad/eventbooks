@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\TenantController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\EventTaskController;
+use App\Http\Controllers\Api\AuditLogController;
 
 Route::prefix('v1')->group(function () {
     // Public routes
@@ -103,6 +104,12 @@ Route::prefix('v1')->group(function () {
             Route::delete('tenant/users/{user}', [TenantController::class, 'destroyUser']);
             Route::put('tenant/users/{user}/toggle', [TenantController::class, 'toggleUserStatus']);
             Route::put('tenant/users/{user}/password', [TenantController::class, 'updateUserPassword']);
+
+            // Audit Logs
+            Route::middleware('admin.owner')->group(function () {
+                Route::get('audit-logs', [AuditLogController::class, 'index']);
+                Route::get('audit-logs/summary', [AuditLogController::class, 'summary']);
+            });
         });
     });
 });

@@ -53,6 +53,15 @@ class AuthController extends Controller
                 'is_active' => true,
             ]);
 
+            \App\Models\AuditLog::create([
+                'tenant_id' => $tenant->id,
+                'user_id' => $user->id,
+                'activity' => 'Register',
+                'description' => "User {$user->name} mendaftar dan membuat organisasi: \"{$tenant->name}\"",
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
             $token = $user->createToken('eventbooks_api_token')->plainTextToken;
 
             return response()->json([
@@ -104,6 +113,15 @@ class AuthController extends Controller
         // Generate Sanctum Token
         $token = $user->createToken('eventbooks_api_token')->plainTextToken;
 
+        \App\Models\AuditLog::create([
+            'tenant_id' => $user->tenant_id,
+            'user_id' => $user->id,
+            'activity' => 'Login',
+            'description' => "User {$user->name} berhasil masuk ke sistem",
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
         return response()->json([
             'token' => $token,
             'user'  => [
@@ -130,6 +148,16 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
+        $user = $request->user();
+        \App\Models\AuditLog::create([
+            'tenant_id' => $user->tenant_id,
+            'user_id' => $user->id,
+            'activity' => 'Logout',
+            'description' => "User {$user->name} keluar dari sistem",
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
         // Revoke the active token
         $request->user()->currentAccessToken()->delete();
 
@@ -184,6 +212,15 @@ class AuthController extends Controller
 
         $user->password = Hash::make($request->new_password);
         $user->save();
+
+        \App\Models\AuditLog::create([
+            'tenant_id' => $user->tenant_id,
+            'user_id' => $user->id,
+            'activity' => 'Change Password',
+            'description' => "User {$user->name} memperbarui kata sandi mereka",
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
 
         return response()->json([
             'message' => 'Password berhasil diperbarui.'

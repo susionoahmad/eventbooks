@@ -111,6 +111,15 @@ class TenantController extends Controller
             // Mark setup as complete
             $tenant->update(['is_setup_complete' => true]);
 
+            \App\Models\AuditLog::create([
+                'tenant_id' => $tenant->id,
+                'user_id' => Auth::id(),
+                'activity' => 'Setup Complete',
+                'description' => "User " . Auth::user()->name . " menyelesaikan proses Wizard Setup untuk organisasi: \"{$tenant->name}\"",
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
             return response()->json([
                 'message'       => 'Setup completed successfully',
                 'created_users' => $createdUsers,
@@ -233,6 +242,15 @@ class TenantController extends Controller
         ]);
 
         $user->update(['password' => Hash::make($validated['password'])]);
+
+        \App\Models\AuditLog::create([
+            'tenant_id' => Auth::user()->tenant_id,
+            'user_id' => Auth::id(),
+            'activity' => 'Update User Password',
+            'description' => "User " . Auth::user()->name . " mengubah password untuk user: \"{$user->name}\"",
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
 
         return response()->json(['message' => 'Password updated successfully']);
     }

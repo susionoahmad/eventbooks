@@ -67,6 +67,15 @@ class DocumentController extends Controller
             return response()->json(['message' => 'File not found on storage'], 404);
         }
 
+        \App\Models\AuditLog::create([
+            'tenant_id' => Auth::user()->tenant_id,
+            'user_id' => Auth::id(),
+            'activity' => 'Download Document',
+            'description' => "User " . Auth::user()->name . " mengunduh dokumen \"{$document->nama_dokumen}\" (tipe: {$document->file_type})",
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
         return Storage::disk('public')->download($document->file_path, $document->nama_dokumen);
     }
 

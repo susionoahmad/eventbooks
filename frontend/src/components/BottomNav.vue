@@ -48,6 +48,7 @@ const moreItems = [
   { name: 'Rekap Pajak',     path: '/taxes',        roles: ['owner', 'finance_manager'] },
   { name: 'Laporan',         path: '/reports',      roles: ['owner', 'finance_manager'] },
   { name: 'Pengaturan',      path: '/settings',     roles: ['owner'] },
+  { name: 'Audit Logs',      path: '/audit-logs',   roles: ['owner', 'admin'] },
 ]
 
 import { ref, computed } from 'vue'
@@ -122,6 +123,7 @@ const moreIsActive = computed(() =>
               <span v-else-if="item.name === 'Rekap Pajak'">⚖️</span>
               <span v-else-if="item.name === 'Laporan'">📊</span>
               <span v-else-if="item.name === 'Pengaturan'">⚙️</span>
+              <span v-else-if="item.name === 'Audit Logs'">📋</span>
             </span>
             <span class="text-xs font-semibold leading-tight">{{ item.name }}</span>
           </button>

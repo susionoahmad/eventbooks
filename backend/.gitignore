@@ -21,3 +21,6 @@ composer.phar
 # Bootstrap cache
 /bootstrap/cache/*
 !/bootstrap/cache/.gitignore
+
+# Local storage symlink
+/public/storage

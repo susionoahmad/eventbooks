@@ -70,6 +70,12 @@ const navigationItems = [
     icon: `<span class="text-xl">⚙️</span>`
   },
   {
+    name: 'Audit Logs',
+    path: '/audit-logs',
+    roles: ['owner', 'admin'],
+    icon: `<span class="text-xl">📋</span>`
+  },
+  {
     name: 'Ganti Password',
     path: '/change-password',
     roles: ['owner', 'finance_manager', 'admin', 'staff'],
