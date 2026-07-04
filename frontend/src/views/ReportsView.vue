@@ -5,7 +5,7 @@ import api from '../services/api'
 
 const authStore = useAuthStore()
 
-const activeReportTab = ref<'pl' | 'cashflow' | 'ledger'>('pl')
+const activeReportTab = ref<'pl' | 'cashflow' | 'ledger' | 'event'>('pl')
 const filterYear = ref('2026')
 
 const plData = ref({
@@ -97,6 +97,31 @@ const fetchLedger = async () => {
   }
 }
 
+const eventsReportData = ref<any[]>([])
+const selectedEventDetail = ref<any | null>(null)
+const isDetailModalOpen = ref(false)
+
+const fetchEventsReport = async () => {
+  try {
+    const res = await api.get('/reports/events', {
+      params: { tahun: filterYear.value }
+    })
+    eventsReportData.value = res.data
+  } catch (err) {
+    console.error('Error fetching events report:', err)
+  }
+}
+
+const fetchEventDetailReport = async (eventId: number) => {
+  try {
+    const res = await api.get(`/reports/events/${eventId}`)
+    selectedEventDetail.value = res.data
+    isDetailModalOpen.value = true
+  } catch (err) {
+    console.error('Error fetching event detail report:', err)
+  }
+}
+
 const fetchActiveReport = () => {
   if (activeReportTab.value === 'pl') {
     fetchProfitLoss()
@@ -104,6 +129,8 @@ const fetchActiveReport = () => {
     fetchCashFlow()
   } else if (activeReportTab.value === 'ledger') {
     fetchLedger()
+  } else if (activeReportTab.value === 'event') {
+    fetchEventsReport()
   }
 }
 
@@ -456,6 +483,213 @@ const printReport = () => {
   printWindow.document.close()
 }
 
+const printEventReport = (data: any) => {
+  if (!data) return
+  const printWindow = window.open('', '_blank')
+  if (!printWindow) return
+
+  const s = data.summary
+  
+  let budgetRows = ''
+  if (data.budget_details.length === 0) {
+    budgetRows = `<tr><td colspan="5" class="p-3 text-center text-slate-400">Tidak ada rincian anggaran.</td></tr>`
+  } else {
+    data.budget_details.forEach((item: any) => {
+      budgetRows += `
+        <tr>
+          <td class="p-3 font-semibold text-slate-900">${item.kategori}</td>
+          <td class="p-3">${item.deskripsi}</td>
+          <td class="p-3 text-center font-mono">${item.qty}</td>
+          <td class="p-3 text-right font-mono">${formatIDR(item.harga)}</td>
+          <td class="p-3 text-right font-mono font-bold">${formatIDR(item.subtotal)}</td>
+        </tr>
+      `
+    })
+  }
+
+  let costRows = ''
+  if (data.realization_details.length === 0) {
+    costRows = `<tr><td colspan="6" class="p-3 text-center text-slate-400">Tidak ada realisasi pengeluaran.</td></tr>`
+  } else {
+    data.realization_details.forEach((item: any) => {
+      costRows += `
+        <tr>
+          <td class="p-3 font-mono">${item.tanggal || '-'}</td>
+          <td class="p-3 font-mono text-slate-500">${item.nomor_transaksi}</td>
+          <td class="p-3">${item.kategori}</td>
+          <td class="p-3">${item.deskripsi}</td>
+          <td class="p-3">${item.vendor_name}</td>
+          <td class="p-3 text-right font-mono text-rose-600 font-bold">${formatIDR(item.nominal)}</td>
+        </tr>
+      `
+    })
+  }
+
+  let incomeRows = ''
+  if (data.revenue_details.length === 0) {
+    incomeRows = `<tr><td colspan="4" class="p-3 text-center text-slate-400">Tidak ada data pendapatan masuk.</td></tr>`
+  } else {
+    data.revenue_details.forEach((item: any) => {
+      incomeRows += `
+        <tr>
+          <td class="p-3 font-mono">${item.tanggal || '-'}</td>
+          <td class="p-3 font-mono text-slate-500">${item.nomor_transaksi}</td>
+          <td class="p-3">${item.deskripsi}</td>
+          <td class="p-3 text-right font-mono text-emerald-600 font-bold">${formatIDR(item.nominal)}</td>
+        </tr>
+      `
+    })
+  }
+
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Laporan Keuangan Event: ${s.nama_event}</title>
+        <script src="https://cdn.tailwindcss.com"><\/script>
+        <style>
+          @media print {
+            body { font-size: 11px; }
+            .no-print { display: none; }
+          }
+        </style>
+      </head>
+      <body class="p-8 text-slate-800 bg-white">
+        <div class="flex items-center justify-between border-b-2 border-slate-900 pb-4 mb-6">
+          <div>
+            <h1 class="text-xl font-bold uppercase tracking-wider text-slate-900">${authStore.organizationName}</h1>
+            <p class="text-xs text-slate-500 mt-0.5">Laporan Analisis Keuangan per Event</p>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-mono font-bold bg-slate-100 border px-2.5 py-1 rounded text-slate-700">${s.nomor_event}</span>
+            <span class="text-xs font-bold block mt-2 text-emerald-600 uppercase">[Status: ${s.status}]</span>
+          </div>
+        </div>
+
+        <div class="mb-6 grid grid-cols-2 gap-4 text-xs">
+          <div>
+            <span class="text-slate-500 block font-semibold">Nama Event:</span>
+            <span class="font-bold text-slate-900 text-sm">${s.nama_event}</span>
+          </div>
+          <div>
+            <span class="text-slate-500 block font-semibold">Nama Klien / Perusahaan:</span>
+            <span class="font-bold text-slate-900 text-sm">${s.client_name} (${s.client_perusahaan})</span>
+          </div>
+          <div>
+            <span class="text-slate-500 block font-semibold">Jenis Event:</span>
+            <span class="font-medium text-slate-800">${s.jenis_event || '-'}</span>
+          </div>
+          <div>
+            <span class="text-slate-500 block font-semibold">Durasi Pelaksanaan:</span>
+            <span class="font-medium text-slate-800">${s.tanggal_mulai} s/d ${s.tanggal_selesai}</span>
+          </div>
+        </div>
+
+        <!-- Financial Summary -->
+        <h2 class="text-xs font-bold uppercase border-b border-slate-300 pb-1.5 mb-3 text-slate-900">Ringkasan Keuangan Event</h2>
+        <div class="grid grid-cols-5 gap-2 mb-6">
+          <div class="border border-slate-200 p-2.5 rounded-lg text-center bg-slate-50">
+            <span class="text-4xs uppercase tracking-wider font-bold text-slate-400">Nilai Kontrak</span>
+            <span class="font-extrabold text-sm block mt-1 font-mono">${formatIDR(s.nilai_kontrak)}</span>
+          </div>
+          <div class="border border-slate-200 p-2.5 rounded-lg text-center bg-slate-50">
+            <span class="text-4xs uppercase tracking-wider font-bold text-slate-400">Anggaran RAB</span>
+            <span class="font-extrabold text-sm block mt-1 font-mono">${formatIDR(s.total_anggaran)}</span>
+          </div>
+          <div class="border border-slate-200 p-2.5 rounded-lg text-center bg-slate-50">
+            <span class="text-4xs uppercase tracking-wider font-bold text-slate-400">Realisasi Biaya</span>
+            <span class="font-extrabold text-sm block mt-1 font-mono text-rose-600">${formatIDR(s.total_realisasi)}</span>
+          </div>
+          <div class="border border-slate-200 p-2.5 rounded-lg text-center bg-slate-50">
+            <span class="text-4xs uppercase tracking-wider font-bold text-slate-400">Laba Bersih</span>
+            <span class="font-extrabold text-sm block mt-1 font-mono text-emerald-600">${formatIDR(s.laba_bersih)}</span>
+          </div>
+          <div class="border border-slate-200 p-2.5 rounded-lg text-center bg-slate-50">
+            <span class="text-4xs uppercase tracking-wider font-bold text-slate-400">Margin (%)</span>
+            <span class="font-extrabold text-sm block mt-1 font-mono text-emerald-600">${s.margin_persentase}%</span>
+          </div>
+        </div>
+
+        <!-- RAB Details -->
+        <h2 class="text-xs font-bold uppercase border-b border-slate-300 pb-1.5 mb-3 text-slate-900">Rencana Anggaran Biaya (RAB)</h2>
+        <table class="w-full text-left text-xs border-collapse border border-slate-200 rounded-lg overflow-hidden mb-6">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider text-3xs font-bold">
+              <th class="p-3 w-32">Kategori</th>
+              <th class="p-3">Deskripsi</th>
+              <th class="p-3 text-center w-12">Qty</th>
+              <th class="p-3 text-right w-24">Harga Satuan</th>
+              <th class="p-3 text-right w-28">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-slate-700">
+            ${budgetRows}
+            <tr class="font-extrabold bg-slate-50 text-slate-900">
+              <td colspan="4" class="p-3 text-right uppercase">Total Rencana Anggaran</td>
+              <td class="p-3 text-right font-mono">${formatIDR(s.total_anggaran)}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Realization Details -->
+        <h2 class="text-xs font-bold uppercase border-b border-slate-300 pb-1.5 mb-3 text-slate-900">Rincian Realisasi Pengeluaran Aktual</h2>
+        <table class="w-full text-left text-xs border-collapse border border-slate-200 rounded-lg overflow-hidden mb-6">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider text-3xs font-bold">
+              <th class="p-3 w-20">Tanggal</th>
+              <th class="p-3 w-24">No. Transaksi</th>
+              <th class="p-3 w-28">Kategori</th>
+              <th class="p-3">Deskripsi</th>
+              <th class="p-3 w-32">Vendor</th>
+              <th class="p-3 text-right w-28">Nominal</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-slate-700">
+            ${costRows}
+            <tr class="font-extrabold bg-slate-50 text-slate-900">
+              <td colspan="5" class="p-3 text-right uppercase">Total Biaya Aktual</td>
+              <td class="p-3 text-right font-mono text-rose-600">${formatIDR(s.total_realisasi)}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Revenue Details -->
+        <h2 class="text-xs font-bold uppercase border-b border-slate-300 pb-1.5 mb-3 text-slate-900">Rincian Pendapatan Masuk (Kas Masuk)</h2>
+        <table class="w-full text-left text-xs border-collapse border border-slate-200 rounded-lg overflow-hidden mb-6">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider text-3xs font-bold">
+              <th class="p-3 w-24">Tanggal</th>
+              <th class="p-3 w-28">No. Transaksi</th>
+              <th class="p-3">Deskripsi</th>
+              <th class="p-3 text-right w-32">Nominal</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-slate-700">
+            ${incomeRows}
+          </tbody>
+        </table>
+
+        <div class="mt-12 flex justify-between text-2xs text-slate-500">
+          <div>
+            <p>Dicetak oleh: ${authStore.user?.name || 'Administrator'}</p>
+            <p>Tanggal cetak: ${new Date().toLocaleString('id-ID')}</p>
+          </div>
+          <div class="w-40 border-t border-slate-400 mt-8 text-center pt-2">
+            <p class="font-bold text-slate-900">${authStore.user?.name || 'Manager Keuangan'}</p>
+            <p>Tanda Tangan</p>
+          </div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            window.print();
+          };
+        <\/script>
+      </body>
+    </html>
+  `)
+  printWindow.document.close()
+}
+
 const formatIDR = (value: number) => {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -611,6 +845,12 @@ const exportExcel = () => {
         :class="[activeReportTab === 'ledger' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer']"
       >
         Buku Besar Ringkas
+      </button>
+      <button 
+        @click="activeReportTab = 'event'"
+        :class="[activeReportTab === 'event' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer']"
+      >
+        Laporan Per Event
       </button>
     </div>
 
@@ -848,6 +1088,207 @@ const exportExcel = () => {
               </table>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event Sheet -->
+    <div v-if="activeReportTab === 'event'" class="space-y-6">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+          <h3 class="font-bold text-slate-900 dark:text-white text-sm">Laporan Performansi Keuangan per Event</h3>
+        </div>
+
+        <div v-if="eventsReportData.length === 0" class="text-center py-10 text-xs text-slate-500 dark:text-slate-400">
+          Belum ada event tercatat di tahun buku ini.
+        </div>
+
+        <div v-else class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-400 text-3xs font-bold uppercase tracking-wider">
+                <th class="p-4">Kode / Nama Event</th>
+                <th class="p-4">Klien</th>
+                <th class="p-4 text-right">Nilai Kontrak</th>
+                <th class="p-4 text-right">Anggaran RAB</th>
+                <th class="p-4 text-right">Realisasi Biaya</th>
+                <th class="p-4 text-right">Laba Bersih</th>
+                <th class="p-4 text-center">Margin</th>
+                <th class="p-4 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50 text-sm">
+              <tr v-for="ev in eventsReportData" :key="ev.id" class="text-slate-700 dark:text-slate-350 hover:bg-slate-50/40 dark:hover:bg-slate-800/10 transition-colors">
+                <td class="p-4">
+                  <span class="text-3xs font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-500 font-bold block w-fit mb-1">{{ ev.nomor_event }}</span>
+                  <span class="font-bold text-slate-900 dark:text-white block text-xs">{{ ev.nama_event }}</span>
+                </td>
+                <td class="p-4 text-xs font-semibold text-slate-500 dark:text-slate-400">{{ ev.client_name }}</td>
+                <td class="p-4 text-right font-bold text-slate-900 dark:text-white">{{ formatIDR(ev.nilai_kontrak) }}</td>
+                <td class="p-4 text-right text-slate-500 dark:text-slate-400 font-mono text-xs">{{ formatIDR(ev.total_anggaran) }}</td>
+                <td class="p-4 text-right text-rose-500 font-semibold font-mono text-xs">{{ formatIDR(ev.total_realisasi) }}</td>
+                <td class="p-4 text-right font-bold font-mono text-xs" :class="ev.laba_bersih >= 0 ? 'text-emerald-500' : 'text-rose-500'">
+                  {{ formatIDR(ev.laba_bersih) }}
+                </td>
+                <td class="p-4 text-center text-xs">
+                  <span class="px-2 py-0.5 rounded-full font-bold font-mono text-xs" :class="ev.laba_bersih >= 0 ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50' : 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50'">
+                    {{ ev.margin_persentase }}%
+                  </span>
+                </td>
+                <td class="p-4 text-right">
+                  <button @click="fetchEventDetailReport(ev.id)" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">
+                    Buka Laporan
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Detail Laporan Event -->
+    <div v-if="isDetailModalOpen && selectedEventDetail" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div @click="isDetailModalOpen = false" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"></div>
+      <div class="relative w-full max-w-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-3xl shadow-xl space-y-5 max-h-[90vh] overflow-y-auto no-scrollbar">
+        <!-- Header -->
+        <div class="flex justify-between items-start border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">Analisis Laporan Keuangan Event</h3>
+            <p class="text-xs text-slate-400 mt-1 font-mono">{{ selectedEventDetail.summary.nomor_event }} &bull; {{ selectedEventDetail.summary.nama_event }}</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button @click="printEventReport(selectedEventDetail)" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              </svg>
+              Cetak Laporan
+            </button>
+            <button @click="isDetailModalOpen = false" class="text-slate-400 hover:text-slate-600 text-2xl font-semibold leading-none cursor-pointer">&times;</button>
+          </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div class="bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/80 p-3.5 rounded-xl text-center">
+            <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Nilai Kontrak</span>
+            <span class="text-sm font-bold text-slate-800 dark:text-white block mt-1 font-mono">{{ formatIDR(selectedEventDetail.summary.nilai_kontrak) }}</span>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/80 p-3.5 rounded-xl text-center">
+            <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Anggaran RAB</span>
+            <span class="text-sm font-bold text-slate-800 dark:text-white block mt-1 font-mono">{{ formatIDR(selectedEventDetail.summary.total_anggaran) }}</span>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/80 p-3.5 rounded-xl text-center">
+            <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Realisasi Biaya</span>
+            <span class="text-sm font-bold text-rose-500 block mt-1 font-mono">{{ formatIDR(selectedEventDetail.summary.total_realisasi) }}</span>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/80 p-3.5 rounded-xl text-center">
+            <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Laba Bersih</span>
+            <span class="text-sm font-bold block mt-1 font-mono" :class="selectedEventDetail.summary.laba_bersih >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">{{ formatIDR(selectedEventDetail.summary.laba_bersih) }}</span>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/80 p-3.5 rounded-xl text-center col-span-2 md:col-span-1">
+            <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Margin Laba</span>
+            <span class="text-sm font-bold block mt-1 font-mono" :class="selectedEventDetail.summary.laba_bersih >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">{{ selectedEventDetail.summary.margin_persentase }}%</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs text-slate-700 dark:text-slate-350">
+          <!-- RAB Budget Details -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-xs">
+            <div class="bg-slate-50 dark:bg-slate-800/40 px-4 py-2.5 border-b border-slate-200 dark:border-slate-800">
+              <h4 class="font-bold text-slate-900 dark:text-white">Detail Rencana Anggaran (RAB)</h4>
+            </div>
+            <div class="max-h-60 overflow-y-auto no-scrollbar">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-slate-100/50 dark:bg-slate-900/30 text-slate-400 font-bold border-b border-slate-200 dark:border-slate-800/60 uppercase tracking-wider text-4xs">
+                    <th class="p-2.5 pl-4">Kategori</th>
+                    <th class="p-2.5">Deskripsi</th>
+                    <th class="p-2.5 text-center">Qty</th>
+                    <th class="p-2.5 text-right pr-4">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/30">
+                  <tr v-for="item in selectedEventDetail.budget_details" :key="item.id">
+                    <td class="p-2.5 pl-4 font-semibold text-3xs">{{ formatCategoryLabel(item.kategori) }}</td>
+                    <td class="p-2.5 text-3xs">{{ item.deskripsi }}</td>
+                    <td class="p-2.5 text-center font-mono">{{ item.qty }}</td>
+                    <td class="p-2.5 text-right pr-4 font-bold font-mono">{{ formatIDR(item.subtotal) }}</td>
+                  </tr>
+                  <tr v-if="selectedEventDetail.budget_details.length === 0">
+                    <td colspan="4" class="p-4 text-center text-slate-400">Tidak ada item anggaran.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Realization Details (Outflows) -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-xs">
+            <div class="bg-slate-50 dark:bg-slate-800/40 px-4 py-2.5 border-b border-slate-200 dark:border-slate-800">
+              <h4 class="font-bold text-slate-900 dark:text-white">Detail Realisasi Biaya Aktual</h4>
+            </div>
+            <div class="max-h-60 overflow-y-auto no-scrollbar">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-slate-100/50 dark:bg-slate-900/30 text-slate-400 font-bold border-b border-slate-200 dark:border-slate-800/60 uppercase tracking-wider text-4xs">
+                    <th class="p-2.5 pl-4">Tanggal</th>
+                    <th class="p-2.5">Kategori/Vendor</th>
+                    <th class="p-2.5">Deskripsi</th>
+                    <th class="p-2.5 text-right pr-4">Nominal</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/30">
+                  <tr v-for="item in selectedEventDetail.realization_details" :key="item.id">
+                    <td class="p-2.5 pl-4 text-slate-450 font-mono text-3xs">{{ item.tanggal || '-' }}</td>
+                    <td class="p-2.5 text-3xs">
+                      <span class="font-semibold block">{{ formatCategoryLabel(item.kategori) }}</span>
+                      <span class="text-4xs text-slate-400 block mt-0.5">Vendor: {{ item.vendor_name }}</span>
+                    </td>
+                    <td class="p-2.5 text-3xs truncate max-w-28" :title="item.deskripsi">{{ item.deskripsi }}</td>
+                    <td class="p-2.5 text-right pr-4 font-bold text-rose-500 font-mono">{{ formatIDR(item.nominal) }}</td>
+                  </tr>
+                  <tr v-if="selectedEventDetail.realization_details.length === 0">
+                    <td colspan="4" class="p-4 text-center text-slate-400">Belum ada realisasi biaya aktual.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Revenue (Inflow Invoices payments) -->
+        <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-xs text-xs">
+          <div class="bg-slate-50 dark:bg-slate-800/40 px-4 py-2.5 border-b border-slate-200 dark:border-slate-800">
+            <h4 class="font-bold text-slate-900 dark:text-white">Detail Pembayaran Masuk (Kas Masuk Klien)</h4>
+          </div>
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-100/50 dark:bg-slate-900/30 text-slate-400 font-bold border-b border-slate-200 dark:border-slate-800/60 uppercase tracking-wider text-4xs">
+                <th class="p-2.5 pl-4 w-28">Tanggal</th>
+                <th class="p-2.5 w-36">No. Transaksi</th>
+                <th class="p-2.5">Keterangan</th>
+                <th class="p-2.5 text-right pr-4 w-36">Nominal</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/30">
+              <tr v-for="item in selectedEventDetail.revenue_details" :key="item.id">
+                <td class="p-2.5 pl-4 text-slate-450 font-mono">{{ item.tanggal || '-' }}</td>
+                <td class="p-2.5 font-mono text-slate-500 dark:text-slate-400">{{ item.nomor_transaksi }}</td>
+                <td class="p-2.5 text-slate-700 dark:text-slate-350">{{ item.deskripsi }}</td>
+                <td class="p-2.5 text-right pr-4 font-bold text-emerald-500 font-mono">{{ formatIDR(item.nominal) }}</td>
+              </tr>
+              <tr v-if="selectedEventDetail.revenue_details.length === 0">
+                <td colspan="4" class="p-4 text-center text-slate-400">Belum ada dana masuk terdaftar.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex items-center justify-end pt-1">
+          <button @click="isDetailModalOpen = false" class="px-5 py-2 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer">
+            Tutup
+          </button>
         </div>
       </div>
     </div>

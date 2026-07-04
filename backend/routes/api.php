@@ -90,6 +90,8 @@ Route::prefix('v1')->group(function () {
             Route::get('reports/profit-loss', [ReportController::class, 'profitLoss']);
             Route::get('reports/cash-flow', [ReportController::class, 'cashFlow']);
             Route::get('reports/ledger', [ReportController::class, 'ledger']);
+            Route::get('reports/events', [ReportController::class, 'eventsList']);
+            Route::get('reports/events/{event}', [ReportController::class, 'eventDetail']);
 
             // Tenant & User Settings
             Route::get('tenant', [TenantController::class, 'show']);

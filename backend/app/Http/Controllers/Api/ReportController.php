@@ -196,4 +196,128 @@ class ReportController extends Controller
             'ledger' => $ledgerData
         ]);
     }
+
+    public function eventsList(Request $request): JsonResponse
+    {
+        $year = $request->input('tahun', Carbon::now()->year);
+
+        $events = \App\Models\Event::with('client')
+            ->whereYear('tanggal_mulai', $year)
+            ->get();
+
+        $data = $events->map(function ($event) {
+            $totalCost = (float) $event->transactions()->where('tipe', 'kas_keluar')->sum('nominal');
+            $totalAnggaran = (float) $event->rabItems()->sum('subtotal');
+            $labaBersih = (float) $event->nilai_kontrak - $totalCost;
+            $margin = $event->nilai_kontrak > 0 ? ($labaBersih / (float) $event->nilai_kontrak) * 100 : 0.00;
+
+            return [
+                'id' => $event->id,
+                'nomor_event' => $event->nomor_event,
+                'nama_event' => $event->nama_event,
+                'client_name' => $event->client->nama ?? '-',
+                'tanggal_mulai' => $event->tanggal_mulai->format('Y-m-d'),
+                'tanggal_selesai' => $event->tanggal_selesai->format('Y-m-d'),
+                'nilai_kontrak' => (float) $event->nilai_kontrak,
+                'total_anggaran' => $totalAnggaran,
+                'total_realisasi' => $totalCost,
+                'laba_bersih' => $labaBersih,
+                'margin_persentase' => round($margin, 2),
+                'status' => $event->status
+            ];
+        });
+
+        return response()->json($data);
+    }
+
+    public function eventDetail(\App\Models\Event $event): JsonResponse
+    {
+        // Must belong to user's tenant
+        $user = auth()->user();
+        if ($event->tenant_id !== $user->tenant_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Event summary
+        $totalCost = (float) $event->transactions()->where('tipe', 'kas_keluar')->sum('nominal');
+        $totalAnggaran = (float) $event->rabItems()->sum('subtotal');
+        $labaBersih = (float) $event->nilai_kontrak - $totalCost;
+        $margin = $event->nilai_kontrak > 0 ? ($labaBersih / (float) $event->nilai_kontrak) * 100 : 0.00;
+
+        $summary = [
+            'id' => $event->id,
+            'nomor_event' => $event->nomor_event,
+            'nama_event' => $event->nama_event,
+            'jenis_event' => $event->jenis_event,
+            'client_name' => $event->client->nama ?? '-',
+            'client_perusahaan' => $event->client->perusahaan ?? '-',
+            'tanggal_mulai' => $event->tanggal_mulai->format('Y-m-d'),
+            'tanggal_selesai' => $event->tanggal_selesai->format('Y-m-d'),
+            'nilai_kontrak' => (float) $event->nilai_kontrak,
+            'total_anggaran' => $totalAnggaran,
+            'total_realisasi' => $totalCost,
+            'laba_bersih' => $labaBersih,
+            'margin_persentase' => round($margin, 2),
+            'status' => $event->status
+        ];
+
+        // Detail Anggaran (RAB Items)
+        $budgetDetails = $event->rabItems()
+            ->orderBy('kategori', 'asc')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'kategori' => $item->kategori,
+                    'deskripsi' => $item->deskripsi,
+                    'qty' => (float) $item->qty,
+                    'harga' => (float) $item->harga,
+                    'subtotal' => (float) $item->subtotal,
+                    'realisasi' => (float) $item->aktual_terbayar
+                ];
+            });
+
+        // Detail Realisasi Biaya (Transactions of type kas_keluar)
+        $realizationDetails = $event->transactions()
+            ->where('tipe', 'kas_keluar')
+            ->with('vendor')
+            ->orderBy('tanggal', 'asc')
+            ->get()
+            ->map(function ($t) {
+                return [
+                    'id' => $t->id,
+                    'tanggal' => $t->tanggal ? $t->tanggal->format('Y-m-d') : null,
+                    'nomor_transaksi' => $t->nomor_transaksi,
+                    'kategori' => $t->kategori,
+                    'deskripsi' => $t->deskripsi,
+                    'vendor_name' => $t->vendor->nama_vendor ?? '-',
+                    'nominal' => (float) $t->nominal,
+                    'metode_pembayaran' => $t->metode_pembayaran
+                ];
+            });
+
+        // Detail Pendapatan Masuk (Transactions of type kas_masuk)
+        $revenueDetails = $event->transactions()
+            ->where('tipe', 'kas_masuk')
+            ->orderBy('tanggal', 'asc')
+            ->get()
+            ->map(function ($t) {
+                return [
+                    'id' => $t->id,
+                    'tanggal' => $t->tanggal ? $t->tanggal->format('Y-m-d') : null,
+                    'nomor_transaksi' => $t->nomor_transaksi,
+                    'kategori' => $t->kategori,
+                    'deskripsi' => $t->deskripsi,
+                    'nominal' => (float) $t->nominal,
+                    'metode_pembayaran' => $t->metode_pembayaran
+                ];
+            });
+
+        return response()->json([
+            'summary' => $summary,
+            'budget_details' => $budgetDetails,
+            'realization_details' => $realizationDetails,
+            'revenue_details' => $revenueDetails
+        ]);
+    }
 }
