@@ -11,7 +11,7 @@ const events = ref<any[]>([])
 const clients = ref<any[]>([])
 const isModalOpen = ref(false)
 const activeEvent = ref<any>({
-  nomor_event: '', nama_event: '', jenis_event: 'Wedding', tanggal_mulai: '', tanggal_selesai: '', lokasi: '', nilai_kontrak: 0, status: 'draft', client_id: null
+  nomor_event: '', nama_event: '', jenis_event: 'Wedding', kategori: 'medium', tanggal_mulai: '', tanggal_selesai: '', lokasi: '', nilai_kontrak: 0, status: 'draft', client_id: null
 })
 
 const getStatusBadgeClass = (status: string) => {
@@ -54,6 +54,7 @@ const openCreateModal = () => {
     nomor_event: `EV-260600${events.value.length + 1}`,
     nama_event: '',
     jenis_event: 'Wedding',
+    kategori: 'medium',
     tanggal_mulai: new Date().toISOString().split('T')[0],
     tanggal_selesai: new Date().toISOString().split('T')[0],
     lokasi: '',
@@ -115,7 +116,12 @@ const formatIDR = (value: number) => {
         <div>
           <!-- Top badge -->
           <div class="flex items-center justify-between">
-            <span class="font-mono text-2xs text-slate-400 font-semibold">{{ ev.nomor_event }}</span>
+            <div class="flex items-center space-x-2">
+              <span class="font-mono text-2xs text-slate-400 font-semibold">{{ ev.nomor_event }}</span>
+              <span v-if="ev.kategori" class="px-2 py-0.5 text-3xs font-bold rounded-full bg-indigo-100/80 text-indigo-800 dark:bg-indigo-950/50 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-850">
+                {{ ev.kategori }}
+              </span>
+            </div>
             <span :class="[getStatusBadgeClass(ev.status), 'px-2 py-0.5 border rounded text-3xs font-bold uppercase tracking-wider']">
               {{ ev.status }}
             </span>
@@ -161,7 +167,7 @@ const formatIDR = (value: number) => {
         <h3 class="text-lg font-bold text-slate-900 dark:text-white">Registrasi Event Baru</h3>
 
         <form @submit.prevent="saveEvent" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-300">
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-3 gap-3">
             <div>
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nomor Event</label>
               <input v-model="activeEvent.nomor_event" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
@@ -174,6 +180,14 @@ const formatIDR = (value: number) => {
                 <option value="Corporate Event">Corporate Event</option>
                 <option value="Agency Expo">Agency Expo</option>
                 <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Kategori</label>
+              <select v-model="activeEvent.kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
               </select>
             </div>
           </div>

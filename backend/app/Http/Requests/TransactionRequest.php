@@ -49,7 +49,8 @@ class TransactionRequest extends FormRequest
             'pihak_terkait_npwp' => 'nullable|string|max:30',
             'nomor_bukti_potong' => 'nullable|string|max:50',
             'nomor_faktur_pajak' => 'nullable|string|max:50',
-            'kode_objek_pajak' => 'nullable|string|max:20'
+            'kode_objek_pajak' => 'nullable|string|max:20',
+            'dokumen_pendukung' => 'nullable|file|mimes:pdf,jpg,jpeg,png,zip,rar|max:10240'
         ];
     }
 }

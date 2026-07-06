@@ -14,6 +14,7 @@ class EventResource extends JsonResource
             'nomor_event' => $this->nomor_event,
             'nama_event' => $this->nama_event,
             'jenis_event' => $this->jenis_event,
+            'kategori' => $this->kategori,
             'tanggal_mulai' => $this->tanggal_mulai->format('Y-m-d'),
             'tanggal_selesai' => $this->tanggal_selesai->format('Y-m-d'),
             'lokasi' => $this->lokasi,

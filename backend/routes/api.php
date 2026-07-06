@@ -25,6 +25,9 @@ Route::prefix('v1')->group(function () {
     // Secure token query routes for streaming PII files
     Route::get('vendors/{vendor}/ktp', [VendorController::class, 'showKtp']);
     Route::get('vendors/{vendor}/npwp', [VendorController::class, 'showNpwp']);
+    Route::get('clients/{client}/ktp', [ClientController::class, 'showKtp']);
+    Route::get('clients/{client}/npwp', [ClientController::class, 'showNpwp']);
+    Route::get('transactions/{transaction}/dokumen', [TransactionController::class, 'showDocument']);
 
 
     // Authenticated routes

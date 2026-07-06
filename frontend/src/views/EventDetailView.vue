@@ -21,6 +21,7 @@ const event = ref<any>({
   nomor_event: '',
   nama_event: '',
   jenis_event: '',
+  kategori: 'medium',
   tanggal_mulai: '',
   tanggal_selesai: '',
   lokasi: '',
@@ -240,6 +241,7 @@ const editForm = ref({
   nomor_event: '',
   nama_event: '',
   jenis_event: '',
+  kategori: 'medium',
   tanggal_mulai: '',
   tanggal_selesai: '',
   lokasi: '',
@@ -253,6 +255,7 @@ const openEditModal = () => {
     nomor_event: event.value.nomor_event,
     nama_event: event.value.nama_event,
     jenis_event: event.value.jenis_event || 'Wedding',
+    kategori: event.value.kategori || 'medium',
     tanggal_mulai: event.value.tanggal_mulai,
     tanggal_selesai: event.value.tanggal_selesai,
     lokasi: event.value.lokasi,
@@ -419,6 +422,7 @@ const formatDate = (dateString: string) => {
           <div class="flex items-center space-x-2">
             <span class="text-3xs uppercase font-bold tracking-wider px-2 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-400 font-mono">{{ event.nomor_event }}</span>
             <span class="text-3xs uppercase font-extrabold px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded tracking-wider">{{ event.status }}</span>
+            <span v-if="event.kategori" class="text-3xs uppercase font-extrabold px-2 py-0.5 bg-indigo-950 text-indigo-400 border border-indigo-800 rounded tracking-wider">Kategori: {{ event.kategori }}</span>
           </div>
           <h2 class="text-xl font-bold mt-2.5">{{ event.nama_event }}</h2>
           <p class="text-xs text-slate-400 mt-1 flex items-center">
@@ -471,7 +475,7 @@ const formatDate = (dateString: string) => {
             Edit Event
           </button>
         </div>
-        <div class="grid grid-cols-2 gap-4 text-xs">
+        <div class="grid grid-cols-3 gap-4 text-xs">
           <div>
             <span class="text-slate-450 block font-semibold mb-0.5">Nama Event</span>
             <span class="font-bold text-slate-800 dark:text-slate-200">{{ event.nama_event }}</span>
@@ -481,6 +485,14 @@ const formatDate = (dateString: string) => {
             <span class="font-bold text-slate-800 dark:text-slate-200">{{ event.jenis_event }}</span>
           </div>
           <div>
+            <span class="text-slate-450 block font-semibold mb-0.5">Kategori</span>
+            <span class="font-bold uppercase text-slate-800 dark:text-slate-200">
+              <span v-if="event.kategori === 'small'" class="px-2 py-0.5 text-3xs font-bold rounded bg-blue-100/80 text-blue-800 dark:bg-blue-950/50 dark:text-blue-400 border border-blue-200/50 dark:border-blue-900/50">Small</span>
+              <span v-else-if="event.kategori === 'large'" class="px-2 py-0.5 text-3xs font-bold rounded bg-rose-100/80 text-rose-800 dark:bg-rose-950/50 dark:text-rose-400 border border-rose-200/50 dark:border-rose-900/50">Large</span>
+              <span v-else class="px-2 py-0.5 text-3xs font-bold rounded bg-emerald-100/80 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-900/50">Medium</span>
+            </span>
+          </div>
+          <div>
             <span class="text-slate-450 block font-semibold mb-0.5">Tanggal Mulai</span>
             <span class="font-medium text-slate-800 dark:text-slate-200">{{ event.tanggal_mulai }}</span>
           </div>
@@ -488,7 +500,8 @@ const formatDate = (dateString: string) => {
             <span class="text-slate-450 block font-semibold mb-0.5">Tanggal Selesai</span>
             <span class="font-medium text-slate-800 dark:text-slate-200">{{ event.tanggal_selesai }}</span>
           </div>
-          <div class="col-span-2">
+          <div></div>
+          <div class="col-span-3">
             <span class="text-slate-450 block font-semibold mb-0.5">Lokasi Venue</span>
             <span class="font-medium text-slate-800 dark:text-slate-200">{{ event.lokasi }}</span>
           </div>
@@ -798,7 +811,7 @@ const formatDate = (dateString: string) => {
         <h3 class="text-base font-bold text-slate-900 dark:text-white">Edit Detail Event</h3>
 
         <form @submit.prevent="updateEvent" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-350">
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-3 gap-3">
             <div>
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nomor Event</label>
               <input v-model="editForm.nomor_event" type="text" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none opacity-60 cursor-not-allowed" disabled />
@@ -811,6 +824,14 @@ const formatDate = (dateString: string) => {
                 <option value="Corporate Event">Corporate Event</option>
                 <option value="Agency Expo">Agency Expo</option>
                 <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Kategori</label>
+              <select v-model="editForm.kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
               </select>
             </div>
           </div>

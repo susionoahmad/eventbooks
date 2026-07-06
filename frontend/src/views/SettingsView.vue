@@ -58,6 +58,40 @@ const trialRemainingDays = computed(() => {
   }
 })
 
+// NPWP auto-format: support 15-digit (00.000.000.0-000.000) and 16-digit (000.000.000.0-000.000 / flat NIK)
+const formatNpwp = (val: string) => {
+  const digits = val.replace(/\D/g, '').slice(0, 16)
+  
+  if (digits.length === 16) {
+    if (digits.startsWith('0')) {
+      let out = ''
+      digits.split('').forEach((c, i) => {
+        if (i === 3 || i === 6 || i === 9 || i === 10 || i === 13) {
+          out += i === 10 ? '-' : '.'
+        }
+        out += c
+      })
+      return out
+    } else {
+      return digits
+    }
+  }
+  
+  let out = ''
+  digits.split('').forEach((c, i) => {
+    if (i === 2 || i === 5 || i === 8 || i === 9 || i === 12) {
+      out += i === 9 ? '-' : '.'
+    }
+    out += c
+  })
+  return out
+}
+
+const onNpwpInput = (e: Event) => {
+  const raw = (e.target as HTMLInputElement).value
+  const digits = raw.replace(/\D/g, '').slice(0, 16)
+  organization.value.npwp = formatNpwp(digits)
+}
 
 const organization = ref({
   name: '',
@@ -125,7 +159,7 @@ const fetchTenant = async () => {
     tenantInfo.value = res.data.data
     organization.value = {
       name: res.data.data.name || '',
-      npwp: res.data.data.npwp || '',
+      npwp: formatNpwp(res.data.data.npwp || ''),
       email: res.data.data.email || '',
       phone: res.data.data.telepon || '',
       address: res.data.data.alamat || '',
@@ -176,7 +210,7 @@ const saveOrganization = async () => {
     tenantInfo.value = res.data.data
     organization.value = {
       name: res.data.data.name || '',
-      npwp: res.data.data.npwp || '',
+      npwp: formatNpwp(res.data.data.npwp || ''),
       email: res.data.data.email || '',
       phone: res.data.data.telepon || '',
       address: res.data.data.alamat || '',
@@ -274,7 +308,7 @@ const deleteUser = async (user: any) => {
             </div>
             <div>
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">NPWP Badan Usaha</label>
-              <input v-model="organization.npwp" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500" required />
+              <input :value="organization.npwp" @input="onNpwpInput" type="text" placeholder="00.000.000.0-000.000" maxlength="21" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500 font-mono" required />
             </div>
             <div>
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email Korespondensi</label>

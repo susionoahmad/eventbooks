@@ -31,6 +31,7 @@ const newTrx = ref({
   pihak_terkait_npwp: '',
   nomor_faktur_pajak: ''
 })
+const fileDocumentInput = ref<File | null>(null)
 
 const getKategoriLabel = (kat: string) => {
   const map: Record<string, string> = {
@@ -183,13 +184,57 @@ watch(() => newTrx.value.tipe, (newTipe) => {
   }
 })
 
+const handleDocumentFileChange = (e: any) => {
+  const files = e.target.files
+  if (files && files.length > 0) {
+    fileDocumentInput.value = files[0]
+  }
+}
+
+const viewDocumentFile = (url: string) => {
+  const token = authStore.token || localStorage.getItem('token') || ''
+  const baseUrl = api.defaults.baseURL || import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1'
+  const cleanUrl = url.startsWith('/') ? url : '/' + url
+  const fullUrl = `${baseUrl}${cleanUrl}?token=${token}`
+  window.open(fullUrl, '_blank')
+}
+
 const saveTransaction = async () => {
   try {
-    const payload: any = { ...newTrx.value }
-    if (!payload.event_id) delete payload.event_id
-    if (!payload.vendor_id) delete payload.vendor_id
+    const formData = new FormData()
+    formData.append('tanggal', newTrx.value.tanggal)
+    formData.append('tipe', newTrx.value.tipe)
+    formData.append('kategori', newTrx.value.kategori)
+    formData.append('sub_kategori', newTrx.value.sub_kategori || '')
     
-    await api.post('/transactions', payload)
+    if (newTrx.value.event_id) {
+      formData.append('event_id', newTrx.value.event_id)
+    }
+    if (newTrx.value.vendor_id) {
+      formData.append('vendor_id', newTrx.value.vendor_id)
+    }
+    
+    formData.append('deskripsi', newTrx.value.deskripsi)
+    formData.append('nominal', String(newTrx.value.nominal))
+    formData.append('metode_pembayaran', newTrx.value.metode_pembayaran)
+    
+    formData.append('calculate_pph23', newTrx.value.calculate_pph23 ? '1' : '0')
+    formData.append('calculate_pph21', newTrx.value.calculate_pph21 ? '1' : '0')
+    formData.append('calculate_ppn_masukan', newTrx.value.calculate_ppn_masukan ? '1' : '0')
+    
+    formData.append('pihak_terkait_nama', newTrx.value.pihak_terkait_nama || '')
+    formData.append('pihak_terkait_npwp', newTrx.value.pihak_terkait_npwp || '')
+    formData.append('nomor_faktur_pajak', newTrx.value.nomor_faktur_pajak || '')
+
+    if (fileDocumentInput.value) {
+      formData.append('dokumen_pendukung', fileDocumentInput.value)
+    }
+    
+    await api.post('/transactions', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
     
     // reset form
     newTrx.value = {
@@ -209,11 +254,18 @@ const saveTransaction = async () => {
       pihak_terkait_npwp: '',
       nomor_faktur_pajak: ''
     }
+    fileDocumentInput.value = null
     
     isModalOpen.value = false
     fetchTransactions()
-  } catch (err) {
+  } catch (err: any) {
     console.error('Error saving transaction:', err)
+    const errors = err.response?.data?.errors
+    if (errors) {
+      alert(Object.values(errors).flat().join('\n'))
+    } else {
+      alert(err.response?.data?.message || 'Gagal menyimpan transaksi.')
+    }
   }
 }
 
@@ -295,6 +347,11 @@ const formatIDR = (value: number) => {
               <td class="p-4">
                 <span class="font-mono text-xs text-slate-400 block font-semibold">{{ trx.nomor_transaksi }}</span>
                 <span class="text-2xs text-slate-450 block mt-0.5">{{ trx.tanggal }}</span>
+                <div v-if="trx.dokumen_pendukung_url" class="mt-1">
+                  <button @click="viewDocumentFile(trx.dokumen_pendukung_url)" class="text-3xs text-emerald-500 hover:text-emerald-400 font-bold uppercase tracking-wider flex items-center bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700/60 transition-colors cursor-pointer inline-block">
+                    📄 Lampiran
+                  </button>
+                </div>
               </td>
               <td class="p-4">
                 <span class="font-bold text-slate-900 dark:text-white block">{{ trx.event?.nama_event || 'Pengeluaran Umum' }}</span>
@@ -415,6 +472,12 @@ const formatIDR = (value: number) => {
           <div>
             <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Deskripsi Detail</label>
             <textarea v-model="newTrx.deskripsi" rows="2" placeholder="e.g. Pembayaran DP sewa panggung ke vendor Dekorindo" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required></textarea>
+          </div>
+
+          <div>
+            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Dokumen Pendukung / Bukti Transaksi</label>
+            <input type="file" @change="handleDocumentFileChange" accept="image/*,application/pdf,application/zip,application/x-rar-compressed" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-2xs file:font-semibold file:bg-slate-100 file:text-slate-750 hover:file:bg-slate-200 dark:file:bg-slate-800 dark:file:text-slate-300 dark:hover:file:bg-slate-700 cursor-pointer" />
+            <span class="text-3xs text-slate-450 block mt-1">Format: PDF, Gambar, atau ZIP/RAR (Maks. 10MB)</span>
           </div>
 
           <!-- Tax Action Box (Outflows only) -->

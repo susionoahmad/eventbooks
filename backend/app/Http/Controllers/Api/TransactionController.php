@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class TransactionController extends Controller
 {
@@ -49,6 +50,13 @@ class TransactionController extends Controller
     public function store(TransactionRequest $request): JsonResponse
     {
         $validated = $request->validated();
+
+        if ($request->hasFile('dokumen_pendukung')) {
+            $file = $request->file('dokumen_pendukung');
+            $filename = time() . '_doc_' . $file->getClientOriginalName();
+            $path = $file->storeAs('transactions/documents', $filename, 'public');
+            $validated['dokumen_pendukung'] = $path;
+        }
         
         $transaction = DB::transaction(function () use ($validated, $request) {
             $tenantId = Auth::user()->tenant_id;
@@ -118,6 +126,7 @@ class TransactionController extends Controller
             ]));
 
             // Automatic Withholding Tax & PPN Masukan Calculations
+            $date = Carbon::parse($validated['tanggal']);
             $masaPajak = $date->format('Y-m');
 
             if ($pphCalc) {
@@ -171,11 +180,36 @@ class TransactionController extends Controller
 
     public function destroy(Transaction $transaction): JsonResponse
     {
-        // For audit trail compliance, transactions usually aren't deleted in SaaS, but we support it for MVP
+        // Delete file from storage
+        if ($transaction->dokumen_pendukung && Storage::disk('public')->exists($transaction->dokumen_pendukung)) {
+            Storage::disk('public')->delete($transaction->dokumen_pendukung);
+        }
+
         $transaction->delete();
 
         return response()->json([
             'message' => 'Transaction deleted successfully'
         ], 200);
+    }
+
+    public function showDocument(Request $request, Transaction $transaction)
+    {
+        // Try authenticating using token query parameter if not already authenticated
+        if (!\Illuminate\Support\Facades\Auth::check() && $request->filled('token')) {
+            $accessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($request->query('token'));
+            if ($accessToken && $accessToken->tokenable) {
+                \Illuminate\Support\Facades\Auth::login($accessToken->tokenable);
+            }
+        }
+
+        if ($transaction->tenant_id !== \Illuminate\Support\Facades\Auth::user()->tenant_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        if (!$transaction->dokumen_pendukung || !Storage::disk('public')->exists($transaction->dokumen_pendukung)) {
+            return response()->json(['message' => 'Dokumen pendukung tidak ditemukan'], 404);
+        }
+
+        return Storage::disk('public')->response($transaction->dokumen_pendukung);
     }
 }

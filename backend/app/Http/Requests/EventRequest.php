@@ -33,6 +33,7 @@ class EventRequest extends FormRequest
             ],
             'nama_event' => 'required|string|max:255',
             'jenis_event' => 'nullable|string|max:100',
+            'kategori' => 'required|in:small,medium,large',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'lokasi' => 'nullable|string',

@@ -23,7 +23,8 @@ class Transaction extends Model
         'deskripsi',
         'nominal',
         'nominal_gross',
-        'metode_pembayaran'
+        'metode_pembayaran',
+        'dokumen_pendukung'
     ];
 
     protected $casts = [

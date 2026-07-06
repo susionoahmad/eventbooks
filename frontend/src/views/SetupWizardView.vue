@@ -305,7 +305,7 @@ const skipStep = () => {
                 @input="onNpwpInput"
                 type="text"
                 placeholder="00.000.000.0-000.000"
-                maxlength="20"
+                maxlength="21"
                 class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all font-mono placeholder:text-slate-600"
               />
             </div>

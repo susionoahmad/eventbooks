@@ -29,6 +29,8 @@ class TransactionResource extends JsonResource
                 'id' => $this->vendor->id ?? null,
                 'nama_vendor' => $this->vendor->nama_vendor ?? null,
             ],
+            'dokumen_pendukung' => $this->dokumen_pendukung,
+            'dokumen_pendukung_url' => $this->dokumen_pendukung ? "/transactions/{$this->id}/dokumen" : null,
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),
         ];

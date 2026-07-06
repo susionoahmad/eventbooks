@@ -28,11 +28,21 @@ class ClientRequest extends FormRequest
                     ->ignore($clientId)
             ],
             'nama' => 'required|string|max:255',
+            'tipe' => 'required|in:perorangan,non_perorangan',
             'perusahaan' => 'nullable|string|max:255',
-            'npwp' => 'nullable|string|max:30',
+            'npwp' => $this->input('tipe') === 'non_perorangan' ? 'required|string|max:30' : 'nullable|string|max:30',
             'email' => 'nullable|email|max:255',
             'telepon' => 'nullable|string|max:50',
-            'alamat' => 'nullable|string'
+            'alamat' => 'nullable|string',
+            'file_ktp' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'file_npwp' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120'
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'npwp.required' => 'NPWP wajib diisi untuk klien Non-Perorangan.',
         ];
     }
 }
