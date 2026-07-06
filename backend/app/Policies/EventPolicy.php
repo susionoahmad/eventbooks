@@ -34,7 +34,17 @@ class EventPolicy
             return false;
         }
 
-        // Staff can update events (e.g. details, adding items), but status modifications are protected
+        // Only Admin, Finance, and Owner can update event details
+        return $user->isAdmin() || $user->isFinance();
+    }
+
+    public function manageTasks(User $user, Event $event): bool
+    {
+        if ($user->tenant_id !== $event->tenant_id) {
+            return false;
+        }
+
+        // Staff can add/modify/delete tasks
         return $user->isStaff();
     }
 
