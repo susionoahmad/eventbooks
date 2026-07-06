@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import api from '../services/api'
 
 const authStore = useAuthStore()
 const router = useRouter()
+const route = useRoute()
 
 const events = ref<any[]>([])
 const clients = ref<any[]>([])
@@ -44,9 +45,12 @@ const fetchClients = async () => {
   }
 }
 
-onMounted(() => {
-  fetchEvents()
-  fetchClients()
+onMounted(async () => {
+  await fetchEvents()
+  await fetchClients()
+  if (route.query.create === 'true' || route.query.create === '1') {
+    openCreateModal()
+  }
 })
 
 const openCreateModal = () => {
