@@ -32,6 +32,7 @@ const newTrx = ref({
   nomor_faktur_pajak: ''
 })
 const fileDocumentInput = ref<File | null>(null)
+const isSaving = ref(false)
 
 const getKategoriLabel = (kat: string) => {
   const map: Record<string, string> = {
@@ -187,7 +188,14 @@ watch(() => newTrx.value.tipe, (newTipe) => {
 const handleDocumentFileChange = (e: any) => {
   const files = e.target.files
   if (files && files.length > 0) {
-    fileDocumentInput.value = files[0]
+    const file = files[0]
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Ukuran berkas dokumen pendukung melebihi batas 10MB!')
+      e.target.value = ''
+      fileDocumentInput.value = null
+      return
+    }
+    fileDocumentInput.value = file
   }
 }
 
@@ -200,6 +208,8 @@ const viewDocumentFile = (url: string) => {
 }
 
 const saveTransaction = async () => {
+  if (isSaving.value) return
+  isSaving.value = true
   try {
     const formData = new FormData()
     formData.append('tanggal', newTrx.value.tanggal)
@@ -266,6 +276,8 @@ const saveTransaction = async () => {
     } else {
       alert(err.response?.data?.message || 'Gagal menyimpan transaksi.')
     }
+  } finally {
+    isSaving.value = false
   }
 }
 
@@ -548,8 +560,14 @@ const formatIDR = (value: number) => {
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">
-            <button type="button" @click="isModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-655 dark:text-slate-350 cursor-pointer">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Simpan & Posting</button>
+            <button type="button" :disabled="isSaving" @click="isModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-655 dark:text-slate-350 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">Batal</button>
+            <button type="submit" :disabled="isSaving" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer flex items-center justify-center space-x-1.5 disabled:opacity-60 disabled:cursor-not-allowed">
+              <svg v-if="isSaving" class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>{{ isSaving ? 'Menyimpan...' : 'Simpan & Posting' }}</span>
+            </button>
           </div>
         </form>
       </div>

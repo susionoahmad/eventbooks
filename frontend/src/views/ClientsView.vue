@@ -13,6 +13,7 @@ const activeClient = ref<any>({
 })
 const fileKtpInput = ref<File | null>(null)
 const fileNpwpInput = ref<File | null>(null)
+const isSaving = ref(false)
 
 // NPWP auto-format: support 15-digit (00.000.000.0-000.000) and 16-digit (000.000.000.0-000.000 / flat NIK)
 const formatNpwp = (val: string) => {
@@ -52,14 +53,28 @@ const onNpwpInput = (e: Event) => {
 const handleKtpFileChange = (e: any) => {
   const files = e.target.files
   if (files && files.length > 0) {
-    fileKtpInput.value = files[0]
+    const file = files[0]
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ukuran berkas KTP melebihi batas 5MB!')
+      e.target.value = ''
+      fileKtpInput.value = null
+      return
+    }
+    fileKtpInput.value = file
   }
 }
 
 const handleNpwpFileChange = (e: any) => {
   const files = e.target.files
   if (files && files.length > 0) {
-    fileNpwpInput.value = files[0]
+    const file = files[0]
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ukuran berkas NPWP melebihi batas 5MB!')
+      e.target.value = ''
+      fileNpwpInput.value = null
+      return
+    }
+    fileNpwpInput.value = file
   }
 }
 
@@ -109,6 +124,8 @@ const openEditModal = (client: any) => {
 }
 
 const saveClient = async () => {
+  if (isSaving.value) return
+  isSaving.value = true
   try {
     const formData = new FormData()
     formData.append('kode_klien', activeClient.value.kode_klien)
@@ -151,6 +168,8 @@ const saveClient = async () => {
     } else {
       alert(err.response?.data?.message || 'Gagal menyimpan data klien.')
     }
+  } finally {
+    isSaving.value = false
   }
 }
 
@@ -322,8 +341,14 @@ const deleteClient = async (id: number) => {
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">
-            <button type="button" @click="isModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Simpan</button>
+            <button type="button" :disabled="isSaving" @click="isModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">Batal</button>
+            <button type="submit" :disabled="isSaving" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer flex items-center justify-center space-x-1.5 disabled:opacity-60 disabled:cursor-not-allowed">
+              <svg v-if="isSaving" class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>{{ isSaving ? 'Menyimpan...' : 'Simpan' }}</span>
+            </button>
           </div>
         </form>
       </div>
