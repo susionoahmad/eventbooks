@@ -101,7 +101,6 @@ const formatIDR = (value: number) => {
         <p class="text-xs text-slate-500 mt-1">Daftar seluruh event, timeline eksekusi, nilai kontrak klien, dan status.</p>
       </div>
       <button 
-        v-if="authStore.userRole !== 'staff'"
         @click="openCreateModal"
         class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
       >

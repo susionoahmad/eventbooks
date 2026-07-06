@@ -25,7 +25,7 @@ class EventTaskController extends Controller
 
     public function store(EventTaskRequest $request, Event $event): JsonResponse
     {
-        Gate::authorize('manageTasks', $event);
+        Gate::authorize('update', $event);
 
         $validatedData = $request->validated();
         
@@ -39,7 +39,7 @@ class EventTaskController extends Controller
 
     public function update(EventTaskRequest $request, Event $event, EventTask $task): JsonResponse
     {
-        Gate::authorize('manageTasks', $event);
+        Gate::authorize('update', $event);
 
         if ($task->event_id !== $event->id) {
             return response()->json(['message' => 'Task does not belong to this event'], 400);
@@ -55,7 +55,7 @@ class EventTaskController extends Controller
 
     public function destroy(Event $event, EventTask $task): JsonResponse
     {
-        Gate::authorize('manageTasks', $event);
+        Gate::authorize('update', $event);
 
         if ($task->event_id !== $event->id) {
             return response()->json(['message' => 'Task does not belong to this event'], 400);

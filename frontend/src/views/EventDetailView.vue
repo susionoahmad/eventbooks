@@ -471,7 +471,7 @@ const formatDate = (dateString: string) => {
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm md:col-span-2 space-y-4">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
           <h3 class="font-bold text-slate-900 dark:text-white">Informasi Utama</h3>
-          <button v-if="authStore.userRole !== 'staff'" @click="openEditModal" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-800 dark:border-slate-700 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer">
+          <button @click="openEditModal" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-800 dark:border-slate-700 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer">
             Edit Event
           </button>
         </div>
@@ -563,7 +563,7 @@ const formatDate = (dateString: string) => {
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
         <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
           <h3 class="font-bold text-slate-900 dark:text-white text-sm">Rincian Rencana Anggaran Biaya (RAB)</h3>
-          <button v-if="authStore.userRole !== 'staff'" @click="openRabModal" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-800 dark:border-slate-700 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer">
+          <button @click="openRabModal" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-800 dark:border-slate-700 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer">
             + Tambah Item Anggaran
           </button>
         </div>
@@ -594,7 +594,7 @@ const formatDate = (dateString: string) => {
                   </span>
                 </td>
                 <td class="p-4 text-right">
-                  <button v-if="authStore.userRole !== 'staff'" @click="deleteRabItem(item.id)" class="text-rose-450 hover:text-rose-400 p-1 cursor-pointer">
+                  <button @click="deleteRabItem(item.id)" class="text-rose-450 hover:text-rose-400 p-1 cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                     </svg>
@@ -611,7 +611,7 @@ const formatDate = (dateString: string) => {
     <div v-if="activeTab === 'documents'" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm space-y-4">
       <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
         <h3 class="font-bold text-slate-900 dark:text-white text-sm">Dokumen & Lampiran Legal</h3>
-        <button v-if="authStore.userRole !== 'staff'" @click="openDocModal" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer">
+        <button @click="openDocModal" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer">
           + Upload Berkas
         </button>
       </div>
@@ -641,7 +641,7 @@ const formatDate = (dateString: string) => {
           <div class="flex items-center space-x-2">
             <button @click="downloadDocument(doc)" class="text-emerald-500 hover:text-emerald-400 text-xs font-semibold cursor-pointer">Unduh</button>
             <span class="text-slate-300 dark:text-slate-700 text-xs">&bull;</span>
-            <button v-if="authStore.userRole !== 'staff'" @click="deleteDocument(doc.id)" class="text-rose-500 hover:text-rose-400 text-xs font-semibold cursor-pointer">Hapus</button>
+            <button @click="deleteDocument(doc.id)" class="text-rose-500 hover:text-rose-400 text-xs font-semibold cursor-pointer">Hapus</button>
           </div>
         </div>
       </div>
@@ -866,8 +866,7 @@ const formatDate = (dateString: string) => {
               <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Status Event</label>
               <select 
                 v-model="editForm.status" 
-                :disabled="authStore.userRole === 'staff'"
-                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed"
+                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500"
               >
                 <option value="draft">Draft</option>
                 <option value="negosiasi">Negosiasi</option>
@@ -876,7 +875,6 @@ const formatDate = (dateString: string) => {
                 <option value="selesai">Selesai</option>
                 <option value="batal">Dibatalkan</option>
               </select>
-              <span v-if="authStore.userRole === 'staff'" class="text-3xs text-rose-500 mt-1 block font-semibold">Staff tidak dapat mengubah status.</span>
             </div>
           </div>
 

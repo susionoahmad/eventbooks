@@ -24,8 +24,8 @@ class EventPolicy
 
     public function create(User $user): bool
     {
-        // Only owners and admins can create new events
-        return $user->isAdmin();
+        // Owner, Admin, Finance, and Staff can create new events
+        return $user->isStaff();
     }
 
     public function update(User $user, Event $event): bool
@@ -34,17 +34,7 @@ class EventPolicy
             return false;
         }
 
-        // Only Admin, Finance, and Owner can update event details
-        return $user->isAdmin() || $user->isFinance();
-    }
-
-    public function manageTasks(User $user, Event $event): bool
-    {
-        if ($user->tenant_id !== $event->tenant_id) {
-            return false;
-        }
-
-        // Staff can add/modify/delete tasks
+        // Everyone including staff can update event details
         return $user->isStaff();
     }
 
@@ -54,8 +44,8 @@ class EventPolicy
             return false;
         }
 
-        // Only owners, finance managers, or admins can change event status (Draft -> DP -> Berjalan)
-        return $user->isAdmin() || $user->isFinance();
+        // Everyone including staff can change event status
+        return $user->isStaff();
     }
 
     public function delete(User $user, Event $event): bool
