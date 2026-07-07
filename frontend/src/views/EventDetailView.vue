@@ -37,7 +37,7 @@ const invitationLinkCopied = ref(false)
 
 const fetchInvitation = async () => {
   try {
-    const res = await api.get(`/events/${props.id}/invitation`)
+    const res = await api.get(`/events/${props.id}/invitation?t=${Date.now()}`)
     const invData = res.data.data
     invitationForm.value.title = invData.title || ''
     invitationForm.value.date_time_info = invData.date_time_info || ''
@@ -1067,7 +1067,7 @@ const formatDate = (dateString: string) => {
 
             <!-- Button Action -->
             <div class="relative z-1 pt-2 space-y-1 flex flex-col items-center">
-              <button v-if="invitationForm.maps_url && invitationForm.maps_url !== 'null'" type="button" class="px-4 py-2 rounded-lg text-[9px] font-bold shadow-md transition-all flex items-center space-x-1 focus:outline-none cursor-pointer" :style="{ backgroundColor: invitationForm.accent_color, color: invitationForm.button_text_color }">
+              <button v-if="invitationForm.maps_url" type="button" class="px-4 py-2 rounded-lg text-[9px] font-bold shadow-md transition-all flex items-center space-x-1 focus:outline-none cursor-pointer" :style="{ backgroundColor: invitationForm.accent_color, color: invitationForm.button_text_color }">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3">
                   <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
                 </svg>

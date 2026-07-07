@@ -82,7 +82,7 @@ const fetchPublicInvitation = async () => {
   loading.value = true
   try {
     const baseURL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1'
-    const res = await axios.get(`${baseURL}/events/${eventId}/invitation/public`)
+    const res = await axios.get(`${baseURL}/events/${eventId}/invitation/public?t=${Date.now()}`)
     
     eventInfo.value = res.data.event
     invitation.value = res.data.data
@@ -215,7 +215,7 @@ const handlePrint = () => {
         <!-- Footer Actions -->
         <div class="pt-4 space-y-4">
           <a 
-            v-if="invitation.maps_url && invitation.maps_url !== 'null'"
+            v-if="invitation.maps_url"
             :href="invitation.maps_url"
             target="_blank"
             class="inline-flex items-center space-x-2.5 px-6 py-3.5 rounded-xl text-xs font-bold tracking-wide shadow-md transition-all hover:scale-103 hover:shadow-lg focus:outline-none print-hidden"

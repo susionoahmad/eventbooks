@@ -121,6 +121,9 @@ class EventInvitationController extends Controller
         }
 
         $data = $invitation->toArray();
+        if (isset($data['maps_url']) && ($data['maps_url'] === 'null' || $data['maps_url'] === 'undefined')) {
+            $data['maps_url'] = '';
+        }
         if ($invitation->template_background) {
             $data['template_background_url'] = request()->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background';
         }
@@ -157,7 +160,12 @@ class EventInvitationController extends Controller
 
         $invitation->title = $request->input('title') ?: 'Undangan Event: ' . $event->nama_event;
         $invitation->date_time_info = $request->input('date_time_info') ?: '';
-        $invitation->maps_url = $request->input('maps_url') ?: '';
+        
+        $mapsUrl = $request->input('maps_url');
+        if ($mapsUrl === 'null' || $mapsUrl === 'undefined') {
+            $mapsUrl = '';
+        }
+        $invitation->maps_url = $mapsUrl ?: '';
         $invitation->font_family = $request->input('font_family') ?: 'Inter';
 
         $isCustom = $request->boolean('is_custom_template');
@@ -252,6 +260,9 @@ class EventInvitationController extends Controller
         ]);
 
         $data = $invitation->toArray();
+        if (isset($data['maps_url']) && ($data['maps_url'] === 'null' || $data['maps_url'] === 'undefined')) {
+            $data['maps_url'] = '';
+        }
         if ($invitation->template_background) {
             $data['template_background_url'] = $request->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background';
         }
@@ -311,6 +322,9 @@ class EventInvitationController extends Controller
         }
 
         $invData = $invitation->toArray();
+        if (isset($invData['maps_url']) && ($invData['maps_url'] === 'null' || $invData['maps_url'] === 'undefined')) {
+            $invData['maps_url'] = '';
+        }
         if ($invitation->template_background) {
             $invData['template_background_url'] = $request->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background';
         }
