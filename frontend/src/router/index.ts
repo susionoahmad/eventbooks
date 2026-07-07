@@ -21,6 +21,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true, setupOnly: true }
   },
   {
+    path: '/invitation/:id',
+    name: 'PublicInvitation',
+    component: () => import('../views/PublicInvitationView.vue'),
+    meta: { guestOnly: false, requiresAuth: false }
+  },
+  {
     path: '/',
     component: () => import('../layouts/AdminLayout.vue'),
     meta: { requiresAuth: true },

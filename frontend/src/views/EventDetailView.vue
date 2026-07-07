@@ -13,7 +13,150 @@ const props = defineProps({
 })
 
 // Active tab
-const activeTab = ref<'detail' | 'rab' | 'transactions' | 'documents' | 'tasks'>('rab')
+const activeTab = ref<'detail' | 'rab' | 'transactions' | 'documents' | 'tasks' | 'invitation'>('rab')
+
+// Invitation states
+const invitationForm = ref({
+  title: '',
+  date_time_info: '',
+  maps_url: '',
+  is_custom_template: false,
+  preset_template: 'classic',
+  background_image: null as File | null,
+  background_color: '#ffffff',
+  primary_color: '#1a1a1a',
+  accent_color: '#4f46e5',
+  text_color: '#1a1a1a',
+  button_text_color: '#ffffff',
+  font_family: 'Inter'
+})
+
+const isCustomImagePreview = ref<string | null>(null)
+const isSavingInvitation = ref(false)
+const invitationLinkCopied = ref(false)
+
+const fetchInvitation = async () => {
+  try {
+    const res = await api.get(`/events/${props.id}/invitation`)
+    const invData = res.data.data
+    invitationForm.value.title = invData.title || ''
+    invitationForm.value.date_time_info = invData.date_time_info || ''
+    invitationForm.value.maps_url = invData.maps_url || ''
+    invitationForm.value.is_custom_template = !!invData.is_custom_template
+    invitationForm.value.preset_template = invData.preset_template || 'classic'
+    invitationForm.value.background_color = invData.background_color || '#ffffff'
+    invitationForm.value.primary_color = invData.primary_color || '#1a1a1a'
+    invitationForm.value.accent_color = invData.accent_color || '#4f46e5'
+    invitationForm.value.text_color = invData.text_color || '#1a1a1a'
+    invitationForm.value.button_text_color = invData.button_text_color || '#ffffff'
+    invitationForm.value.font_family = invData.font_family || 'Inter'
+    
+    if (invData.template_background_url) {
+      isCustomImagePreview.value = invData.template_background_url
+    } else {
+      isCustomImagePreview.value = null
+    }
+    
+    if (invitationForm.value.font_family) {
+      loadGoogleFont(invitationForm.value.font_family)
+    }
+  } catch (err) {
+    console.error('Error fetching invitation settings:', err)
+  }
+}
+
+const handleBgFileChange = (e: any) => {
+  const files = e.target.files
+  if (files && files.length > 0) {
+    invitationForm.value.background_image = files[0]
+    isCustomImagePreview.value = URL.createObjectURL(files[0])
+  }
+}
+
+const selectPresetColors = (presetName: string) => {
+  const presets: Record<string, any> = {
+    classic: { bg: '#ffffff', primary: '#1a1a1a', accent: '#4f46e5', text: '#1a1a1a', btnText: '#ffffff', font: 'Inter' },
+    elegant: { bg: '#111827', primary: '#f9fafb', accent: '#d4af37', text: '#f9fafb', btnText: '#111827', font: 'Playfair Display' },
+    floral: { bg: '#fdf2f8', primary: '#831843', accent: '#db2777', text: '#831843', btnText: '#ffffff', font: 'Sacramento' },
+    modern: { bg: '#f3f4f6', primary: '#111827', accent: '#06b6d4', text: '#111827', btnText: '#ffffff', font: 'Montserrat' },
+    sunset: { bg: '#fff7ed', primary: '#7c2d12', accent: '#ea580c', text: '#7c2d12', btnText: '#ffffff', font: 'Lora' },
+    rustic_elegance: { bg: '#fafaf9', primary: '#44403c', accent: '#78716c', text: '#44403c', btnText: '#ffffff', font: 'Playfair Display' },
+    cyber_neon: { bg: '#030712', primary: '#f3f4f6', accent: '#ec4899', text: '#f3f4f6', btnText: '#ffffff', font: 'Montserrat' },
+    royal_corporate: { bg: '#0f172a', primary: '#f8fafc', accent: '#2563eb', text: '#f8fafc', btnText: '#ffffff', font: 'Cinzel' },
+    warm_leafy: { bg: '#f0fdf4', primary: '#14532d', accent: '#16a34a', text: '#14532d', btnText: '#ffffff', font: 'Lora' }
+  }
+  
+  const selected = presets[presetName] || presets.classic
+  invitationForm.value.background_color = selected.bg
+  invitationForm.value.primary_color = selected.primary
+  invitationForm.value.accent_color = selected.accent
+  invitationForm.value.text_color = selected.text
+  invitationForm.value.button_text_color = selected.btnText
+  invitationForm.value.font_family = selected.font
+  
+  loadGoogleFont(selected.font)
+}
+
+const loadGoogleFont = (fontName: string) => {
+  if (!fontName || fontName === 'Inter') return
+  const fontId = 'dynamic-invitation-font-' + fontName.replace(/\s+/g, '-').toLowerCase()
+  if (document.getElementById(fontId)) return
+  
+  const link = document.createElement('link')
+  link.id = fontId
+  link.rel = 'stylesheet'
+  link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/\s+/g, '+')}:wght@400;700&display=swap`
+  document.head.appendChild(link)
+}
+
+const saveInvitation = async () => {
+  isSavingInvitation.value = true
+  const formData = new FormData()
+  formData.append('title', invitationForm.value.title)
+  formData.append('date_time_info', invitationForm.value.date_time_info)
+  formData.append('maps_url', invitationForm.value.maps_url)
+  formData.append('is_custom_template', invitationForm.value.is_custom_template ? '1' : '0')
+  formData.append('preset_template', invitationForm.value.preset_template)
+  formData.append('font_family', invitationForm.value.font_family)
+  
+  if (invitationForm.value.is_custom_template) {
+    if (invitationForm.value.background_image) {
+      formData.append('background_image', invitationForm.value.background_image)
+    }
+  } else {
+    formData.append('background_color', invitationForm.value.background_color)
+    formData.append('primary_color', invitationForm.value.primary_color)
+    formData.append('accent_color', invitationForm.value.accent_color)
+    formData.append('text_color', invitationForm.value.text_color)
+    formData.append('button_text_color', invitationForm.value.button_text_color)
+  }
+
+  try {
+    await api.post(`/events/${props.id}/invitation`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    alert('Desain undangan berhasil disimpan!')
+    await fetchInvitation()
+  } catch (err) {
+    console.error('Error saving invitation:', err)
+    alert('Gagal menyimpan desain undangan.')
+  } finally {
+    isSavingInvitation.value = false
+  }
+}
+
+const publicInvitationUrl = computed(() => window.location.origin + '/invitation/' + props.id)
+
+const copyInvitationLink = () => {
+  navigator.clipboard.writeText(publicInvitationUrl.value).then(() => {
+    invitationLinkCopied.value = true
+    setTimeout(() => {
+      invitationLinkCopied.value = false
+    }, 2000)
+  })
+}
 
 // Event reactive state initialized with placeholders to prevent mount exceptions
 const event = ref<any>({
@@ -175,6 +318,7 @@ onMounted(() => {
   fetchEventAndRab()
   fetchDocuments()
   fetchTasks()
+  fetchInvitation()
 })
 
 // RAB Calculations
@@ -462,6 +606,12 @@ const formatDate = (dateString: string) => {
         >
           Daftar Tugas ({{ tasks.length }})
         </button>
+        <button 
+          @click="activeTab = 'invitation'"
+          :class="[activeTab === 'invitation' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer']"
+        >
+          Desain Undangan
+        </button>
       </div>
     </div>
 
@@ -718,6 +868,214 @@ const formatDate = (dateString: string) => {
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 5: Invitation Design -->
+    <div v-if="activeTab === 'invitation'" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Controls Panel (Left, 7 cols) -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm lg:col-span-7 space-y-6 text-xs text-slate-750 dark:text-slate-300">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <h3 class="text-sm font-bold text-slate-900 dark:text-white">Pengaturan Desain Undangan Digital</h3>
+          <span class="text-3xs uppercase font-extrabold px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded tracking-wider">Aktif</span>
+        </div>
+
+        <form @submit.prevent="saveInvitation" class="space-y-4">
+          <div>
+            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Judul Undangan</label>
+            <input v-model="invitationForm.title" type="text" placeholder="e.g. The Grand Wedding of Alice & Bob" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500 font-semibold" required />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Waktu & Tanggal Informasi</label>
+              <input v-model="invitationForm.date_time_info" type="text" placeholder="e.g. Minggu, 12 Oktober 2026 jam 19.00 WIB" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500" required />
+            </div>
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Font Family</label>
+              <select v-model="invitationForm.font_family" @change="loadGoogleFont(invitationForm.font_family)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500">
+                <option value="Inter">Inter (Sans-serif Modern)</option>
+                <option value="Playfair Display">Playfair Display (Serif Elegan)</option>
+                <option value="Montserrat">Montserrat (Sans Bold)</option>
+                <option value="Lora">Lora (Classic Serif)</option>
+                <option value="Sacramento">Sacramento (Script Cantik)</option>
+                <option value="Cinzel">Cinzel (Roman Klasik)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Link Google Maps Lokasi</label>
+            <input v-model="invitationForm.maps_url" type="text" placeholder="e.g. https://maps.app.goo.gl/..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500" />
+            <p class="text-4xs text-slate-450 dark:text-slate-500 mt-1">Masukkan URL Google Maps lengkap agar tamu undangan dapat melihat navigasi rute lokasi event.</p>
+          </div>
+
+          <div class="border-t border-slate-100 dark:border-slate-800 pt-4">
+            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tipe Latar Belakang</label>
+            <div class="flex space-x-4">
+              <label class="inline-flex items-center space-x-2 cursor-pointer">
+                <input type="radio" :value="false" v-model="invitationForm.is_custom_template" class="text-emerald-500 focus:ring-emerald-500" />
+                <span class="text-xs font-semibold">Gunakan Preset Bawaan</span>
+              </label>
+              <label class="inline-flex items-center space-x-2 cursor-pointer">
+                <input type="radio" :value="true" v-model="invitationForm.is_custom_template" class="text-emerald-500 focus:ring-emerald-500" />
+                <span class="text-xs font-semibold">Upload Gambar Kustom (Desainer Sendiri)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Preset template options -->
+          <div v-if="!invitationForm.is_custom_template" class="space-y-3">
+            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Pilihan Preset Desain</label>
+            <select v-model="invitationForm.preset_template" @change="selectPresetColors(invitationForm.preset_template)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500 font-semibold capitalize">
+              <option value="classic">Classic (Clean White)</option>
+              <option value="elegant">Elegant (Gold & Dark Gray)</option>
+              <option value="floral">Floral (Romantic Pink)</option>
+              <option value="modern">Modern (Cyan Accent)</option>
+              <option value="sunset">Sunset (Orange warmth)</option>
+              <option value="rustic_elegance">Rustic Elegance (Stone Gray)</option>
+              <option value="cyber_neon">Cyber Neon (Deep Dark Pink)</option>
+              <option value="royal_corporate">Royal Corporate (Navy Blue)</option>
+              <option value="warm_leafy">Warm Leafy (Green forest)</option>
+            </select>
+          </div>
+
+          <!-- Custom background image upload option -->
+          <div v-else class="space-y-3">
+            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Unggah Gambar Latar Belakang</label>
+            <div class="flex items-center space-x-4">
+              <input type="file" @change="handleBgFileChange" accept="image/*" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-emerald-500" />
+            </div>
+            <p class="text-4xs text-emerald-500 dark:text-emerald-400 font-medium">Sistem otomatis mendeteksi palet warna dominan (Color Extraction) dan menjamin visibilitas teks agar anti teks mati.</p>
+          </div>
+
+          <!-- Advanced: Color adjustments (visible but automated) -->
+          <div class="border-t border-slate-100 dark:border-slate-800 pt-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-2xs font-bold text-slate-400 uppercase tracking-wider">Warna Palette Terdeteksi</span>
+              <span class="text-4xs bg-slate-100 dark:bg-slate-800 text-slate-500 px-1.5 py-0.5 rounded font-mono uppercase">Latar Belakang Otomatis</span>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <div>
+                <label class="block text-4xs font-semibold text-slate-400 mb-0.5">Background</label>
+                <div class="flex items-center space-x-1.5">
+                  <input type="color" v-model="invitationForm.background_color" class="w-6 h-6 rounded border-0 cursor-pointer p-0" />
+                  <span class="font-mono text-3xs">{{ invitationForm.background_color }}</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-4xs font-semibold text-slate-400 mb-0.5">Aksen / Tombol</label>
+                <div class="flex items-center space-x-1.5">
+                  <input type="color" v-model="invitationForm.accent_color" class="w-6 h-6 rounded border-0 cursor-pointer p-0" />
+                  <span class="font-mono text-3xs">{{ invitationForm.accent_color }}</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-4xs font-semibold text-slate-400 mb-0.5">Warna Judul</label>
+                <div class="flex items-center space-x-1.5">
+                  <input type="color" v-model="invitationForm.primary_color" class="w-6 h-6 rounded border-0 cursor-pointer p-0" />
+                  <span class="font-mono text-3xs">{{ invitationForm.primary_color }}</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-4xs font-semibold text-slate-400 mb-0.5">Warna Teks</label>
+                <div class="flex items-center space-x-1.5">
+                  <div class="w-6 h-6 rounded border border-slate-350 dark:border-slate-700 flex items-center justify-center font-bold text-3xs" :style="{ backgroundColor: invitationForm.background_color, color: invitationForm.text_color }">T</div>
+                  <span class="font-mono text-3xs">{{ invitationForm.text_color }}</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-4xs font-semibold text-slate-400 mb-0.5">Teks Tombol</label>
+                <div class="flex items-center space-x-1.5">
+                  <div class="w-6 h-6 rounded border border-slate-350 dark:border-slate-700 flex items-center justify-center font-bold text-3xs" :style="{ backgroundColor: invitationForm.accent_color, color: invitationForm.button_text_color }">B</div>
+                  <span class="font-mono text-3xs">{{ invitationForm.button_text_color }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <button type="submit" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-800 dark:border-slate-700 text-white rounded-xl font-bold cursor-pointer transition-colors" :disabled="isSavingInvitation">
+              {{ isSavingInvitation ? 'Menyimpan...' : 'Simpan Konfigurasi Undangan' }}
+            </button>
+          </div>
+        </form>
+
+        <!-- Share & Public Link section -->
+        <div class="border-t border-slate-100 dark:border-slate-800 pt-4 space-y-3">
+          <h4 class="text-2xs font-bold text-slate-400 uppercase tracking-wider">Bagikan Undangan Digital</h4>
+          <div class="flex items-center space-x-2">
+            <input type="text" readonly :value="publicInvitationUrl" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg font-mono text-xs select-all text-slate-500" />
+            <button @click="copyInvitationLink" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg cursor-pointer transition-colors flex items-center space-x-1 shrink-0">
+              <span>{{ invitationLinkCopied ? 'Tersalin!' : 'Salin Link' }}</span>
+            </button>
+            <a :href="'/invitation/' + props.id" target="_blank" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition-colors flex items-center justify-center shrink-0">
+              Buka
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Mockup Preview Panel (Right, 5 cols) -->
+      <div class="lg:col-span-5 flex flex-col items-center">
+        <span class="text-2xs font-bold text-slate-400 uppercase tracking-wider mb-2 self-start">Live Preview (Tampilan HP)</span>
+        
+        <!-- Smartphone Container -->
+        <div class="relative w-[300px] h-[580px] bg-slate-950 rounded-[40px] border-[10px] border-slate-800 dark:border-slate-700 shadow-2xl overflow-hidden flex flex-col">
+          <!-- Speaker/Camera Notch -->
+          <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-800 rounded-b-2xl z-10 flex items-center justify-center">
+            <div class="w-12 h-1 bg-slate-900 rounded-full mb-1"></div>
+            <div class="w-2.5 h-2.5 bg-slate-900 rounded-full absolute right-6 mb-1"></div>
+          </div>
+
+          <!-- Dynamic Screen View -->
+          <div class="flex-1 p-6 pt-12 flex flex-col text-center relative overflow-hidden transition-all duration-300" :class="[invitationForm.is_custom_template ? 'justify-end' : 'justify-between']" :style="[
+            invitationForm.is_custom_template && isCustomImagePreview
+              ? { backgroundImage: `url(${isCustomImagePreview})`, backgroundSize: '100% 100%', backgroundPosition: 'center', fontFamily: invitationForm.font_family, color: invitationForm.text_color }
+              : { backgroundColor: invitationForm.background_color, fontFamily: invitationForm.font_family, color: invitationForm.text_color }
+          ]">
+            <!-- Card Header -->
+            <div v-if="!invitationForm.is_custom_template" class="relative z-1 space-y-2">
+              <span class="text-[8px] uppercase tracking-widest font-extrabold px-2 py-0.5 bg-white/15 dark:bg-black/25 rounded-full inline-block backdrop-blur-xs border border-white/10" :style="{ color: invitationForm.accent_color }">
+                Undangan Resmi
+              </span>
+              <h2 class="text-lg font-bold tracking-tight leading-snug mt-2" :style="{ color: invitationForm.primary_color }">
+                {{ invitationForm.title || 'Judul Undangan Event' }}
+              </h2>
+              <div class="h-0.5 w-10 mx-auto my-2 opacity-50" :style="{ backgroundColor: invitationForm.accent_color }"></div>
+            </div>
+
+            <!-- Event Details -->
+            <div v-if="!invitationForm.is_custom_template" class="relative z-1 space-y-3 bg-black/5 dark:bg-white/5 p-4 rounded-xl border border-white/5 backdrop-blur-xs text-[10px]">
+              <div>
+                <span class="block font-bold opacity-50 uppercase text-[7px] tracking-wider mb-0.5">Penyelenggara</span>
+                <p class="font-bold opacity-85 leading-normal">{{ event.client?.perusahaan || event.client?.nama || 'EO Client' }}</p>
+              </div>
+
+              <div>
+                <span class="block font-bold opacity-50 uppercase text-[7px] tracking-wider mb-0.5">Waktu Event</span>
+                <p class="font-extrabold opacity-90 leading-normal">{{ invitationForm.date_time_info || 'Minggu, 12 Oktober 2026 jam 19.00 WIB' }}</p>
+              </div>
+
+              <div>
+                <span class="block font-bold opacity-50 uppercase text-[7px] tracking-wider mb-0.5">Lokasi Venue</span>
+                <p class="font-medium opacity-85 leading-normal">📍 {{ event.lokasi || 'Venue Terjadwal' }}</p>
+              </div>
+            </div>
+
+            <!-- Button Action -->
+            <div class="relative z-1 pt-2 space-y-1 flex flex-col items-center">
+              <button type="button" class="px-4 py-2 rounded-lg text-[9px] font-bold shadow-md transition-all flex items-center space-x-1 focus:outline-none cursor-pointer" :style="{ backgroundColor: invitationForm.accent_color, color: invitationForm.button_text_color }">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3">
+                  <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                </svg>
+                <span>Buka Google Maps</span>
+              </button>
+              <span class="text-[7px] opacity-40 font-mono tracking-wider block mt-2">Powered by EventBooks</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

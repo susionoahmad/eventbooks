@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\EventTaskController;
 use App\Http\Controllers\Api\AuditLogController;
+use App\Http\Controllers\Api\EventInvitationController;
 
 Route::prefix('v1')->group(function () {
     // Public routes
@@ -28,6 +29,7 @@ Route::prefix('v1')->group(function () {
     Route::get('clients/{client}/ktp', [ClientController::class, 'showKtp']);
     Route::get('clients/{client}/npwp', [ClientController::class, 'showNpwp']);
     Route::get('transactions/{transaction}/dokumen', [TransactionController::class, 'showDocument']);
+    Route::get('events/{event}/invitation/public', [EventInvitationController::class, 'showPublic']);
 
 
     // Authenticated routes
@@ -64,6 +66,10 @@ Route::prefix('v1')->group(function () {
             Route::post('events/{event}/tasks', [EventTaskController::class, 'store']);
             Route::put('events/{event}/tasks/{task}', [EventTaskController::class, 'update']);
             Route::delete('events/{event}/tasks/{task}', [EventTaskController::class, 'destroy']);
+
+            // Event Invitation routes
+            Route::get('events/{event}/invitation', [EventInvitationController::class, 'show']);
+            Route::post('events/{event}/invitation', [EventInvitationController::class, 'save']);
 
             // Bookkeeping Ledger routes
             Route::apiResource('transactions', TransactionController::class);
