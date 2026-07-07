@@ -122,7 +122,7 @@ class EventInvitationController extends Controller
 
         $data = $invitation->toArray();
         if ($invitation->template_background) {
-            $data['template_background_url'] = asset('storage/' . $invitation->template_background);
+            $data['template_background_url'] = request()->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background';
         }
 
         return response()->json(['data' => $data]);
@@ -253,7 +253,7 @@ class EventInvitationController extends Controller
 
         $data = $invitation->toArray();
         if ($invitation->template_background) {
-            $data['template_background_url'] = asset('storage/' . $invitation->template_background);
+            $data['template_background_url'] = $request->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background';
         }
 
         return response()->json([
@@ -312,7 +312,7 @@ class EventInvitationController extends Controller
 
         $invData = $invitation->toArray();
         if ($invitation->template_background) {
-            $invData['template_background_url'] = asset('storage/' . $invitation->template_background);
+            $invData['template_background_url'] = $request->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background';
         }
 
         return response()->json([
@@ -325,5 +325,26 @@ class EventInvitationController extends Controller
             ],
             'data' => $invData
         ]);
+    }
+
+    /**
+     * Stream the background image file directly from storage.
+     */
+    public function streamBackground(Request $request, $eventId)
+    {
+        $event = Event::withoutGlobalScopes()->findOrFail($eventId);
+        $invitation = EventInvitation::withoutGlobalScopes()->where('event_id', $event->id)->first();
+
+        if (!$invitation || !$invitation->template_background) {
+            abort(404);
+        }
+
+        $path = $invitation->template_background;
+
+        if (!Storage::disk('public')->exists($path)) {
+            abort(404);
+        }
+
+        return Storage::disk('public')->response($path);
     }
 }

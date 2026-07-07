@@ -30,6 +30,7 @@ Route::prefix('v1')->group(function () {
     Route::get('clients/{client}/npwp', [ClientController::class, 'showNpwp']);
     Route::get('transactions/{transaction}/dokumen', [TransactionController::class, 'showDocument']);
     Route::get('events/{event}/invitation/public', [EventInvitationController::class, 'showPublic']);
+    Route::get('events/{event}/invitation/background', [EventInvitationController::class, 'streamBackground']);
 
 
     // Authenticated routes
