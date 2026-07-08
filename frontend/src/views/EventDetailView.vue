@@ -28,7 +28,12 @@ const invitationForm = ref({
   accent_color: '#4f46e5',
   text_color: '#1a1a1a',
   button_text_color: '#ffffff',
-  font_family: 'Inter'
+  font_family: 'Inter',
+  maps_btn_top: 72,
+  maps_btn_left: 15,
+  maps_btn_width: 70,
+  maps_btn_height: 6,
+  maps_btn_text: 'Buka Google Maps'
 })
 
 const isCustomImagePreview = ref<string | null>(null)
@@ -50,6 +55,11 @@ const fetchInvitation = async () => {
     invitationForm.value.text_color = invData.text_color || '#1a1a1a'
     invitationForm.value.button_text_color = invData.button_text_color || '#ffffff'
     invitationForm.value.font_family = invData.font_family || 'Inter'
+    invitationForm.value.maps_btn_top = invData.maps_btn_top !== undefined && invData.maps_btn_top !== null ? parseFloat(invData.maps_btn_top) : 72
+    invitationForm.value.maps_btn_left = invData.maps_btn_left !== undefined && invData.maps_btn_left !== null ? parseFloat(invData.maps_btn_left) : 15
+    invitationForm.value.maps_btn_width = invData.maps_btn_width !== undefined && invData.maps_btn_width !== null ? parseFloat(invData.maps_btn_width) : 70
+    invitationForm.value.maps_btn_height = invData.maps_btn_height !== undefined && invData.maps_btn_height !== null ? parseFloat(invData.maps_btn_height) : 6
+    invitationForm.value.maps_btn_text = invData.maps_btn_text || 'Buka Google Maps'
     
     if (invData.template_background_url) {
       isCustomImagePreview.value = invData.template_background_url
@@ -118,8 +128,13 @@ const saveInvitation = async () => {
   formData.append('is_custom_template', invitationForm.value.is_custom_template ? '1' : '0')
   formData.append('preset_template', invitationForm.value.preset_template)
   formData.append('font_family', invitationForm.value.font_family)
+  formData.append('maps_btn_text', invitationForm.value.maps_btn_text || 'Buka Google Maps')
   
   if (invitationForm.value.is_custom_template) {
+    formData.append('maps_btn_top', String(invitationForm.value.maps_btn_top))
+    formData.append('maps_btn_left', String(invitationForm.value.maps_btn_left))
+    formData.append('maps_btn_width', String(invitationForm.value.maps_btn_width))
+    formData.append('maps_btn_height', String(invitationForm.value.maps_btn_height))
     if (invitationForm.value.background_image) {
       formData.append('background_image', invitationForm.value.background_image)
     }
@@ -905,10 +920,17 @@ const formatDate = (dateString: string) => {
             </div>
           </div>
 
-          <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Link Google Maps Lokasi</label>
-            <input v-model="invitationForm.maps_url" type="text" placeholder="e.g. https://maps.app.goo.gl/..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500" />
-            <p class="text-4xs text-slate-450 dark:text-slate-500 mt-1">Masukkan URL Google Maps lengkap agar tamu undangan dapat melihat navigasi rute lokasi event.</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Link Google Maps Lokasi</label>
+              <input v-model="invitationForm.maps_url" type="text" placeholder="e.g. https://maps.app.goo.gl/..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500" />
+              <p class="text-4xs text-slate-450 dark:text-slate-500 mt-1">Masukkan URL Google Maps lengkap.</p>
+            </div>
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Label Tombol Maps</label>
+              <input v-model="invitationForm.maps_btn_text" type="text" placeholder="e.g. Buka Google Maps" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500 font-semibold" />
+              <p class="text-4xs text-slate-450 dark:text-slate-500 mt-1">Teks yang akan muncul di tombol peta.</p>
+            </div>
           </div>
 
           <div class="border-t border-slate-100 dark:border-slate-800 pt-4">
@@ -942,12 +964,54 @@ const formatDate = (dateString: string) => {
           </div>
 
           <!-- Custom background image upload option -->
-          <div v-else class="space-y-3">
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Unggah Gambar Latar Belakang</label>
-            <div class="flex items-center space-x-4">
-              <input type="file" @change="handleBgFileChange" accept="image/*" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-emerald-500" />
+          <div v-else class="space-y-4">
+            <div>
+              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Unggah Gambar Latar Belakang</label>
+              <div class="flex items-center space-x-4">
+                <input type="file" @change="handleBgFileChange" accept="image/*" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-emerald-500" />
+              </div>
+              <p class="text-4xs text-emerald-500 dark:text-emerald-400 font-medium mt-1">Sistem otomatis mendeteksi palet warna dominan (Color Extraction) dan menjamin visibilitas teks agar anti teks mati.</p>
             </div>
-            <p class="text-4xs text-emerald-500 dark:text-emerald-400 font-medium">Sistem otomatis mendeteksi palet warna dominan (Color Extraction) dan menjamin visibilitas teks agar anti teks mati.</p>
+
+            <!-- Posisi Tombol Google Maps (Persentase) -->
+            <div class="border-t border-slate-100 dark:border-slate-800 pt-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-2xs font-bold text-slate-400 uppercase tracking-wider">Atur Posisi Tombol Google Maps</h4>
+                <button type="button" @click="invitationForm.maps_btn_top = 72; invitationForm.maps_btn_left = 15; invitationForm.maps_btn_width = 70; invitationForm.maps_btn_height = 6" class="text-4xs text-emerald-500 hover:text-emerald-400 font-bold uppercase transition-colors">Reset Posisi</button>
+              </div>
+              
+              <div>
+                <label class="flex justify-between text-4xs font-bold text-slate-450 dark:text-slate-500 uppercase mb-1">
+                  <span>Posisi Vertikal (Tinggi dari Atas)</span>
+                  <span class="font-mono">{{ invitationForm.maps_btn_top }}%</span>
+                </label>
+                <input type="range" min="0" max="100" step="0.5" v-model="invitationForm.maps_btn_top" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="flex justify-between text-4xs font-bold text-slate-450 dark:text-slate-500 uppercase mb-1">
+                    <span>Posisi Horizontal (Kiri)</span>
+                    <span class="font-mono">{{ invitationForm.maps_btn_left }}%</span>
+                  </label>
+                  <input type="range" min="0" max="100" step="0.5" v-model="invitationForm.maps_btn_left" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+                </div>
+                <div>
+                  <label class="flex justify-between text-4xs font-bold text-slate-450 dark:text-slate-500 uppercase mb-1">
+                    <span>Lebar Tombol</span>
+                    <span class="font-mono">{{ invitationForm.maps_btn_width }}%</span>
+                  </label>
+                  <input type="range" min="10" max="100" step="0.5" v-model="invitationForm.maps_btn_width" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+                </div>
+                <div>
+                  <label class="flex justify-between text-4xs font-bold text-slate-450 dark:text-slate-500 uppercase mb-1">
+                    <span>Tinggi Tombol</span>
+                    <span class="font-mono">{{ invitationForm.maps_btn_height }}%</span>
+                  </label>
+                  <input type="range" min="2" max="30" step="0.5" v-model="invitationForm.maps_btn_height" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Advanced: Color adjustments (visible but automated) -->
@@ -1065,13 +1129,36 @@ const formatDate = (dateString: string) => {
               </div>
             </div>
 
-            <!-- Button Action -->
-            <div class="relative z-1 pt-2 space-y-1 flex flex-col items-center">
+            <!-- Absolute Map Button for Custom Template (Mockup Preview) -->
+            <div 
+              v-if="invitationForm.is_custom_template && invitationForm.maps_url" 
+              class="absolute z-10 flex items-center justify-center pointer-events-none"
+              :style="{ 
+                top: invitationForm.maps_btn_top + '%', 
+                left: invitationForm.maps_btn_left + '%', 
+                width: invitationForm.maps_btn_width + '%',
+                height: invitationForm.maps_btn_height + '%'
+              }"
+            >
+              <button 
+                type="button" 
+                class="w-full h-full rounded-lg text-[8px] font-bold shadow-md transition-all flex items-center justify-center space-x-1 focus:outline-none pointer-events-auto cursor-pointer" 
+                :style="{ backgroundColor: invitationForm.accent_color, color: invitationForm.button_text_color }"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-2.5 h-2.5 shrink-0">
+                  <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                </svg>
+                <span>{{ invitationForm.maps_btn_text || 'Buka Google Maps' }}</span>
+              </button>
+            </div>
+
+            <!-- Button Action (Non-Custom Template) -->
+            <div v-if="!invitationForm.is_custom_template" class="relative z-1 pt-2 space-y-1 flex flex-col items-center">
               <button v-if="invitationForm.maps_url" type="button" class="px-4 py-2 rounded-lg text-[9px] font-bold shadow-md transition-all flex items-center space-x-1 focus:outline-none cursor-pointer" :style="{ backgroundColor: invitationForm.accent_color, color: invitationForm.button_text_color }">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3">
                   <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
                 </svg>
-                <span>Buka Google Maps</span>
+                <span>{{ invitationForm.maps_btn_text || 'Buka Google Maps' }}</span>
               </button>
               <span class="text-[7px] opacity-40 font-mono tracking-wider block mt-2">Powered by EventBooks</span>
             </div>

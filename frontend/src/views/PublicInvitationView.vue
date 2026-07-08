@@ -33,6 +33,11 @@ interface InvitationData {
   text_color: string
   button_text_color: string
   font_family: string
+  maps_btn_top?: number | string
+  maps_btn_left?: number | string
+  maps_btn_width?: number | string
+  maps_btn_height?: number | string
+  maps_btn_text?: string
 }
 
 const eventInfo = ref<EventInfo>({
@@ -53,7 +58,12 @@ const invitation = ref<InvitationData>({
   accent_color: '#4f46e5',
   text_color: '#1a1a1a',
   button_text_color: '#ffffff',
-  font_family: 'Inter'
+  font_family: 'Inter',
+  maps_btn_top: 72,
+  maps_btn_left: 15,
+  maps_btn_width: 70,
+  maps_btn_height: 6,
+  maps_btn_text: 'Buka Google Maps'
 })
 
 // Dynamic Google Fonts loader
@@ -173,6 +183,27 @@ const handlePrint = () => {
         </button>
       </div>
 
+      <!-- Absolute Map Button for Custom Template (Public View) -->
+      <a 
+        v-if="invitation.is_custom_template && invitation.maps_url && invitation.maps_btn_top !== undefined && invitation.maps_btn_top !== null"
+        :href="invitation.maps_url"
+        target="_blank"
+        class="absolute flex items-center justify-center text-center px-4 rounded-xl text-xs font-bold tracking-wide shadow-md transition-all hover:scale-103 hover:shadow-lg focus:outline-none print-hidden z-10"
+        :style="{ 
+          top: invitation.maps_btn_top + '%', 
+          left: invitation.maps_btn_left + '%', 
+          width: invitation.maps_btn_width + '%',
+          height: (invitation.maps_btn_height || 6) + '%',
+          backgroundColor: invitation.accent_color,
+          color: invitation.button_text_color
+        }"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 mr-2 shrink-0">
+          <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+        </svg>
+        <span>{{ invitation.maps_btn_text || 'Buka Google Maps' }}</span>
+      </a>
+
       <!-- Content wrapper -->
       <div class="relative z-1 flex-1 flex flex-col text-center" :class="[invitation.is_custom_template ? 'justify-end p-6' : 'justify-between p-8 sm:p-12 md:p-16']">
         <!-- Header Section -->
@@ -214,8 +245,9 @@ const handlePrint = () => {
 
         <!-- Footer Actions -->
         <div class="pt-4 space-y-4">
+          <!-- Only render inline button if it's NOT a custom template -->
           <a 
-            v-if="invitation.maps_url"
+            v-if="!invitation.is_custom_template && invitation.maps_url"
             :href="invitation.maps_url"
             target="_blank"
             class="inline-flex items-center space-x-2.5 px-6 py-3.5 rounded-xl text-xs font-bold tracking-wide shadow-md transition-all hover:scale-103 hover:shadow-lg focus:outline-none print-hidden"
@@ -224,7 +256,7 @@ const handlePrint = () => {
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
               <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
             </svg>
-            <span>Buka Google Maps</span>
+            <span>{{ invitation.maps_btn_text || 'Buka Google Maps' }}</span>
           </a>
 
           <!-- Functional maps text address for printed versions -->

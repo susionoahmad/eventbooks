@@ -116,6 +116,11 @@ class EventInvitationController extends Controller
                     'text_color' => '#1a1a1a',
                     'button_text_color' => '#ffffff',
                     'font_family' => 'Inter',
+                    'maps_btn_top' => 72.00,
+                    'maps_btn_left' => 15.00,
+                    'maps_btn_width' => 70.00,
+                    'maps_btn_text' => 'Buka Google Maps',
+                    'maps_btn_height' => 6.00,
                 ]
             ]);
         }
@@ -152,6 +157,12 @@ class EventInvitationController extends Controller
             'accent_color' => 'nullable|string|size:7',
             'text_color' => 'nullable|string|size:7',
             'button_text_color' => 'nullable|string|size:7',
+            // Coordinates validation
+            'maps_btn_top' => 'nullable|numeric|between:0,100',
+            'maps_btn_left' => 'nullable|numeric|between:0,100',
+            'maps_btn_width' => 'nullable|numeric|between:0,100',
+            'maps_btn_height' => 'nullable|numeric|between:0,100',
+            'maps_btn_text' => 'nullable|string|max:100',
         ]);
 
         $invitation = $event->invitation ?: new EventInvitation();
@@ -205,6 +216,15 @@ class EventInvitationController extends Controller
                 // Anti Teks Mati: dynamic text contrasting
                 $invitation->text_color = ColorExtractor::isDark($bgColor) ? '#ffffff' : '#1a1a1a';
                 $invitation->button_text_color = ColorExtractor::isDark($accentColor) ? '#ffffff' : '#1a1a1a';
+
+                // OCR Processing for Address Bounding Box / Google Maps link
+                $ocrData = \App\Services\OcrService::extractAddressCoordinates($absolutePath);
+                $invitation->maps_btn_top = $ocrData['maps_btn_top'];
+                $invitation->maps_btn_left = $ocrData['maps_btn_left'];
+                $invitation->maps_btn_width = $ocrData['maps_btn_width'];
+                if ($ocrData['maps_url'] && !$invitation->maps_url) {
+                    $invitation->maps_url = $ocrData['maps_url'];
+                }
             } else {
                 // If custom is toggled but no new file is uploaded, keep old image settings or apply values
                 $invitation->background_color = $request->input('background_color') ?: $invitation->background_color ?: '#ffffff';
@@ -226,6 +246,23 @@ class EventInvitationController extends Controller
             $invitation->accent_color = $request->input('accent_color') ?: $preset['accent_color'];
             $invitation->text_color = $request->input('text_color') ?: $preset['text_color'];
             $invitation->button_text_color = $request->input('button_text_color') ?: $preset['button_text_color'];
+        }
+
+        // Allow manual coordinates overrides
+        if ($request->has('maps_btn_top')) {
+            $invitation->maps_btn_top = $request->input('maps_btn_top') !== null && $request->input('maps_btn_top') !== 'null' ? (float)$request->input('maps_btn_top') : null;
+        }
+        if ($request->has('maps_btn_left')) {
+            $invitation->maps_btn_left = $request->input('maps_btn_left') !== null && $request->input('maps_btn_left') !== 'null' ? (float)$request->input('maps_btn_left') : null;
+        }
+        if ($request->has('maps_btn_width')) {
+            $invitation->maps_btn_width = $request->input('maps_btn_width') !== null && $request->input('maps_btn_width') !== 'null' ? (float)$request->input('maps_btn_width') : null;
+        }
+        if ($request->has('maps_btn_height')) {
+            $invitation->maps_btn_height = $request->input('maps_btn_height') !== null && $request->input('maps_btn_height') !== 'null' ? (float)$request->input('maps_btn_height') : null;
+        }
+        if ($request->has('maps_btn_text')) {
+            $invitation->maps_btn_text = $request->input('maps_btn_text') ?: 'Buka Google Maps';
         }
 
         // Allow manual color code override if user specifically requested (gives maximum freedom)
@@ -317,6 +354,11 @@ class EventInvitationController extends Controller
                     'text_color' => '#1a1a1a',
                     'button_text_color' => '#ffffff',
                     'font_family' => 'Inter',
+                    'maps_btn_top' => 72.00,
+                    'maps_btn_left' => 15.00,
+                    'maps_btn_width' => 70.00,
+                    'maps_btn_text' => 'Buka Google Maps',
+                    'maps_btn_height' => 6.00,
                 ]
             ]);
         }

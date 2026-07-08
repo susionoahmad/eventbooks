@@ -26,10 +26,19 @@ class EventInvitation extends Model
         'text_color',
         'button_text_color',
         'font_family',
+        'maps_btn_top',
+        'maps_btn_left',
+        'maps_btn_width',
+        'maps_btn_text',
+        'maps_btn_height',
     ];
 
     protected $casts = [
         'is_custom_template' => 'boolean',
+        'maps_btn_top' => 'float',
+        'maps_btn_left' => 'float',
+        'maps_btn_width' => 'float',
+        'maps_btn_height' => 'float',
     ];
 
     public function event()
