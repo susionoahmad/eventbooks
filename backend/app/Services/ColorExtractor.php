@@ -17,6 +17,10 @@ class ColorExtractor
             return self::getFallbackPalette($numColors);
         }
 
+        if (!function_exists('imagecreatefromjpeg') && !function_exists('imagecreatefrompng') && !function_exists('imagecreatetruecolor')) {
+            return self::getFallbackPalette($numColors);
+        }
+
         $info = @getimagesize($imagePath);
         if (!$info) {
             return self::getFallbackPalette($numColors);

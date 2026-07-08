@@ -25,3 +25,13 @@
 /* Enable manual class-based dark mode in Tailwind v4 */
 @variant dark (&:where(.dark, .dark *));
 
+/* Utility to hide scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+

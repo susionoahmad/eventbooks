@@ -596,34 +596,34 @@ const formatDate = (dateString: string) => {
       </div>
 
       <!-- Tab Buttons -->
-      <div class="flex space-x-1 border-t border-slate-800/80 pt-4 mt-6">
+      <div class="flex overflow-x-auto no-scrollbar space-x-1 border-t border-slate-800/80 pt-4 mt-6 pb-1">
         <button 
           @click="activeTab = 'detail'"
-          :class="[activeTab === 'detail' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer']"
+          :class="[activeTab === 'detail' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
         >
           Detail Event
         </button>
         <button 
           @click="activeTab = 'rab'"
-          :class="[activeTab === 'rab' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer']"
+          :class="[activeTab === 'rab' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
         >
           RAB Anggaran
         </button>
         <button 
           @click="activeTab = 'documents'"
-          :class="[activeTab === 'documents' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer']"
+          :class="[activeTab === 'documents' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
         >
           Berkas Lampiran ({{ documents.length }})
         </button>
         <button 
           @click="activeTab = 'tasks'"
-          :class="[activeTab === 'tasks' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer']"
+          :class="[activeTab === 'tasks' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
         >
           Daftar Tugas ({{ tasks.length }})
         </button>
         <button 
           @click="activeTab = 'invitation'"
-          :class="[activeTab === 'invitation' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer']"
+          :class="[activeTab === 'invitation' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
         >
           Desain Undangan
         </button>

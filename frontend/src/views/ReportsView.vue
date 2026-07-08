@@ -827,28 +827,28 @@ const exportExcel = () => {
     </div>
 
     <!-- Report Types Tab Buttons -->
-    <div class="flex space-x-1 border-b border-slate-200 dark:border-slate-800/80 pb-px">
+    <div class="flex overflow-x-auto no-scrollbar space-x-1 border-b border-slate-200 dark:border-slate-800/80 pb-px">
       <button 
         @click="activeReportTab = 'pl'"
-        :class="[activeReportTab === 'pl' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer']"
+        :class="[activeReportTab === 'pl' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer shrink-0']"
       >
         Laporan Laba Rugi (P&L)
       </button>
       <button 
         @click="activeReportTab = 'cashflow'"
-        :class="[activeReportTab === 'cashflow' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer']"
+        :class="[activeReportTab === 'cashflow' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer shrink-0']"
       >
         Laporan Arus Kas
       </button>
       <button 
         @click="activeReportTab = 'ledger'"
-        :class="[activeReportTab === 'ledger' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer']"
+        :class="[activeReportTab === 'ledger' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer shrink-0']"
       >
         Buku Besar Ringkas
       </button>
       <button 
         @click="activeReportTab = 'event'"
-        :class="[activeReportTab === 'event' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer']"
+        :class="[activeReportTab === 'event' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer shrink-0']"
       >
         Laporan Per Event
       </button>
