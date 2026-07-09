@@ -162,7 +162,18 @@ const saveInvitation = async () => {
   }
 }
 
-const publicInvitationUrl = computed(() => window.location.origin + '/invitation/' + props.id)
+const publicInvitationRelativeUrl = computed(() => {
+  if (!event.value || !event.value.nama_event) {
+    return '/invitation/' + props.id
+  }
+  const slug = event.value.nama_event
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '')
+  return '/invitation/' + props.id + (slug ? '-' + slug : '')
+})
+
+const publicInvitationUrl = computed(() => window.location.origin + publicInvitationRelativeUrl.value)
 
 const copyInvitationLink = () => {
   navigator.clipboard.writeText(publicInvitationUrl.value).then(() => {
@@ -1075,7 +1086,7 @@ const formatDate = (dateString: string) => {
             <button @click="copyInvitationLink" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg cursor-pointer transition-colors flex items-center space-x-1 shrink-0">
               <span>{{ invitationLinkCopied ? 'Tersalin!' : 'Salin Link' }}</span>
             </button>
-            <a :href="'/invitation/' + props.id" target="_blank" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition-colors flex items-center justify-center shrink-0">
+            <a :href="publicInvitationRelativeUrl" target="_blank" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition-colors flex items-center justify-center shrink-0">
               Buka
             </a>
           </div>
@@ -1153,14 +1164,13 @@ const formatDate = (dateString: string) => {
             </div>
 
             <!-- Button Action (Non-Custom Template) -->
-            <div v-if="!invitationForm.is_custom_template" class="relative z-1 pt-2 space-y-1 flex flex-col items-center">
+            <div v-if="!invitationForm.is_custom_template" class="relative z-1 pt-2 flex flex-col items-center">
               <button v-if="invitationForm.maps_url" type="button" class="px-4 py-2 rounded-lg text-[9px] font-bold shadow-md transition-all flex items-center space-x-1 focus:outline-none cursor-pointer" :style="{ backgroundColor: invitationForm.accent_color, color: invitationForm.button_text_color }">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3">
                   <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
                 </svg>
                 <span>{{ invitationForm.maps_btn_text || 'Buka Google Maps' }}</span>
               </button>
-              <span class="text-[7px] opacity-40 font-mono tracking-wider block mt-2">Powered by EventBooks</span>
             </div>
           </div>
         </div>

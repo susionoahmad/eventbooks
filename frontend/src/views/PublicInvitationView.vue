@@ -4,7 +4,8 @@ import { useRoute } from 'vue-router'
 import axios from 'axios'
 
 const route = useRoute()
-const eventId = route.params.id
+const rawId = route.params.id as string
+const eventId = rawId ? rawId.split('-')[0] : ''
 
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -262,10 +263,6 @@ const handlePrint = () => {
           <!-- Functional maps text address for printed versions -->
           <div class="hidden print-block text-4xs opacity-50 mt-4 leading-relaxed font-mono">
             Link Peta Lokasi: {{ invitation.maps_url || 'https://maps.google.com' }}
-          </div>
-          
-          <div class="text-4xs opacity-40 uppercase tracking-widest font-mono">
-            Powered by EventBooks
           </div>
         </div>
       </div>
