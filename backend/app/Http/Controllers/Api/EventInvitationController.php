@@ -436,7 +436,8 @@ class EventInvitationController extends Controller
         if ($invitation && $invitation->template_background) {
             $imageUrl = $request->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background';
         } else {
-            $imageUrl = $request->schemeAndHttpHost() . '/favicon.ico';
+            // Menggunakan gambar ilustrasi event berkualitas tinggi sebagai fallback default (dioptimalkan untuk WA)
+            $imageUrl = 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=600&auto=format&fit=crop';
         }
 
         return view('share.invitation_crawler', compact('title', 'description', 'imageUrl'));
