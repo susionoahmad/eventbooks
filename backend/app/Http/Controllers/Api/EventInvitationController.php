@@ -403,4 +403,42 @@ class EventInvitationController extends Controller
 
         return Storage::disk('public')->response($path);
     }
+
+    /**
+     * Show public page invitation details with Open Graph tags for crawlers.
+     */
+    public function showPublicCrawler(Request $request, $id)
+    {
+        // Extract numeric ID from slug if present (e.g. "12-wedding-party" -> 12)
+        $eventId = (int) explode('-', $id)[0];
+
+        // Load event without GlobalScopes to bypass tenant restrictions for public access
+        $event = Event::withoutGlobalScopes()->findOrFail($eventId);
+
+        $invitation = EventInvitation::withoutGlobalScopes()
+            ->where('event_id', $event->id)
+            ->first();
+
+        $title = $invitation && $invitation->title ? $invitation->title : 'Undangan Event: ' . $event->nama_event;
+        
+        $description = '';
+        if ($invitation && $invitation->date_time_info) {
+            $description = $invitation->date_time_info;
+        } else {
+            $description = $event->tanggal_mulai->format('d M Y') . ($event->tanggal_selesai && $event->tanggal_selesai != $event->tanggal_mulai ? ' s/d ' . $event->tanggal_selesai->format('d M Y') : '');
+        }
+
+        if ($event->lokasi) {
+            $description .= ' | Lokasi: ' . $event->lokasi;
+        }
+
+        $imageUrl = null;
+        if ($invitation && $invitation->template_background) {
+            $imageUrl = $request->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background';
+        } else {
+            $imageUrl = $request->schemeAndHttpHost() . '/favicon.ico';
+        }
+
+        return view('share.invitation_crawler', compact('title', 'description', 'imageUrl'));
+    }
 }

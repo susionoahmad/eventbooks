@@ -31,6 +31,7 @@ Route::prefix('v1')->group(function () {
     Route::get('transactions/{transaction}/dokumen', [TransactionController::class, 'showDocument']);
     Route::get('events/{event}/invitation/public', [EventInvitationController::class, 'showPublic']);
     Route::get('events/{event}/invitation/background', [EventInvitationController::class, 'streamBackground']);
+    Route::get('events/{id}/invitation/crawler', [EventInvitationController::class, 'showPublicCrawler']);
 
 
     // Authenticated routes
