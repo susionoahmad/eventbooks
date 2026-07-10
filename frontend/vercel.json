@@ -9,7 +9,7 @@
           "value": "(?i:.*(whatsapp|facebookexternalhit|twitterbot|slackbot|telegrambot).*)"
         }
       ],
-      "destination": "http://127.0.0.1:8000/api/v1/events/:id/invitation/crawler"
+      "destination": "https://api-eo.nessapos.my.id/api/v1/events/:id/invitation/crawler"
     },
     {
       "source": "/(.*)",
