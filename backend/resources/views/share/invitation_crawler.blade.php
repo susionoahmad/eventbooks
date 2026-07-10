@@ -6,9 +6,9 @@
     <title>{{ $title }}</title>
     
     <!-- Open Graph tags for WhatsApp & other social crawlers -->
+    <meta property="og:image" content="{{ $imageUrl }}" />
     <meta property="og:title" content="{{ $title }}" />
     <meta property="og:description" content="{{ $description }}" />
-    <meta property="og:image" content="{{ $imageUrl }}" />
     <meta property="og:type" content="website" />
     
     <!-- Fallback general meta tags -->

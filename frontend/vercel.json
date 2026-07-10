@@ -1,17 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/invitation/:id",
-      "has": [
-        {
-          "type": "header",
-          "key": "user-agent",
-          "value": "(?i:.*(whatsapp|facebookexternalhit|twitterbot|slackbot|telegrambot).*)"
-        }
-      ],
-      "destination": "https://api-eo.nessapos.my.id/api/v1/events/:id/invitation/crawler"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

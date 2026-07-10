@@ -193,6 +193,12 @@ class EventInvitationController extends Controller
                 // Delete old file if exists
                 if ($invitation->template_background && Storage::disk('public')->exists($invitation->template_background)) {
                     Storage::disk('public')->delete($invitation->template_background);
+                    
+                    // Delete old thumbnail if exists
+                    $oldThumb = 'invitations/' . $event->id . '/' . pathinfo($invitation->template_background, PATHINFO_FILENAME) . '_thumb.jpg';
+                    if (Storage::disk('public')->exists($oldThumb)) {
+                        Storage::disk('public')->delete($oldThumb);
+                    }
                 }
 
                 $file = $request->file('background_image');
@@ -200,10 +206,17 @@ class EventInvitationController extends Controller
                 $path = $file->storeAs('invitations/' . $event->id, $filename, 'public');
                 $invitation->template_background = $path;
 
+                // Generate optimized landscape thumbnail for WhatsApp preview (1.91:1 ratio, terkompresi)
+                $thumbnailPath = 'invitations/' . $event->id . '/' . pathinfo($filename, PATHINFO_FILENAME) . '_thumb.jpg';
+                \App\Services\ThumbnailGenerator::generate(
+                    storage_path('app/public/' . $path),
+                    storage_path('app/public/' . $thumbnailPath)
+                );
+
                 // Color palette extraction using GD
                 $absolutePath = storage_path('app/public/' . $path);
                 $palette = ColorExtractor::extract($absolutePath, 5);
-
+                
                 // Set theme colors based on extracted palette
                 $bgColor = $palette[0] ?? '#ffffff';
                 $accentColor = $palette[1] ?? '#4f46e5';
@@ -237,6 +250,13 @@ class EventInvitationController extends Controller
             // Apply Preset colors. Delete custom background if toggled off
             if ($invitation->template_background && Storage::disk('public')->exists($invitation->template_background)) {
                 Storage::disk('public')->delete($invitation->template_background);
+                
+                // Delete thumbnail if exists
+                $oldThumb = 'invitations/' . $event->id . '/' . pathinfo($invitation->template_background, PATHINFO_FILENAME) . '_thumb.jpg';
+                if (Storage::disk('public')->exists($oldThumb)) {
+                    Storage::disk('public')->delete($oldThumb);
+                }
+                
                 $invitation->template_background = null;
             }
 
@@ -397,6 +417,14 @@ class EventInvitationController extends Controller
 
         $path = $invitation->template_background;
 
+        // If thumbnail is requested and exists, serve the thumbnail instead
+        if ($request->query('thumb') == 1) {
+            $thumbnailPath = 'invitations/' . $event->id . '/' . pathinfo($path, PATHINFO_FILENAME) . '_thumb.jpg';
+            if (Storage::disk('public')->exists($thumbnailPath)) {
+                $path = $thumbnailPath;
+            }
+        }
+
         if (!Storage::disk('public')->exists($path)) {
             abort(404);
         }
@@ -434,7 +462,12 @@ class EventInvitationController extends Controller
 
         $imageUrl = null;
         if ($invitation && $invitation->template_background) {
-            $imageUrl = $request->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background';
+            $thumbnailPath = 'invitations/' . $event->id . '/' . pathinfo($invitation->template_background, PATHINFO_FILENAME) . '_thumb.jpg';
+            if (Storage::disk('public')->exists($thumbnailPath)) {
+                $imageUrl = $request->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background?thumb=1';
+            } else {
+                $imageUrl = $request->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background';
+            }
         } else {
             // Menggunakan gambar ilustrasi event berkualitas tinggi sebagai fallback default (dioptimalkan untuk WA)
             $imageUrl = 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=600&auto=format&fit=crop';
