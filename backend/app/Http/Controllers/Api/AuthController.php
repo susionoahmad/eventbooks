@@ -62,7 +62,7 @@ class AuthController extends Controller
                 'user_agent' => $request->userAgent(),
             ]);
 
-            $token = $user->createToken('eventbooks_api_token')->plainTextToken;
+            $token = $user->createToken('arunika_api_token')->plainTextToken;
 
             return response()->json([
                 'token' => $token,
@@ -111,7 +111,7 @@ class AuthController extends Controller
         }
 
         // Generate Sanctum Token
-        $token = $user->createToken('eventbooks_api_token')->plainTextToken;
+        $token = $user->createToken('arunika_api_token')->plainTextToken;
 
         \App\Models\AuditLog::create([
             'tenant_id' => $user->tenant_id,

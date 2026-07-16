@@ -21,7 +21,7 @@ class TaxDueReminderMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Pemberitahuan Jatuh Tempo Pajak - EventBooks')
+        return $this->subject('Pemberitahuan Jatuh Tempo Pajak - arunika.co')
                     ->html($this->getHtmlContent());
     }
 
@@ -55,7 +55,7 @@ class TaxDueReminderMail extends Mailable
         <html>
         <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
             <div style='max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;'>
-                <h2 style='color: #10b981; border-bottom: 2px solid #10b981; padding-bottom: 10px;'>Pemberitahuan Jatuh Tempo Pajak</h2>
+                <h2 style='color: #00271c; border-bottom: 2px solid #d4af37; padding-bottom: 10px;'>Pemberitahuan Jatuh Tempo Pajak</h2>
                 <p>Halo <strong>{$this->tenant->name}</strong>,</p>
                 <p>Kami mendeteksi terdapat beberapa kewajiban perpajakan Anda yang <strong>belum disetor/dilaporkan</strong> dan mendekati tanggal jatuh tempo:</p>
                 
@@ -74,10 +74,10 @@ class TaxDueReminderMail extends Mailable
                     </tbody>
                 </table>
 
-                <p style='margin-top: 30px;'>Mohon segera lakukan penyelesaian pembayaran dan ubah status perpajakan Anda di portal <strong>EventBooks</strong> untuk menyelaraskan pembukuan kas Anda secara presisi.</p>
+                 <p style='margin-top: 30px;'>Mohon segera lakukan penyelesaian pembayaran dan ubah status perpajakan Anda di portal <strong>arunika.co</strong> untuk menyelaraskan pembukuan kas Anda secara presisi.</p>
                 
                 <div style='margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 11px; color: #777;'>
-                    <p>Pesan ini dikirimkan secara otomatis oleh sistem notifikasi perpajakan EventBooks.</p>
+                    <p>Pesan ini dikirimkan secara otomatis oleh sistem notifikasi perpajakan arunika.co.</p>
                 </div>
             </div>
         </body>

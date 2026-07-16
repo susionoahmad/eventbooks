@@ -1,12 +1,12 @@
 {
-  "name": "EventBooks - Portal Keuangan Event Organizer",
-  "short_name": "EventBooks",
-  "description": "Aplikasi manajemen keuangan dan pencatatan buku kas untuk Event Organizer.",
+  "name": "arunika.co - Creative Companion",
+  "short_name": "arunika.co",
+  "description": "Aplikasi manajemen keuangan dan pencatatan buku kas untuk Event Organizer & Creative Agencies.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#020617",
-  "theme_color": "#10b981",
+  "background_color": "#00271c",
+  "theme_color": "#00271c",
   "categories": ["business", "finance"],
   "icons": [
     {

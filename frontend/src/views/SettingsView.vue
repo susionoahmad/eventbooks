@@ -442,10 +442,10 @@ const deleteUser = async (user: any) => {
             </div>
           </template>
 
-          <!-- Password field for adding new user (optional, defaults to eventbooks123 if blank) -->
+          <!-- Password field for adding new user (optional, defaults to arunika123 if blank) -->
           <div v-if="modalMode === 'add'">
             <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Password (Opsional)</label>
-            <input v-model="userForm.password" type="password" placeholder="Bila kosong, default: eventbooks123" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
+            <input v-model="userForm.password" type="password" placeholder="Bila kosong, default: arunika123" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
           </div>
 
           <!-- Password field for change password mode -->

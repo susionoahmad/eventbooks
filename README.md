@@ -1,6 +1,6 @@
-# EventBooks - Portal Keuangan Event Organizer
+# arunika.co - Creative Companion Portal Keuangan
 
-EventBooks adalah platform pembukuan, keuangan, dan manajemen pajak terintegrasi yang dirancang khusus untuk **Event Organizers (EO)**, **Wedding Organizers (WO)**, **Concert/Festival Organizers**, dan **Creative Agencies**. Aplikasi ini memungkinkan organisasi mengelola anggaran event (RAB), memantau kewajiban vendor (Hutang), piutang klien, profitabilitas event secara real-time, serta kewajiban perpajakan (PPN & PPh) dalam satu dasbor terpadu.
+arunika.co adalah platform pembukuan, keuangan, dan manajemen pajak terintegrasi yang dirancang khusus untuk **Event Organizers (EO)**, **Wedding Organizers (WO)**, **Concert/Festival Organizers**, dan **Creative Agencies**. Aplikasi ini memungkinkan organisasi mengelola anggaran event (RAB), memantau kewajiban vendor (Hutang), piutang klien, profitabilitas event secara real-time, serta kewajiban perpajakan (PPN & PPh) dalam satu dasbor terpadu.
 
 ---
 
@@ -89,10 +89,10 @@ PROJECT/EO/
    ```
 
 **Akun Demo Tersemai (Seeded Accounts):**
-- **Owner**: `owner@eventbooks.com` (password: `password`)
-- **Finance Manager**: `finance@eventbooks.com` (password: `password`)
-- **Admin**: `admin@eventbooks.com` (password: `password`)
-- **Staff**: `staff@eventbooks.com` (password: `password`)
+- **Owner**: `owner@arunika.co` (password: `arunika123`)
+- **Finance Manager**: `finance@arunika.co` (password: `arunika123`)
+- **Admin**: `admin@arunika.co` (password: `arunika123`)
+- **Staff**: `staff@arunika.co` (password: `arunika123`)
 
 ### 2. Pengaturan Frontend (Vue 3 SPA)
 1. Masuk ke direktori frontend:

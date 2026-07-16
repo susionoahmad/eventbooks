@@ -83,7 +83,7 @@ defineEmits(['toggleMobileSidebar'])
 
       <!-- Search Bar Wrapper -->
       <div class="relative hidden sm:block">
-        <div class="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-1.5 w-64 md:w-80 transition-colors border border-transparent focus-within:border-emerald-500 dark:focus-within:border-emerald-500">
+        <div class="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-1.5 w-64 md:w-80 transition-colors border border-transparent focus-within:border-[#d4af37] dark:focus-within:border-[#d4af37]">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-slate-400 flex-shrink-0">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.637 10.637z" />
           </svg>
@@ -96,7 +96,7 @@ defineEmits(['toggleMobileSidebar'])
             class="ml-2 bg-transparent text-sm w-full outline-none text-slate-700 dark:text-slate-200"
           />
           <!-- Spinner/Loading Indicator -->
-          <span v-if="isSearching" class="w-3.5 h-3.5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin flex-shrink-0"></span>
+          <span v-if="isSearching" class="w-3.5 h-3.5 border-2 border-[#d4af37] border-t-transparent rounded-full animate-spin flex-shrink-0"></span>
         </div>
 
         <!-- Search Results Dropdown -->

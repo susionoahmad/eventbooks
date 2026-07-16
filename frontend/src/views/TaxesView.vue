@@ -548,7 +548,7 @@ const exportToPDF = () => {
     </head>
     <body>
       <h1>Rekapitulasi Perpajakan Bulanan</h1>
-      <p>Organisasi: ${authStore.user?.tenant?.name || 'EventBooks'} | Periode: ${filterMasa.value}</p>
+      <p>Organisasi: ${authStore.user?.tenant?.name || 'arunika.co'} | Periode: ${filterMasa.value}</p>
       
       <div class="summary-grid">
         <div class="summary-card">

@@ -154,12 +154,14 @@ const skipStep = () => {
       <!-- Top bar: logo + step info -->
       <div class="flex items-center justify-between mb-8">
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 bg-emerald-500/20 border border-emerald-500/30 rounded-xl flex items-center justify-center">
-            <svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          <div class="w-9 h-9 bg-[#001b13] border border-[#d4af37]/20 rounded-xl flex items-center justify-center">
+            <svg class="w-5 h-5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M30 75 C 22 75, 18 68, 25 58 C 32 48, 42 55, 48 62 L 62 20 C 64 15, 66 12, 68 12 C 70 12, 73 15, 76 22 L 90 75" stroke="#d4af37" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M 33 55 C 47 55, 57 48, 64 48 C 72 48, 79 53, 76 60 C 73 67, 57 62, 45 62 C 38 62, 31 64, 29 67 C 27 70, 31 72, 36 72" stroke="#d4af37" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M78 18 C78 13, 78 13, 83 13 C78 13, 78 13, 78 8 C78 13, 78 13, 73 13 C78 13, 78 13, 78 18 Z" fill="#d4af37" />
             </svg>
           </div>
-          <span class="text-white font-bold text-lg tracking-tight">EventBooks</span>
+          <span class="text-white font-serif font-bold text-lg tracking-tight">arunika.co</span>
         </div>
         <span class="text-slate-500 text-sm">Langkah {{ currentStep }} dari {{ totalSteps }}</span>
       </div>
@@ -429,7 +431,7 @@ const skipStep = () => {
             <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
-            <span>Akun tim dibuat dengan password default <strong class="font-mono">eventbooks123</strong>. Bagikan ke anggota &amp; minta ganti password setelah login.</span>
+            <span>Akun tim dibuat dengan password default <strong class="font-mono">arunika123</strong>. Bagikan ke anggota &amp; minta ganti password setelah login.</span>
           </div>
         </div>
 

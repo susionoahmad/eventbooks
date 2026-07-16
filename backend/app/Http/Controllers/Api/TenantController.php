@@ -95,7 +95,7 @@ class TenantController extends Controller
                     'tenant_id' => $tenant->id,
                     'name'      => $nameVal,
                     'email'     => $emailVal,
-                    'password'  => Hash::make('eventbooks123'),
+                    'password'  => Hash::make('arunika123'),
                     'role'      => $roleVal,
                     'is_active' => true,
                 ]);
@@ -155,7 +155,7 @@ class TenantController extends Controller
             'name'      => $validated['name'],
             'email'     => $validated['email'],
             'role'      => $validated['role'],
-            'password'  => Hash::make($validated['password'] ?? 'eventbooks123'),
+            'password'  => Hash::make($validated['password'] ?? 'arunika123'),
             'is_active' => true,
         ]);
 

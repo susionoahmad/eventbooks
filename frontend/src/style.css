@@ -3,7 +3,12 @@
 @theme {
   --font-sans: "Inter", sans-serif;
   
-  /* Additional customized transition tokens or utilities can go here */
+  /* Custom brand slate-green palette for dark mode harmony */
+  --color-slate-950: #00110c; /* Main page background (deep forest black) */
+  --color-slate-900: #001710; /* Cards, panels & navbar background */
+  --color-slate-800: #002218; /* Borders, dividers & dropdown hovers */
+  --color-slate-700: #002d20; /* Secondary borders & badges background */
+  --color-slate-600: #475569; /* Keep original or slightly adjusted if needed */
 }
 
 /* Custom CSS Scrollbar and Base resets */
@@ -19,7 +24,7 @@
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #10b981;
+  background: #d4af37;
 }
 
 /* Enable manual class-based dark mode in Tailwind v4 */

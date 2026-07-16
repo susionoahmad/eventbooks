@@ -43,74 +43,77 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-900 flex items-center justify-center px-4 transition-colors">
-    <div class="w-full max-w-md bg-slate-950 border border-slate-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+  <div class="min-h-screen bg-[#00271c] flex items-center justify-center px-4 transition-colors">
+    <div class="w-full max-w-md bg-[#001b13] border border-[#d4af37]/20 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
       <!-- Decorative Backdrop Blur -->
-      <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
-      <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl"></div>
-
+      <div class="absolute -top-10 -right-10 w-32 h-32 bg-[#d4af37]/5 rounded-full blur-2xl"></div>
+      <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-[#d4af37]/5 rounded-full blur-2xl"></div>
+ 
       <div class="text-center mb-8 relative">
-        <div class="inline-flex items-center justify-center w-14 h-14 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl mb-4">
-          <svg class="w-7 h-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-[#001710] border border-[#d4af37]/25 rounded-2xl mb-4">
+          <svg class="w-10 h-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M30 75 C 22 75, 18 68, 25 58 C 32 48, 42 55, 48 62 L 62 20 C 64 15, 66 12, 68 12 C 70 12, 73 15, 76 22 L 90 75" stroke="#d4af37" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M 33 55 C 47 55, 57 48, 64 48 C 72 48, 79 53, 76 60 C 73 67, 57 62, 45 62 C 38 62, 31 64, 29 67 C 27 70, 31 72, 36 72" stroke="#d4af37" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M78 18 C78 13, 78 13, 83 13 C78 13, 78 13, 78 8 C78 13, 78 13, 73 13 C78 13, 78 13, 78 18 Z" fill="#d4af37" />
           </svg>
         </div>
-        <h2 class="text-3xl font-extrabold text-white tracking-tight">EventBooks</h2>
-        <p class="text-slate-400 text-sm mt-2">Sistem Pembukuan &amp; Pajak Event Organizer</p>
+        <h2 class="text-3.5xl font-serif font-bold text-white tracking-tight leading-none">arunika.co</h2>
+        <p class="text-5xs uppercase tracking-widest text-[#d4af37] font-bold block mt-1">creative companion</p>
+        <p class="text-slate-400 text-sm mt-3">Portal Pembukuan &amp; Keuangan Terintegrasi</p>
       </div>
-
+ 
       <form @submit.prevent="handleLogin" class="space-y-5 relative">
         <div v-if="errorMsg" class="bg-rose-950/40 border border-rose-900/50 text-rose-400 p-3 rounded-lg text-xs font-semibold">
           {{ errorMsg }}
         </div>
-
+ 
         <div>
-          <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email</label>
+          <label class="block text-2xs font-bold text-slate-450 uppercase tracking-wider mb-1">Email</label>
           <input 
             v-model="email" 
             type="email" 
             placeholder="email@organisasi.com"
-            class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-emerald-500 transition-colors"
+            class="w-full bg-[#001710] border border-[#002d20] rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-[#d4af37] transition-colors"
             required 
           />
         </div>
-
+ 
         <div>
-          <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Password</label>
+          <label class="block text-2xs font-bold text-slate-450 uppercase tracking-wider mb-1">Password</label>
           <input 
             v-model="password" 
             type="password" 
             placeholder="••••••••"
-            class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-emerald-500 transition-colors"
+            class="w-full bg-[#001710] border border-[#002d20] rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-[#d4af37] transition-colors"
             required 
           />
         </div>
-
+ 
         <button 
           type="submit" 
           :disabled="isLoading"
-          class="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 text-white font-bold py-3 rounded-xl transition-colors shadow-md shadow-emerald-950/20 text-sm cursor-pointer"
+          class="w-full bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] font-bold py-3 rounded-xl transition-colors shadow-md shadow-[#d4af37]/10 text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span v-if="!isLoading">Masuk ke Portal</span>
           <span v-else class="flex items-center justify-center space-x-2">
-            <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+            <svg class="animate-spin h-5 w-5 text-[#001b13]" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             <span>Memvalidasi...</span>
           </span>
         </button>
-
+ 
         <!-- Register Link -->
         <div class="relative flex items-center">
-          <div class="flex-grow border-t border-slate-800"></div>
-          <span class="flex-shrink mx-3 text-slate-600 text-xs">atau</span>
-          <div class="flex-grow border-t border-slate-800"></div>
+          <div class="flex-grow border-t border-[#002d20]"></div>
+          <span class="flex-shrink mx-3 text-slate-650 text-xs">atau</span>
+          <div class="flex-grow border-t border-[#002d20]"></div>
         </div>
-
+ 
         <router-link
           to="/register"
-          class="block w-full text-center bg-transparent border border-slate-700 hover:border-emerald-600 hover:bg-emerald-950/30 text-slate-300 hover:text-emerald-400 font-semibold py-3 rounded-xl transition-all text-sm"
+          class="block w-full text-center bg-transparent border border-slate-700 hover:border-[#d4af37] hover:bg-[#d4af37]/5 text-slate-300 hover:text-[#d4af37] font-semibold py-3 rounded-xl transition-all text-sm"
         >
           Daftar Akun Organisasi Baru
         </router-link>

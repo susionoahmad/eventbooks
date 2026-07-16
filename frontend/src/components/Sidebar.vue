@@ -88,27 +88,45 @@ const navigationItems = [
   <aside 
     :class="[
       isCollapsed ? 'w-20' : 'w-64', 
-      'h-screen sticky top-0 bg-slate-900 text-slate-100 flex flex-col justify-between transition-all duration-300 border-r border-slate-800'
+      'h-screen sticky top-0 bg-[#00271c] text-slate-100 flex flex-col justify-between transition-all duration-300 border-r border-[#001f16]'
     ]"
   >
     <!-- Brand / Header -->
     <div>
-      <div class="h-16 flex items-center justify-between px-4 border-b border-slate-800">
-        <div v-if="!isCollapsed" class="flex items-center space-x-2 font-bold text-lg text-emerald-400">
-          <span>EventBooks</span>
+      <div class="h-16 flex items-center justify-between px-4 border-b border-[#001f16]">
+        <div v-if="!isCollapsed" class="flex items-center space-x-2.5">
+          <div class="w-8 h-8 bg-[#001b13] rounded-lg flex items-center justify-center flex-shrink-0 border border-[#d4af37]/20">
+            <svg class="w-5 h-5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M30 75 C 22 75, 18 68, 25 58 C 32 48, 42 55, 48 62 L 62 20 C 64 15, 66 12, 68 12 C 70 12, 73 15, 76 22 L 90 75" stroke="#d4af37" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M 33 55 C 47 55, 57 48, 64 48 C 72 48, 79 53, 76 60 C 73 67, 57 62, 45 62 C 38 62, 31 64, 29 67 C 27 70, 31 72, 36 72" stroke="#d4af37" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M78 18 C78 13, 78 13, 83 13 C78 13, 78 13, 78 8 C78 13, 78 13, 73 13 C78 13, 78 13, 78 18 Z" fill="#d4af37" />
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-serif font-bold text-base text-slate-100 tracking-tight leading-none">arunika.co</span>
+            <span class="text-5xs uppercase tracking-widest text-[#d4af37] font-bold block mt-0.5 leading-none">creative companion</span>
+          </div>
         </div>
-        <div v-else class="mx-auto text-emerald-400 font-extrabold text-xl">EB</div>
+        <div v-else class="mx-auto">
+          <div class="w-8 h-8 bg-[#001b13] rounded-lg flex items-center justify-center border border-[#d4af37]/20">
+            <svg class="w-5 h-5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M30 75 C 22 75, 18 68, 25 58 C 32 48, 42 55, 48 62 L 62 20 C 64 15, 66 12, 68 12 C 70 12, 73 15, 76 22 L 90 75" stroke="#d4af37" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M 33 55 C 47 55, 57 48, 64 48 C 72 48, 79 53, 76 60 C 73 67, 57 62, 45 62 C 38 62, 31 64, 29 67 C 27 70, 31 72, 36 72" stroke="#d4af37" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M78 18 C78 13, 78 13, 83 13 C78 13, 78 13, 78 8 C78 13, 78 13, 73 13 C78 13, 78 13, 78 18 Z" fill="#d4af37" />
+            </svg>
+          </div>
+        </div>
         
-        <button @click="toggleSidebar" class="p-1 rounded hover:bg-slate-800 hidden md:block">
-          <svg v-if="!isCollapsed" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <button @click="toggleSidebar" class="p-1 rounded hover:bg-[#001b13] hidden md:block">
+          <svg v-if="!isCollapsed" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-slate-400">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-slate-400">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>
         </button>
       </div>
-
+ 
       <!-- Navigation links -->
       <nav class="mt-6 px-3 space-y-1">
         <template v-for="item in navigationItems" :key="item.name">
@@ -116,13 +134,18 @@ const navigationItems = [
             v-if="item.roles.includes(authStore.userRole)"
             :to="item.path"
             :class="[
-              route.path === item.path ? 'bg-slate-800 text-emerald-400' : 'hover:bg-slate-800 text-slate-300 hover:text-slate-100',
-              'flex items-center px-3 py-2.5 rounded-lg transition-colors group cursor-pointer'
+              route.path === item.path 
+                ? 'bg-[#001b13]/80 text-[#d4af37] border border-[#d4af37]/20 shadow-inner' 
+                : 'hover:bg-[#001b13]/50 text-slate-350 hover:text-slate-100 border border-transparent',
+              'flex items-center px-3 py-2.5 rounded-lg transition-all group cursor-pointer'
             ]"
           >
             <!-- Dynamic Icon matching bottom nav configuration -->
             <span 
-              class="w-6 h-6 mr-3 text-slate-400 group-hover:text-emerald-400 transition-colors flex items-center justify-center"
+              :class="[
+                route.path === item.path ? 'text-[#d4af37]' : 'text-slate-400 group-hover:text-[#d4af37]',
+                'w-5 h-5 mr-3 transition-colors flex items-center justify-center'
+              ]"
               v-html="item.icon"
             ></span>
             <span v-if="!isCollapsed" class="text-sm font-medium">{{ item.name }}</span>
@@ -130,17 +153,17 @@ const navigationItems = [
         </template>
       </nav>
     </div>
-
+ 
     <!-- User Profile Area -->
-    <div class="p-4 border-t border-slate-800">
+    <div class="p-4 border-t border-[#001f16]">
       <div v-if="!isCollapsed">
-        <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">{{ authStore.organizationName }}</p>
+        <p class="text-xs text-slate-450 font-semibold uppercase tracking-wider">{{ authStore.organizationName }}</p>
         <p class="text-sm font-bold truncate text-slate-200">{{ authStore.user?.name }}</p>
-        <span class="inline-block mt-1 px-2 py-0.5 text-2xs font-bold uppercase tracking-wider bg-emerald-950 text-emerald-400 border border-emerald-800 rounded">
+        <span class="inline-block mt-1 px-2 py-0.5 text-2xs font-bold uppercase tracking-wider bg-[#001b13] text-[#d4af37] border border-[#d4af37]/30 rounded">
           {{ authStore.userRole }}
         </span>
       </div>
-      <div v-else class="text-center font-bold text-xs text-emerald-400">
+      <div v-else class="text-center font-bold text-sm text-[#d4af37]">
         {{ authStore.user?.name.charAt(0) }}
       </div>
     </div>

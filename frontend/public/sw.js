@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eventbooks-cache-v1';
+const CACHE_NAME = 'arunika-cache-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

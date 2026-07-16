@@ -193,7 +193,7 @@ const printInvoice = (invoice: any) => {
   const eventName = invoice.event?.nama_event || '-'
   const eventNo = invoice.event?.nomor_event || '-'
 
-  const tenantName = authStore.user?.tenant?.name || 'EventBooks Organizer'
+  const tenantName = authStore.user?.tenant?.name || 'arunika.co Organizer'
   const tenantAddress = authStore.user?.tenant?.alamat || 'Alamat belum dikonfigurasi'
   const tenantEmail = authStore.user?.tenant?.email || ''
   const tenantPhone = authStore.user?.tenant?.telepon || ''
@@ -219,10 +219,24 @@ const printInvoice = (invoice: any) => {
           <!-- Header -->
           <div class="flex justify-between items-start border-b border-slate-200 pb-6 mb-6">
             <div>
-              <h1 class="text-3xl font-extrabold text-emerald-600 tracking-tight">INVOICE</h1>
+              <h1 class="text-3xl font-extrabold text-[#00271c] tracking-tight">INVOICE</h1>
               <p class="text-xs text-slate-400 font-mono mt-1">NO: ${invoice.nomor_invoice}</p>
             </div>
-            <div class="text-right text-xs">
+            <div class="text-right text-xs flex flex-col items-end">
+              <!-- Logo and Brand -->
+              <div class="flex items-center space-x-2 mb-2">
+                <div class="w-8 h-8 bg-[#00271c] rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg class="w-5 h-5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30 75 C 22 75, 18 68, 25 58 C 32 48, 42 55, 48 62 L 62 20 C 64 15, 66 12, 68 12 C 70 12, 73 15, 76 22 L 90 75" stroke="#d4af37" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M 33 55 C 47 55, 57 48, 64 48 C 72 48, 79 53, 76 60 C 73 67, 57 62, 45 62 C 38 62, 31 64, 29 67 C 27 70, 31 72, 36 72" stroke="#d4af37" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M78 18 C78 13, 78 13, 83 13 C78 13, 78 13, 78 8 C78 13, 78 13, 73 13 C78 13, 78 13, 78 18 Z" fill="#d4af37" />
+                  </svg>
+                </div>
+                <div class="text-left">
+                  <span class="font-bold text-sm text-slate-900 tracking-tight block leading-none">arunika.co</span>
+                  <span class="text-5xs uppercase tracking-widest text-[#d4af37] font-bold block mt-0.5 leading-none">creative companion</span>
+                </div>
+              </div>
               <h2 class="font-bold text-slate-900 text-sm">${tenantName}</h2>
               <p class="text-slate-500 mt-1">${tenantAddress}</p>
               <p class="text-slate-500">${tenantEmail ? 'Email: ' + tenantEmail : ''} ${tenantPhone ? '| Tel: ' + tenantPhone : ''}</p>
@@ -243,7 +257,7 @@ const printInvoice = (invoice: any) => {
               <h3 class="font-bold text-slate-400 uppercase tracking-wider text-2xs mb-2">Rincian Invoice:</h3>
               <p class="text-slate-600"><span class="font-bold text-slate-800">Tanggal Terbit:</span> ${invoice.tanggal ? invoice.tanggal.split('T')[0] : '-'}</p>
               <p class="text-slate-600 mt-0.5"><span class="font-bold text-slate-800">Jatuh Tempo:</span> ${invoice.jatuh_tempo ? invoice.jatuh_tempo.split('T')[0] : '-'}</p>
-              <p class="text-slate-600 mt-0.5"><span class="font-bold text-slate-800">Termin/Jenis:</span> <span class="uppercase font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/50">${invoice.jenis_invoice}</span></p>
+              <p class="text-slate-600 mt-0.5"><span class="font-bold text-slate-800">Termin/Jenis:</span> <span class="uppercase font-bold text-[#00271c] bg-[#00271c]/5 px-1.5 py-0.5 rounded border border-[#00271c]/20">${invoice.jenis_invoice}</span></p>
               <p class="text-slate-600 mt-2"><span class="font-bold text-slate-800">Event Referensi:</span> ${eventName} (${eventNo})</p>
               ${invoice.nomor_faktur_pajak ? `<p class="text-slate-600 mt-1"><span class="font-bold text-slate-800">Faktur Pajak (NSFP):</span> <span class="font-mono text-3xs">${invoice.nomor_faktur_pajak}</span></p>` : ''}
             </div>
@@ -282,7 +296,7 @@ const printInvoice = (invoice: any) => {
                 <span>Total Tagihan</span>
                 <span class="font-mono">${formatIDRLocal(total)}</span>
               </div>
-              <div class="flex justify-between text-emerald-600 font-bold border-b border-slate-100 pb-1.5">
+              <div class="flex justify-between text-[#00271c] font-bold border-b border-slate-100 pb-1.5">
                 <span>Sudah Dibayar</span>
                 <span class="font-mono">- ${formatIDRLocal(paid)}</span>
               </div>
@@ -386,15 +400,15 @@ const printInvoice = (invoice: any) => {
       <div class="relative w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-xl space-y-4">
         <h3 class="text-base font-bold text-slate-900 dark:text-white">Pembuatan Invoice Baru</h3>
 
-        <form @submit.prevent="saveInvoice" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-350">
+        <form @submit.prevent="saveInvoice" class="space-y-3.5 text-xs text-slate-800 dark:text-slate-200">
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nomor Invoice</label>
-              <input v-model="newInvoice.nomor_invoice" type="text" placeholder="e.g. INV-2026-0046" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Nomor Invoice</label>
+              <input v-model="newInvoice.nomor_invoice" type="text" placeholder="e.g. INV-2026-0046" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Termin Invoice</label>
-              <select v-model="newInvoice.jenis_invoice" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Termin Invoice</label>
+              <select v-model="newInvoice.jenis_invoice" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]">
                 <option value="dp">Invoice DP (Down Payment)</option>
                 <option value="termin">Invoice Termin / Milestone</option>
                 <option value="pelunasan">Invoice Pelunasan</option>
@@ -404,56 +418,56 @@ const printInvoice = (invoice: any) => {
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Tanggal Terbit</label>
-              <input v-model="newInvoice.tanggal" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Tanggal Terbit</label>
+              <input v-model="newInvoice.tanggal" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Jatuh Tempo</label>
-              <input v-model="newInvoice.jatuh_tempo" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Jatuh Tempo</label>
+              <input v-model="newInvoice.jatuh_tempo" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]" required />
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Pilih Event</label>
-              <select v-model="newInvoice.event_id" @change="onEventChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500" required>
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Pilih Event</label>
+              <select v-model="newInvoice.event_id" @change="onEventChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]" required>
                 <option value="">-- Pilih Event --</option>
                 <option v-for="ev in events" :key="ev.id" :value="ev.id">{{ ev.nama_event }}</option>
               </select>
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nominal Sebelum Pajak</label>
-              <input v-model="newInvoice.subtotal" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Nominal Sebelum Pajak</label>
+              <input v-model="newInvoice.subtotal" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]" required />
             </div>
           </div>
 
           <div class="border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-3 bg-slate-50/50 dark:bg-slate-800/20">
-            <label class="flex items-center space-x-2 cursor-pointer text-xs font-semibold">
-              <input v-model="newInvoice.apply_ppn" type="checkbox" class="rounded text-emerald-600 focus:ring-emerald-500" />
+            <label class="flex items-center space-x-2 cursor-pointer text-xs font-semibold text-slate-800 dark:text-slate-200">
+              <input v-model="newInvoice.apply_ppn" type="checkbox" class="rounded text-[#00271c] focus:ring-[#d4af37]" />
               <span>Kenakan PPN Indonesia ({{ authStore.user?.tenant?.default_ppn_rate || 12 }}% DPP)</span>
             </label>
 
             <!-- NSFP Input (muncul hanya jika apply_ppn dicentang) -->
             <div v-if="newInvoice.apply_ppn" class="space-y-1 pt-1">
-              <label class="block text-3xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nomor Seri Faktur Pajak (NSFP)</label>
+              <label class="block text-3xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Nomor Seri Faktur Pajak (NSFP)</label>
               <input 
                 v-model="newInvoice.nomor_faktur_pajak" 
                 type="text" 
                 placeholder="Contoh: 002.26.12345678" 
-                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-emerald-500" 
+                class="w-full bg-white dark:bg-[#00110c] border border-slate-300 dark:border-slate-700 px-3 py-2 rounded-lg text-xs text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]" 
               />
             </div>
             
-            <div class="text-xs space-y-1.5 pt-1.5 border-t border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+            <div class="text-xs space-y-1.5 pt-1.5 border-t border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-350">
               <div class="flex justify-between">
                 <span>Subtotal (DPP)</span>
-                <span>{{ formatIDR(invoiceTotalPreview.sub) }}</span>
+                <span class="font-bold">{{ formatIDR(invoiceTotalPreview.sub) }}</span>
               </div>
               <div class="flex justify-between">
                 <span>PPN Keluaran ({{ authStore.user?.tenant?.default_ppn_rate || 12 }}%)</span>
-                <span>+ {{ formatIDR(invoiceTotalPreview.ppn) }}</span>
+                <span class="font-bold">+ {{ formatIDR(invoiceTotalPreview.ppn) }}</span>
               </div>
-              <div class="flex justify-between text-sm font-bold text-slate-900 dark:text-slate-200 pt-1.5 border-t border-dashed border-slate-200 dark:border-slate-800">
+              <div class="flex justify-between text-sm font-extrabold text-slate-900 dark:text-slate-100 pt-1.5 border-t border-dashed border-slate-200 dark:border-slate-800">
                 <span>Total Nilai Invoice</span>
                 <span>{{ formatIDR(invoiceTotalPreview.total) }}</span>
               </div>
@@ -461,8 +475,8 @@ const printInvoice = (invoice: any) => {
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">
-            <button type="button" @click="isCreateModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-650 dark:text-slate-350 cursor-pointer">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Terbitkan Invoice</button>
+            <button type="button" @click="isCreateModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-850 text-slate-700 dark:text-slate-300 cursor-pointer">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg font-bold text-xs cursor-pointer shadow-md shadow-[#d4af37]/10 transition-colors">Terbitkan Invoice</button>
           </div>
         </form>
       </div>
@@ -474,26 +488,26 @@ const printInvoice = (invoice: any) => {
       <div class="relative w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-xl space-y-4">
         <h3 class="text-base font-bold text-slate-900 dark:text-white">Registrasi Pembayaran Masuk</h3>
 
-        <form @submit.prevent="submitPayment" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-350">
+        <form @submit.prevent="submitPayment" class="space-y-3.5 text-xs text-slate-800 dark:text-slate-200">
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Invoice Referensi</label>
-            <input :value="selectedInvoice?.nomor_invoice" type="text" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-500 dark:text-slate-400 outline-none" disabled />
+            <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Invoice Referensi</label>
+            <input :value="selectedInvoice?.nomor_invoice" type="text" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 font-semibold outline-none" disabled />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Tanggal Bayar</label>
-              <input v-model="paymentForm.tanggal" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Tanggal Bayar</label>
+              <input v-model="paymentForm.tanggal" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nominal Pembayaran</label>
-              <input v-model="paymentForm.nominal" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Nominal Pembayaran</label>
+              <input v-model="paymentForm.nominal" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]" required />
             </div>
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Metode Pembayaran</label>
-            <select v-model="paymentForm.metode_pembayaran" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+            <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Metode Pembayaran</label>
+            <select v-model="paymentForm.metode_pembayaran" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]">
               <option value="transfer_bank">Transfer Bank</option>
               <option value="cash">Tunai / Cash</option>
               <option value="card">Kartu Kredit/Debet</option>
@@ -502,13 +516,13 @@ const printInvoice = (invoice: any) => {
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Bukti Transfer (Referensi/Catatan)</label>
-            <input v-model="paymentForm.bukti_transfer" type="text" placeholder="e.g. Ref No. BCA-982341" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
+            <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Bukti Transfer (Referensi/Catatan)</label>
+            <input v-model="paymentForm.bukti_transfer" type="text" placeholder="e.g. Ref No. BCA-982341" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]" />
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">
-            <button type="button" @click="isPaymentModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-650 dark:text-slate-350 cursor-pointer">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Posting Pembayaran</button>
+            <button type="button" @click="isPaymentModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-850 text-slate-700 dark:text-slate-300 cursor-pointer">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg font-bold text-xs cursor-pointer shadow-md shadow-[#d4af37]/10 transition-colors">Posting Pembayaran</button>
           </div>
         </form>
       </div>

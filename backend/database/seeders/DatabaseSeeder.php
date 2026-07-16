@@ -27,12 +27,12 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 2. Seed Users for each RBAC Role
-        $defaultPassword = Hash::make('password');
+        $defaultPassword = Hash::make('arunika123');
 
         User::create([
             'tenant_id' => $tenant->id,
             'name' => 'Alex Owner',
-            'email' => 'owner@eventbooks.com',
+            'email' => 'owner@arunika.co',
             'password' => $defaultPassword,
             'role' => 'owner',
             'telepon' => '081211112222',
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'tenant_id' => $tenant->id,
             'name' => 'Shinta Finance',
-            'email' => 'finance@eventbooks.com',
+            'email' => 'finance@arunika.co',
             'password' => $defaultPassword,
             'role' => 'finance_manager',
             'telepon' => '081233334444',
@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'tenant_id' => $tenant->id,
             'name' => 'Boni Admin',
-            'email' => 'admin@eventbooks.com',
+            'email' => 'admin@arunika.co',
             'password' => $defaultPassword,
             'role' => 'admin',
             'telepon' => '081255556666',
@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'tenant_id' => $tenant->id,
             'name' => 'Rudi Staff',
-            'email' => 'staff@eventbooks.com',
+            'email' => 'staff@arunika.co',
             'password' => $defaultPassword,
             'role' => 'staff',
             'telepon' => '081277778888',

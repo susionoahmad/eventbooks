@@ -830,25 +830,25 @@ const exportExcel = () => {
     <div class="flex overflow-x-auto no-scrollbar space-x-1 border-b border-slate-200 dark:border-slate-800/80 pb-px">
       <button 
         @click="activeReportTab = 'pl'"
-        :class="[activeReportTab === 'pl' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer shrink-0']"
+        :class="[activeReportTab === 'pl' ? 'border-[#d4af37] text-[#d4af37] font-bold' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-250', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer shrink-0']"
       >
         Laporan Laba Rugi (P&L)
       </button>
       <button 
         @click="activeReportTab = 'cashflow'"
-        :class="[activeReportTab === 'cashflow' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer shrink-0']"
+        :class="[activeReportTab === 'cashflow' ? 'border-[#d4af37] text-[#d4af37] font-bold' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-250', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer shrink-0']"
       >
         Laporan Arus Kas
       </button>
       <button 
         @click="activeReportTab = 'ledger'"
-        :class="[activeReportTab === 'ledger' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer shrink-0']"
+        :class="[activeReportTab === 'ledger' ? 'border-[#d4af37] text-[#d4af37] font-bold' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-250', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer shrink-0']"
       >
         Buku Besar Ringkas
       </button>
       <button 
         @click="activeReportTab = 'event'"
-        :class="[activeReportTab === 'event' ? 'border-emerald-500 text-emerald-500 font-bold' : 'border-transparent text-slate-400 hover:text-slate-200', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer shrink-0']"
+        :class="[activeReportTab === 'event' ? 'border-[#d4af37] text-[#d4af37] font-bold' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-250', 'px-4 py-2 border-b-2 text-xs font-semibold transition-all cursor-pointer shrink-0']"
       >
         Laporan Per Event
       </button>
@@ -858,18 +858,18 @@ const exportExcel = () => {
     <div v-if="activeReportTab === 'pl'" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-6">
       <div class="text-center">
         <h2 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider">Laporan Laba Rugi</h2>
-        <p class="text-xs text-slate-400 mt-1">Periode yang berakhir pada 31 Desember {{ filterYear }}</p>
+        <p class="text-xs text-slate-500 dark:text-slate-350 mt-1">Periode yang berakhir pada 31 Desember {{ filterYear }}</p>
       </div>
 
       <div class="max-w-2xl mx-auto text-sm divide-y divide-slate-100 dark:divide-slate-800/50 space-y-4">
         <!-- Revenue -->
         <div class="pt-4 space-y-2">
-          <h3 class="font-bold text-emerald-500 text-2xs uppercase tracking-wider">I. PENDAPATAN OPERASIONAL</h3>
-          <div class="flex justify-between pl-4 text-slate-700 dark:text-slate-350">
+          <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-2xs uppercase tracking-wider">I. PENDAPATAN OPERASIONAL</h3>
+          <div class="flex justify-between pl-4 text-slate-800 dark:text-slate-200">
             <span>Pendapatan Kontrak Event</span>
             <span>{{ formatIDR(plData.pendapatanKontrak) }}</span>
           </div>
-          <div class="flex justify-between pl-4 text-slate-700 dark:text-slate-350">
+          <div class="flex justify-between pl-4 text-slate-800 dark:text-slate-200">
             <span>Pendapatan Lain-lain</span>
             <span>{{ formatIDR(plData.pendapatanLain) }}</span>
           </div>
@@ -882,19 +882,19 @@ const exportExcel = () => {
         <!-- Expenses -->
         <div class="pt-6 space-y-2">
           <h3 class="font-bold text-rose-500 text-2xs uppercase tracking-wider">II. BIAYA OPERASIONAL & VENDOR</h3>
-          <div class="flex justify-between pl-4 text-slate-700 dark:text-slate-350">
+          <div class="flex justify-between pl-4 text-slate-800 dark:text-slate-200">
             <span>Biaya Pembayaran Vendor Utama</span>
             <span>({{ formatIDR(plData.biayaVendor) }})</span>
           </div>
-          <div class="flex justify-between pl-4 text-slate-700 dark:text-slate-350">
+          <div class="flex justify-between pl-4 text-slate-800 dark:text-slate-200">
             <span>Operasional & Peralatan</span>
             <span>({{ formatIDR(plData.biayaOperasional) }})</span>
           </div>
-          <div class="flex justify-between pl-4 text-slate-700 dark:text-slate-350">
+          <div class="flex justify-between pl-4 text-slate-800 dark:text-slate-200">
             <span>Konsumsi & Akomodasi Lapangan</span>
             <span>({{ formatIDR(plData.biayaKonsumsi) }})</span>
           </div>
-          <div class="flex justify-between pl-4 text-slate-700 dark:text-slate-350">
+          <div class="flex justify-between pl-4 text-slate-800 dark:text-slate-200">
             <span>Marketing & Komisi Talent</span>
             <span>({{ formatIDR(plData.biayaMarketing) }})</span>
           </div>
@@ -912,18 +912,18 @@ const exportExcel = () => {
 
         <!-- Taxes -->
         <div class="pt-6 space-y-2">
-          <h3 class="font-bold text-amber-500 text-2xs uppercase tracking-wider">IV. BEBAN PERPAJAKAN</h3>
-          <div class="flex justify-between pl-4 text-slate-700 dark:text-slate-350 text-xs">
+          <h3 class="font-bold text-amber-600 dark:text-amber-400 text-2xs uppercase tracking-wider">IV. BEBAN PERPAJAKAN</h3>
+          <div class="flex justify-between pl-4 text-slate-800 dark:text-slate-200 text-xs">
             <span>
               PPh 21 & PPh 23
-              <span class="text-slate-400 block text-3xs">Dipotong dari vendor/freelancer, utang ke DJP</span>
+              <span class="text-slate-500 dark:text-slate-400 block text-3xs">Dipotong dari vendor/freelancer, utang ke DJP</span>
             </span>
             <span class="font-mono">({{ formatIDR(plData.bebanPajakPph) }})</span>
           </div>
-          <div class="flex justify-between pl-4 text-slate-700 dark:text-slate-350 text-xs">
+          <div class="flex justify-between pl-4 text-slate-800 dark:text-slate-200 text-xs">
             <span>
               PPN Terutang Bersih
-              <span class="text-slate-400 block text-3xs">Keluaran {{ formatIDR(plData.ppnKeluaran) }} − Masukan {{ formatIDR(plData.ppnMasukan) }}</span>
+              <span class="text-slate-500 dark:text-slate-400 block text-3xs">Keluaran {{ formatIDR(plData.ppnKeluaran) }} − Masukan {{ formatIDR(plData.ppnMasukan) }}</span>
             </span>
             <span class="font-mono">({{ formatIDR(plData.bebanPajakPpn) }})</span>
           </div>
@@ -938,7 +938,7 @@ const exportExcel = () => {
           <span>V. LABA BERSIH TAHUN BERJALAN</span>
           <div class="text-right">
             <span>{{ formatIDR(labaBersih) }}</span>
-            <span class="block text-2xs uppercase text-slate-400 mt-1 font-semibold tracking-wider">Margin Laba: {{ netMargin }}%</span>
+            <span class="block text-2xs uppercase text-slate-500 dark:text-slate-350 mt-1 font-semibold tracking-wider">Margin Laba: {{ netMargin }}%</span>
           </div>
         </div>
       </div>
@@ -949,17 +949,17 @@ const exportExcel = () => {
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-6">
         <div class="text-center">
           <h2 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider">Laporan Arus Kas</h2>
-          <p class="text-xs text-slate-400 mt-1">Periode yang berakhir pada 31 Desember {{ filterYear }}</p>
+          <p class="text-xs text-slate-500 dark:text-slate-350 mt-1">Periode yang berakhir pada 31 Desember {{ filterYear }}</p>
         </div>
 
         <div class="max-w-2xl mx-auto text-sm divide-y divide-slate-100 dark:divide-slate-800/50 space-y-4">
           <!-- Inflows -->
           <div class="pt-4 space-y-2">
-            <h3 class="font-bold text-emerald-500 text-2xs uppercase tracking-wider">I. ARUS KAS MASUK (INFLOWS)</h3>
-            <div v-if="Object.keys(cashflowData.inflowCategories).length === 0" class="text-slate-400 text-xs py-2 pl-4">
+            <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-2xs uppercase tracking-wider">I. ARUS KAS MASUK (INFLOWS)</h3>
+            <div v-if="Object.keys(cashflowData.inflowCategories).length === 0" class="text-slate-500 dark:text-slate-350 text-xs py-2 pl-4">
               Tidak ada data arus kas masuk.
             </div>
-            <div v-else v-for="(total, cat) in cashflowData.inflowCategories" :key="cat" class="flex justify-between pl-4 text-slate-700 dark:text-slate-350">
+            <div v-else v-for="(total, cat) in cashflowData.inflowCategories" :key="cat" class="flex justify-between pl-4 text-slate-800 dark:text-slate-200">
               <span>{{ formatCategoryLabel(cat) }}</span>
               <span>{{ formatIDR(total) }}</span>
             </div>
@@ -972,10 +972,10 @@ const exportExcel = () => {
           <!-- Outflows -->
           <div class="pt-6 space-y-2">
             <h3 class="font-bold text-rose-500 text-2xs uppercase tracking-wider">II. ARUS KAS KELUAR (OUTFLOWS)</h3>
-            <div v-if="Object.keys(cashflowData.outflowCategories).length === 0" class="text-slate-400 text-xs py-2 pl-4">
+            <div v-if="Object.keys(cashflowData.outflowCategories).length === 0" class="text-slate-500 dark:text-slate-350 text-xs py-2 pl-4">
               Tidak ada data arus kas keluar.
             </div>
-            <div v-else v-for="(total, cat) in cashflowData.outflowCategories" :key="cat" class="flex justify-between pl-4 text-slate-700 dark:text-slate-350">
+            <div v-else v-for="(total, cat) in cashflowData.outflowCategories" :key="cat" class="flex justify-between pl-4 text-slate-800 dark:text-slate-200">
               <span>{{ formatCategoryLabel(cat) }}</span>
               <span>({{ formatIDR(total) }})</span>
             </div>
@@ -999,7 +999,7 @@ const exportExcel = () => {
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
-              <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-400 font-bold uppercase tracking-wider">
+              <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-350 font-bold uppercase tracking-wider">
                 <th class="p-3">Bulan</th>
                 <th class="p-3 text-right">Kas Masuk</th>
                 <th class="p-3 text-right">Kas Keluar</th>
@@ -1007,7 +1007,7 @@ const exportExcel = () => {
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
-              <tr v-for="item in cashflowData.monthly" :key="item.bulan" class="hover:bg-slate-50/40 dark:hover:bg-slate-800/10 text-slate-700 dark:text-slate-350 transition-colors">
+              <tr v-for="item in cashflowData.monthly" :key="item.bulan" class="hover:bg-slate-50/40 dark:hover:bg-slate-800/10 text-slate-850 dark:text-slate-200 transition-colors">
                 <td class="p-3 font-semibold">{{ item.bulan }}</td>
                 <td class="p-3 text-right text-emerald-500 font-mono">{{ formatIDR(item.inflow) }}</td>
                 <td class="p-3 text-right text-rose-500 font-mono">{{ item.outflow > 0 ? `(${formatIDR(item.outflow)})` : '-' }}</td>
@@ -1026,10 +1026,10 @@ const exportExcel = () => {
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-6">
         <div class="text-center">
           <h2 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider">Buku Besar Ringkas</h2>
-          <p class="text-xs text-slate-400 mt-1">Ringkasan per Kategori Transaksi Tahun {{ filterYear }}</p>
+          <p class="text-xs text-slate-500 dark:text-slate-350 mt-1">Ringkasan per Kategori Transaksi Tahun {{ filterYear }}</p>
         </div>
 
-        <div v-if="ledgerData.length === 0" class="text-center py-8 text-slate-400 text-sm">
+        <div v-if="ledgerData.length === 0" class="text-center py-8 text-slate-500 dark:text-slate-350 text-sm">
           Belum ada transaksi tercatat di tahun buku ini.
         </div>
 
@@ -1040,19 +1040,19 @@ const exportExcel = () => {
             <div class="bg-slate-50 dark:bg-slate-900/50 p-4 flex justify-between items-center hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors">
               <div>
                 <h4 class="font-bold text-slate-900 dark:text-white text-sm">{{ formatCategoryLabel(group.kategori) }}</h4>
-                <p class="text-3xs text-slate-400 uppercase tracking-widest mt-0.5 font-semibold">Kategori: {{ group.kategori }}</p>
+                <p class="text-3xs text-slate-500 dark:text-slate-350 uppercase tracking-widest mt-0.5 font-semibold">Kategori: {{ group.kategori }}</p>
               </div>
               <div class="text-right flex items-center space-x-6 text-xs font-mono">
                 <div class="hidden sm:block">
-                  <span class="text-slate-405 block text-3xs uppercase tracking-wider font-semibold">Total Masuk</span>
+                  <span class="text-slate-500 dark:text-slate-350 block text-3xs uppercase tracking-wider font-semibold">Total Masuk</span>
                   <span class="text-emerald-500 font-bold">{{ formatIDR(group.totalMasuk) }}</span>
                 </div>
                 <div class="hidden sm:block">
-                  <span class="text-slate-405 block text-3xs uppercase tracking-wider font-semibold">Total Keluar</span>
+                  <span class="text-slate-500 dark:text-slate-350 block text-3xs uppercase tracking-wider font-semibold">Total Keluar</span>
                   <span class="text-rose-500 font-bold">{{ formatIDR(group.totalKeluar) }}</span>
                 </div>
                 <div>
-                  <span class="text-slate-405 block text-3xs uppercase tracking-wider font-semibold">Saldo Bersih</span>
+                  <span class="text-slate-500 dark:text-slate-350 block text-3xs uppercase tracking-wider font-semibold">Saldo Bersih</span>
                   <span class="font-extrabold text-slate-900 dark:text-white">{{ formatIDR(group.saldoAkhir) }}</span>
                 </div>
               </div>
@@ -1060,9 +1060,9 @@ const exportExcel = () => {
 
             <!-- Transaction list for this category -->
             <div class="border-t border-slate-200 dark:border-slate-800 overflow-x-auto">
-              <table class="w-full text-left text-xs border-collapse">
+               <table class="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr class="bg-slate-50/50 dark:bg-slate-900/20 text-slate-400 font-bold border-b border-slate-100 dark:border-slate-800/50 uppercase tracking-wider text-3xs">
+                  <tr class="bg-slate-50/50 dark:bg-slate-900/20 text-slate-500 dark:text-slate-350 font-bold border-b border-slate-100 dark:border-slate-800/50 uppercase tracking-wider text-3xs">
                     <th class="p-3 pl-4">Tanggal</th>
                     <th class="p-3">Ref/No Transaksi</th>
                     <th class="p-3">Keterangan</th>
@@ -1072,12 +1072,12 @@ const exportExcel = () => {
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800/30">
                   <tr v-for="tx in group.transactions" :key="tx.nomor_transaksi" class="hover:bg-slate-50/20 dark:hover:bg-slate-800/5">
-                    <td class="p-3 pl-4 text-slate-450 font-mono">{{ tx.tanggal || '-' }}</td>
+                    <td class="p-3 pl-4 text-slate-500 dark:text-slate-350 font-mono">{{ tx.tanggal || '-' }}</td>
                     <td class="p-3 font-mono font-bold text-slate-900 dark:text-white">{{ tx.nomor_transaksi }}</td>
-                    <td class="p-3 text-slate-700 dark:text-slate-350">{{ tx.deskripsi }}</td>
-                    <td class="p-3 text-slate-500">
+                    <td class="p-3 text-slate-850 dark:text-slate-200">{{ tx.deskripsi }}</td>
+                    <td class="p-3 text-slate-600 dark:text-slate-300">
                       <span v-if="tx.event" class="block">Event: {{ tx.event }}</span>
-                      <span v-if="tx.vendor" class="block text-3xs mt-0.5">Vendor: {{ tx.vendor }}</span>
+                      <span v-if="tx.vendor" class="block text-3xs mt-0.5 text-slate-500 dark:text-slate-350">Vendor: {{ tx.vendor }}</span>
                       <span v-if="!tx.event && !tx.vendor">-</span>
                     </td>
                     <td class="p-3 text-right pr-4 font-mono font-bold" :class="tx.tipe === 'kas_masuk' ? 'text-emerald-500' : 'text-rose-500'">
@@ -1099,14 +1099,14 @@ const exportExcel = () => {
           <h3 class="font-bold text-slate-900 dark:text-white text-sm">Laporan Performansi Keuangan per Event</h3>
         </div>
 
-        <div v-if="eventsReportData.length === 0" class="text-center py-10 text-xs text-slate-500 dark:text-slate-400">
+        <div v-if="eventsReportData.length === 0" class="text-center py-10 text-xs text-slate-600 dark:text-slate-300">
           Belum ada event tercatat di tahun buku ini.
         </div>
 
         <div v-else class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-400 text-3xs font-bold uppercase tracking-wider">
+              <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-550 dark:text-slate-350 text-3xs font-bold uppercase tracking-wider">
                 <th class="p-4">Kode / Nama Event</th>
                 <th class="p-4">Klien</th>
                 <th class="p-4 text-right">Nilai Kontrak</th>
@@ -1118,14 +1118,14 @@ const exportExcel = () => {
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50 text-sm">
-              <tr v-for="ev in eventsReportData" :key="ev.id" class="text-slate-700 dark:text-slate-350 hover:bg-slate-50/40 dark:hover:bg-slate-800/10 transition-colors">
+              <tr v-for="ev in eventsReportData" :key="ev.id" class="text-slate-850 dark:text-slate-200 hover:bg-slate-50/40 dark:hover:bg-slate-800/10 transition-colors">
                 <td class="p-4">
-                  <span class="text-3xs font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-500 font-bold block w-fit mb-1">{{ ev.nomor_event }}</span>
+                  <span class="text-3xs font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300 font-bold block w-fit mb-1">{{ ev.nomor_event }}</span>
                   <span class="font-bold text-slate-900 dark:text-white block text-xs">{{ ev.nama_event }}</span>
                 </td>
-                <td class="p-4 text-xs font-semibold text-slate-500 dark:text-slate-400">{{ ev.client_name }}</td>
+                <td class="p-4 text-xs font-semibold text-slate-600 dark:text-slate-300">{{ ev.client_name }}</td>
                 <td class="p-4 text-right font-bold text-slate-900 dark:text-white">{{ formatIDR(ev.nilai_kontrak) }}</td>
-                <td class="p-4 text-right text-slate-500 dark:text-slate-400 font-mono text-xs">{{ formatIDR(ev.total_anggaran) }}</td>
+                <td class="p-4 text-right text-slate-600 dark:text-slate-300 font-mono text-xs">{{ formatIDR(ev.total_anggaran) }}</td>
                 <td class="p-4 text-right text-rose-500 font-semibold font-mono text-xs">{{ formatIDR(ev.total_realisasi) }}</td>
                 <td class="p-4 text-right font-bold font-mono text-xs" :class="ev.laba_bersih >= 0 ? 'text-emerald-500' : 'text-rose-500'">
                   {{ formatIDR(ev.laba_bersih) }}
@@ -1136,7 +1136,7 @@ const exportExcel = () => {
                   </span>
                 </td>
                 <td class="p-4 text-right">
-                  <button @click="fetchEventDetailReport(ev.id)" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">
+                  <button @click="fetchEventDetailReport(ev.id)" class="text-xs bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer shadow-sm shadow-[#d4af37]/10">
                     Buka Laporan
                   </button>
                 </td>
@@ -1155,44 +1155,44 @@ const exportExcel = () => {
         <div class="flex justify-between items-start border-b border-slate-200 dark:border-slate-800 pb-3">
           <div>
             <h3 class="text-base font-bold text-slate-900 dark:text-white">Analisis Laporan Keuangan Event</h3>
-            <p class="text-xs text-slate-400 mt-1 font-mono">{{ selectedEventDetail.summary.nomor_event }} &bull; {{ selectedEventDetail.summary.nama_event }}</p>
+            <p class="text-xs text-slate-500 dark:text-slate-300 mt-1 font-mono">{{ selectedEventDetail.summary.nomor_event }} &bull; {{ selectedEventDetail.summary.nama_event }}</p>
           </div>
           <div class="flex items-center space-x-2">
-            <button @click="printEventReport(selectedEventDetail)" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm">
+            <button @click="printEventReport(selectedEventDetail)" class="px-3.5 py-1.5 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg text-2xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm">
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
               </svg>
               Cetak Laporan
             </button>
-            <button @click="isDetailModalOpen = false" class="text-slate-400 hover:text-slate-600 text-2xl font-semibold leading-none cursor-pointer">&times;</button>
+            <button @click="isDetailModalOpen = false" class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white text-2xl font-semibold leading-none cursor-pointer">&times;</button>
           </div>
         </div>
 
         <!-- Summary Cards -->
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
           <div class="bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/80 p-3.5 rounded-xl text-center">
-            <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Nilai Kontrak</span>
+            <span class="text-3xs uppercase font-bold text-slate-500 dark:text-slate-350 tracking-wider">Nilai Kontrak</span>
             <span class="text-sm font-bold text-slate-800 dark:text-white block mt-1 font-mono">{{ formatIDR(selectedEventDetail.summary.nilai_kontrak) }}</span>
           </div>
           <div class="bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/80 p-3.5 rounded-xl text-center">
-            <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Anggaran RAB</span>
+            <span class="text-3xs uppercase font-bold text-slate-500 dark:text-slate-350 tracking-wider">Anggaran RAB</span>
             <span class="text-sm font-bold text-slate-800 dark:text-white block mt-1 font-mono">{{ formatIDR(selectedEventDetail.summary.total_anggaran) }}</span>
           </div>
           <div class="bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/80 p-3.5 rounded-xl text-center">
-            <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Realisasi Biaya</span>
+            <span class="text-3xs uppercase font-bold text-slate-500 dark:text-slate-350 tracking-wider">Realisasi Biaya</span>
             <span class="text-sm font-bold text-rose-500 block mt-1 font-mono">{{ formatIDR(selectedEventDetail.summary.total_realisasi) }}</span>
           </div>
           <div class="bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/80 p-3.5 rounded-xl text-center">
-            <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Laba Bersih</span>
+            <span class="text-3xs uppercase font-bold text-slate-500 dark:text-slate-350 tracking-wider">Laba Bersih</span>
             <span class="text-sm font-bold block mt-1 font-mono" :class="selectedEventDetail.summary.laba_bersih >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">{{ formatIDR(selectedEventDetail.summary.laba_bersih) }}</span>
           </div>
           <div class="bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/80 p-3.5 rounded-xl text-center col-span-2 md:col-span-1">
-            <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Margin Laba</span>
+            <span class="text-3xs uppercase font-bold text-slate-500 dark:text-slate-350 tracking-wider">Margin Laba</span>
             <span class="text-sm font-bold block mt-1 font-mono" :class="selectedEventDetail.summary.laba_bersih >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">{{ selectedEventDetail.summary.margin_persentase }}%</span>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs text-slate-700 dark:text-slate-350">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs text-slate-800 dark:text-slate-200">
           <!-- RAB Budget Details -->
           <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-xs">
             <div class="bg-slate-50 dark:bg-slate-800/40 px-4 py-2.5 border-b border-slate-200 dark:border-slate-800">
@@ -1201,7 +1201,7 @@ const exportExcel = () => {
             <div class="max-h-60 overflow-y-auto no-scrollbar">
               <table class="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr class="bg-slate-100/50 dark:bg-slate-900/30 text-slate-400 font-bold border-b border-slate-200 dark:border-slate-800/60 uppercase tracking-wider text-4xs">
+                  <tr class="bg-slate-100/50 dark:bg-slate-900/30 text-slate-500 dark:text-slate-350 font-bold border-b border-slate-200 dark:border-slate-800/60 uppercase tracking-wider text-4xs">
                     <th class="p-2.5 pl-4">Kategori</th>
                     <th class="p-2.5">Deskripsi</th>
                     <th class="p-2.5 text-center">Qty</th>
@@ -1211,12 +1211,12 @@ const exportExcel = () => {
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800/30">
                   <tr v-for="item in selectedEventDetail.budget_details" :key="item.id">
                     <td class="p-2.5 pl-4 font-semibold text-3xs">{{ formatCategoryLabel(item.kategori) }}</td>
-                    <td class="p-2.5 text-3xs">{{ item.deskripsi }}</td>
+                    <td class="p-2.5 text-3xs text-slate-650 dark:text-slate-300">{{ item.deskripsi }}</td>
                     <td class="p-2.5 text-center font-mono">{{ item.qty }}</td>
-                    <td class="p-2.5 text-right pr-4 font-bold font-mono">{{ formatIDR(item.subtotal) }}</td>
+                    <td class="p-2.5 text-right pr-4 font-bold font-mono text-slate-900 dark:text-slate-100">{{ formatIDR(item.subtotal) }}</td>
                   </tr>
                   <tr v-if="selectedEventDetail.budget_details.length === 0">
-                    <td colspan="4" class="p-4 text-center text-slate-400">Tidak ada item anggaran.</td>
+                    <td colspan="4" class="p-4 text-center text-slate-500 dark:text-slate-350">Tidak ada item anggaran.</td>
                   </tr>
                 </tbody>
               </table>
@@ -1231,7 +1231,7 @@ const exportExcel = () => {
             <div class="max-h-60 overflow-y-auto no-scrollbar">
               <table class="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr class="bg-slate-100/50 dark:bg-slate-900/30 text-slate-400 font-bold border-b border-slate-200 dark:border-slate-800/60 uppercase tracking-wider text-4xs">
+                  <tr class="bg-slate-100/50 dark:bg-slate-900/30 text-slate-500 dark:text-slate-350 font-bold border-b border-slate-200 dark:border-slate-800/60 uppercase tracking-wider text-4xs">
                     <th class="p-2.5 pl-4">Tanggal</th>
                     <th class="p-2.5">Kategori/Vendor</th>
                     <th class="p-2.5">Deskripsi</th>
@@ -1240,16 +1240,16 @@ const exportExcel = () => {
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800/30">
                   <tr v-for="item in selectedEventDetail.realization_details" :key="item.id">
-                    <td class="p-2.5 pl-4 text-slate-450 font-mono text-3xs">{{ item.tanggal || '-' }}</td>
+                    <td class="p-2.5 pl-4 text-slate-500 dark:text-slate-350 font-mono text-3xs">{{ item.tanggal || '-' }}</td>
                     <td class="p-2.5 text-3xs">
                       <span class="font-semibold block">{{ formatCategoryLabel(item.kategori) }}</span>
-                      <span class="text-4xs text-slate-400 block mt-0.5">Vendor: {{ item.vendor_name }}</span>
+                      <span class="text-4xs text-slate-500 dark:text-slate-350 block mt-0.5">Vendor: {{ item.vendor_name }}</span>
                     </td>
-                    <td class="p-2.5 text-3xs truncate max-w-28" :title="item.deskripsi">{{ item.deskripsi }}</td>
+                    <td class="p-2.5 text-3xs truncate max-w-28 text-slate-650 dark:text-slate-300" :title="item.deskripsi">{{ item.deskripsi }}</td>
                     <td class="p-2.5 text-right pr-4 font-bold text-rose-500 font-mono">{{ formatIDR(item.nominal) }}</td>
                   </tr>
                   <tr v-if="selectedEventDetail.realization_details.length === 0">
-                    <td colspan="4" class="p-4 text-center text-slate-400">Belum ada realisasi biaya aktual.</td>
+                    <td colspan="4" class="p-4 text-center text-slate-500 dark:text-slate-350">Belum ada realisasi biaya aktual.</td>
                   </tr>
                 </tbody>
               </table>
@@ -1264,7 +1264,7 @@ const exportExcel = () => {
           </div>
           <table class="w-full text-left text-xs border-collapse">
             <thead>
-              <tr class="bg-slate-100/50 dark:bg-slate-900/30 text-slate-400 font-bold border-b border-slate-200 dark:border-slate-800/60 uppercase tracking-wider text-4xs">
+              <tr class="bg-slate-100/50 dark:bg-slate-900/30 text-slate-550 dark:text-slate-350 font-bold border-b border-slate-200 dark:border-slate-800/60 uppercase tracking-wider text-4xs">
                 <th class="p-2.5 pl-4 w-28">Tanggal</th>
                 <th class="p-2.5 w-36">No. Transaksi</th>
                 <th class="p-2.5">Keterangan</th>
@@ -1273,20 +1273,19 @@ const exportExcel = () => {
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800/30">
               <tr v-for="item in selectedEventDetail.revenue_details" :key="item.id">
-                <td class="p-2.5 pl-4 text-slate-450 font-mono">{{ item.tanggal || '-' }}</td>
-                <td class="p-2.5 font-mono text-slate-500 dark:text-slate-400">{{ item.nomor_transaksi }}</td>
-                <td class="p-2.5 text-slate-700 dark:text-slate-350">{{ item.deskripsi }}</td>
+                <td class="p-2.5 pl-4 text-slate-500 dark:text-slate-350 font-mono">{{ item.tanggal || '-' }}</td>
+                <td class="p-2.5 font-mono text-slate-600 dark:text-slate-300">{{ item.nomor_transaksi }}</td>
+                <td class="p-2.5 text-slate-850 dark:text-slate-200">{{ item.deskripsi }}</td>
                 <td class="p-2.5 text-right pr-4 font-bold text-emerald-500 font-mono">{{ formatIDR(item.nominal) }}</td>
               </tr>
               <tr v-if="selectedEventDetail.revenue_details.length === 0">
-                <td colspan="4" class="p-4 text-center text-slate-400">Belum ada dana masuk terdaftar.</td>
+                <td colspan="4" class="p-4 text-center text-slate-500 dark:text-slate-350">Belum ada dana masuk terdaftar.</td>
               </tr>
             </tbody>
           </table>
         </div>
-
         <div class="flex items-center justify-end pt-1">
-          <button @click="isDetailModalOpen = false" class="px-5 py-2 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer">
+          <button @click="isDetailModalOpen = false" class="px-5 py-2 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer">
             Tutup
           </button>
         </div>
