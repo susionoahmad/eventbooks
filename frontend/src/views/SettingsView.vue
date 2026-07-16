@@ -301,32 +301,32 @@ const deleteUser = async (user: any) => {
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm space-y-4">
           <h3 class="font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 text-sm">Profil Organisasi</h3>
           
-          <form @submit.prevent="saveOrganization" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-350">
+          <form @submit.prevent="saveOrganization" class="space-y-3.5 text-xs text-slate-800 dark:text-slate-200">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Perusahaan / EO</label>
-              <input v-model="organization.name" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nama Perusahaan / EO</label>
+              <input v-model="organization.name" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">NPWP Badan Usaha</label>
-              <input :value="organization.npwp" @input="onNpwpInput" type="text" placeholder="00.000.000.0-000.000" maxlength="21" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500 font-mono" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">NPWP Badan Usaha</label>
+              <input :value="organization.npwp" @input="onNpwpInput" type="text" placeholder="00.000.000.0-000.000" maxlength="21" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37] font-mono" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email Korespondensi</label>
-              <input v-model="organization.email" type="email" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Email Korespondensi</label>
+              <input v-model="organization.email" type="email" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Telepon</label>
-              <input v-model="organization.phone" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Telepon</label>
+              <input v-model="organization.phone" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Alamat Kantor Utama</label>
-              <textarea v-model="organization.address" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500"></textarea>
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Alamat Kantor Utama</label>
+              <textarea v-model="organization.address" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]"></textarea>
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Tarif PPN Default (%)</label>
-              <input v-model="organization.default_ppn_rate" type="number" step="0.01" min="0" max="99.99" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Tarif PPN Default (%)</label>
+              <input v-model="organization.default_ppn_rate" type="number" step="0.01" min="0" max="99.99" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#d4af37]" required />
             </div>
-            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Simpan Perubahan</button>
+            <button type="submit" class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg font-bold text-xs cursor-pointer shadow-sm shadow-[#d4af37]/10">Simpan Perubahan</button>
           </form>
         </div>
 
@@ -338,7 +338,7 @@ const deleteUser = async (user: any) => {
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm lg:col-span-2 space-y-4">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
           <h3 class="font-bold text-slate-900 dark:text-white text-sm">Manajemen Pengguna & Hak Akses</h3>
-          <button @click="openAddModal" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-800 dark:border-slate-700 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer">
+          <button @click="openAddModal" class="px-3.5 py-1.5 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg text-2xs font-bold transition-colors cursor-pointer shadow-sm shadow-[#d4af37]/10">
             + Tambah Pengguna
           </button>
         </div>
@@ -413,50 +413,50 @@ const deleteUser = async (user: any) => {
           {{ modalMode === 'add' ? 'Tambah Pengguna Baru' : modalMode === 'edit' ? 'Edit Data Pengguna' : 'Ubah Password Pengguna' }}
         </h3>
 
-        <form @submit.prevent="saveUser" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-350">
+        <form @submit.prevent="saveUser" class="space-y-3.5 text-xs text-slate-800 dark:text-slate-200">
           
           <template v-if="modalMode === 'add' || modalMode === 'edit'">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Lengkap</label>
-              <input v-model="userForm.name" type="text" placeholder="e.g. Shinta Aulia" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nama Lengkap</label>
+              <input v-model="userForm.name" type="text" placeholder="e.g. Shinta Aulia" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
 
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email Pengguna</label>
-              <input v-model="userForm.email" type="email" placeholder="e.g. shinta@royalevent.co.id" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Email Pengguna</label>
+              <input v-model="userForm.email" type="email" placeholder="e.g. shinta@royalevent.co.id" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
 
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Peran Akses (Role)</label>
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Peran Akses (Role)</label>
               <select 
                 v-model="userForm.role" 
                 :disabled="editingUser && editingUser.id === authStore.user?.id"
-                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
               >
                 <option value="owner">Owner (Akses Penuh)</option>
                 <option value="finance_manager">Manager Keuangan (Pembukuan & Pajak)</option>
                 <option value="admin">Administrator (Event & Master)</option>
                 <option value="staff">Staff Event (RAB & Lapangan)</option>
               </select>
-              <p v-if="editingUser && editingUser.id === authStore.user?.id" class="text-3xs text-slate-400 mt-1">Anda tidak dapat mengubah peran Anda sendiri.</p>
+              <p v-if="editingUser && editingUser.id === authStore.user?.id" class="text-3xs text-slate-500 dark:text-slate-400 mt-1 font-semibold">Anda tidak dapat mengubah peran Anda sendiri.</p>
             </div>
           </template>
 
           <!-- Password field for adding new user (optional, defaults to arunika123 if blank) -->
           <div v-if="modalMode === 'add'">
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Password (Opsional)</label>
-            <input v-model="userForm.password" type="password" placeholder="Bila kosong, default: arunika123" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Password (Opsional)</label>
+            <input v-model="userForm.password" type="password" placeholder="Bila kosong, default: arunika123" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" />
           </div>
 
           <!-- Password field for change password mode -->
           <div v-if="modalMode === 'password'">
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Password Baru</label>
-            <input v-model="userForm.password" type="password" placeholder="Minimal 8 karakter" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required minlength="8" />
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Password Baru</label>
+            <input v-model="userForm.password" type="password" placeholder="Minimal 8 karakter" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required minlength="8" />
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">
-            <button type="button" @click="isUserModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-350 cursor-pointer">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">
+            <button type="button" @click="isUserModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg font-bold text-xs cursor-pointer shadow-sm shadow-[#d4af37]/10">
               {{ modalMode === 'add' ? 'Tambah Pengguna' : modalMode === 'edit' ? 'Simpan Perubahan' : 'Ubah Password' }}
             </button>
           </div>

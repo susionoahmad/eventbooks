@@ -93,37 +93,37 @@ const handleChangePassword = async () => {
       </div>
 
       <!-- Form -->
-      <form @submit.prevent="handleChangePassword" class="space-y-4 text-xs text-slate-700 dark:text-slate-300">
+      <form @submit.prevent="handleChangePassword" class="space-y-4 text-xs text-slate-800 dark:text-slate-200">
         <div>
-          <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Password Saat Ini</label>
+          <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Password Saat Ini</label>
           <input 
             v-model="currentPassword" 
             type="password" 
             placeholder="Masukkan kata sandi lama" 
-            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" 
+            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" 
             required 
           />
         </div>
 
         <div>
-          <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Password Baru</label>
+          <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Password Baru</label>
           <input 
             v-model="newPassword" 
             type="password" 
             placeholder="Minimal 8 karakter" 
-            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" 
+            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" 
             required 
             minlength="8"
           />
         </div>
 
         <div>
-          <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Konfirmasi Password Baru</label>
+          <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Konfirmasi Password Baru</label>
           <input 
             v-model="confirmPassword" 
             type="password" 
             placeholder="Ulangi kata sandi baru" 
-            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" 
+            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" 
             required 
             minlength="8"
           />
@@ -132,9 +132,9 @@ const handleChangePassword = async () => {
         <button 
           type="submit" 
           :disabled="isSubmitting"
-          class="w-full flex items-center justify-center px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 text-white rounded-lg font-bold text-xs cursor-pointer transition-colors shadow-sm"
+          class="w-full flex items-center justify-center px-4 py-2.5 bg-[#d4af37] hover:bg-[#e5c158] disabled:bg-slate-750 text-[#001b13] font-bold rounded-lg text-xs cursor-pointer transition-colors shadow-md shadow-[#d4af37]/10"
         >
-          <svg v-if="isSubmitting" class="animate-spin -ml-1 mr-2 h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+          <svg v-if="isSubmitting" class="animate-spin -ml-1 mr-2 h-3.5 w-3.5 text-[#001b13]" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>

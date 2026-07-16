@@ -102,7 +102,7 @@ const formatIDR = (value: number) => {
       </div>
       <button 
         @click="openCreateModal"
-        class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
+        class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg text-xs font-bold transition-colors cursor-pointer shadow-sm shadow-[#d4af37]/10"
       >
         + Registrasi Event
       </button>
@@ -169,15 +169,15 @@ const formatIDR = (value: number) => {
       <div class="relative w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-xl space-y-4">
         <h3 class="text-lg font-bold text-slate-900 dark:text-white">Registrasi Event Baru</h3>
 
-        <form @submit.prevent="saveEvent" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-300">
+        <form @submit.prevent="saveEvent" class="space-y-3.5 text-xs text-slate-800 dark:text-slate-200">
           <div class="grid grid-cols-3 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nomor Event</label>
-              <input v-model="activeEvent.nomor_event" type="text" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none opacity-60 cursor-not-allowed" disabled />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nomor Event</label>
+              <input v-model="activeEvent.nomor_event" type="text" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none opacity-60 cursor-not-allowed text-slate-750 dark:text-slate-400 font-semibold" disabled />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Jenis Event</label>
-              <select v-model="activeEvent.jenis_event" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Jenis Event</label>
+              <select v-model="activeEvent.jenis_event" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
                 <option value="Wedding">Wedding</option>
                 <option value="Concert">Concert</option>
                 <option value="Corporate Event">Corporate Event</option>
@@ -186,8 +186,8 @@ const formatIDR = (value: number) => {
               </select>
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Kategori</label>
-              <select v-model="activeEvent.kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Kategori</label>
+              <select v-model="activeEvent.kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
                 <option value="small">Small</option>
                 <option value="medium">Medium</option>
                 <option value="large">Large</option>
@@ -196,25 +196,25 @@ const formatIDR = (value: number) => {
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Event</label>
-            <input v-model="activeEvent.nama_event" type="text" placeholder="e.g. Festival Kuliner Nusantara" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nama Event</label>
+            <input v-model="activeEvent.nama_event" type="text" placeholder="e.g. Festival Kuliner Nusantara" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Tanggal Mulai</label>
-              <input v-model="activeEvent.tanggal_mulai" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Tanggal Mulai</label>
+              <input v-model="activeEvent.tanggal_mulai" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Tanggal Selesai</label>
-              <input v-model="activeEvent.tanggal_selesai" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Tanggal Selesai</label>
+              <input v-model="activeEvent.tanggal_selesai" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Pilih Klien</label>
-              <select v-model="activeEvent.client_id" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500" required>
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Pilih Klien</label>
+              <select v-model="activeEvent.client_id" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required>
                 <option v-if="clients.length === 0" value="" disabled>Tidak ada klien, silakan buat dahulu</option>
                 <option v-for="client in clients" :key="client.id" :value="client.id">
                   {{ client.perusahaan ? `${client.perusahaan} (${client.nama})` : client.nama }}
@@ -222,19 +222,19 @@ const formatIDR = (value: number) => {
               </select>
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nilai Kontrak (Rupiah)</label>
-              <input v-model="activeEvent.nilai_kontrak" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nilai Kontrak (Rupiah)</label>
+              <input v-model="activeEvent.nilai_kontrak" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Lokasi Venue</label>
-            <textarea v-model="activeEvent.lokasi" rows="2" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500"></textarea>
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Lokasi Venue</label>
+            <textarea v-model="activeEvent.lokasi" rows="2" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100"></textarea>
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">
-            <button type="button" @click="isModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Registrasikan</button>
+            <button type="button" @click="isModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg font-bold text-xs cursor-pointer shadow-sm shadow-[#d4af37]/10">Registrasikan</button>
           </div>
         </form>
       </div>

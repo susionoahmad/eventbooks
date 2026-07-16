@@ -181,7 +181,7 @@ const viewVendorFile = (url: string, filename: string) => {
       <button 
         v-if="authStore.userRole !== 'staff'"
         @click="openCreateModal"
-        class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
+        class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg text-xs font-bold transition-colors cursor-pointer shadow-sm shadow-[#d4af37]/10"
       >
         + Tambah Vendor
       </button>
@@ -194,7 +194,7 @@ const viewVendorFile = (url: string, filename: string) => {
         :key="cat.value"
         @click="activeCategoryFilter = cat.value"
         :class="[
-          activeCategoryFilter === cat.value ? 'bg-emerald-950 text-emerald-400 border-emerald-800' : 'bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-800',
+          activeCategoryFilter === cat.value ? 'bg-[#00271c] text-[#d4af37] border-[#d4af37]/30' : 'bg-white dark:bg-slate-900 text-slate-550 dark:text-slate-400 border-slate-200 dark:border-slate-800',
           'px-3 py-1.5 rounded-lg border text-2xs font-semibold uppercase tracking-wider transition-colors cursor-pointer shrink-0'
         ]"
       >
@@ -266,16 +266,15 @@ const viewVendorFile = (url: string, filename: string) => {
         <h3 class="text-lg font-bold text-slate-900 dark:text-white">
           {{ modalMode === 'create' ? 'Tambah Vendor Baru' : 'Edit Detail Vendor' }}
         </h3>
-
-        <form @submit.prevent="saveVendor" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-300">
+        <form @submit.prevent="saveVendor" class="space-y-3.5 text-xs text-slate-800 dark:text-slate-200">
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Kode Vendor</label>
-              <input v-model="activeVendor.kode_vendor" type="text" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none opacity-60 cursor-not-allowed" disabled />
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Kode Vendor</label>
+              <input v-model="activeVendor.kode_vendor" type="text" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none opacity-60 cursor-not-allowed text-slate-750 dark:text-slate-400" disabled />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Kategori Jasa</label>
-              <select v-model="activeVendor.kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Kategori Jasa</label>
+              <select v-model="activeVendor.kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
                 <option v-for="cat in categoriesList.slice(1)" :key="cat.value" :value="cat.value">{{ cat.label }}</option>
               </select>
             </div>
@@ -283,52 +282,52 @@ const viewVendorFile = (url: string, filename: string) => {
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Vendor</label>
-              <input v-model="activeVendor.nama_vendor" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Nama Vendor</label>
+              <input v-model="activeVendor.nama_vendor" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">NPWP Vendor (untuk PPh 23)</label>
-              <input v-model="activeVendor.npwp" type="text" placeholder="00.000.000.0-000.000" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">NPWP Vendor (untuk PPh 23)</label>
+              <input v-model="activeVendor.npwp" type="text" placeholder="00.000.000.0-000.000" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" />
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email</label>
-              <input v-model="activeVendor.email" type="email" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Email</label>
+              <input v-model="activeVendor.email" type="email" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Telepon</label>
-              <input v-model="activeVendor.telepon" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Telepon</label>
+              <input v-model="activeVendor.telepon" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Alamat Kantor/Studio</label>
-            <textarea v-model="activeVendor.alamat" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500"></textarea>
+            <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Alamat Kantor/Studio</label>
+            <textarea v-model="activeVendor.alamat" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100"></textarea>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Unggah KTP (PDF/Gambar)</label>
-              <input type="file" @change="handleKtpFileChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-emerald-500" />
-              <span v-if="activeVendor.file_ktp_url" class="text-3xs text-slate-400 mt-1 block">
-                Sudah terunggah: <button @click.prevent="viewVendorFile(activeVendor.file_ktp_url, 'KTP_' + activeVendor.nama_vendor)" class="text-emerald-500 hover:text-emerald-400 font-bold underline cursor-pointer">Lihat File</button>
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Unggah KTP (PDF/Gambar)</label>
+              <input type="file" @change="handleKtpFileChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100 file:bg-slate-100 file:border-0 file:rounded file:text-2xs file:font-semibold dark:file:bg-slate-800 dark:file:text-slate-300" />
+              <span v-if="activeVendor.file_ktp_url" class="text-3xs text-slate-550 dark:text-slate-400 mt-1 block font-semibold">
+                Sudah terunggah: <button @click.prevent="viewVendorFile(activeVendor.file_ktp_url, 'KTP_' + activeVendor.nama_vendor)" class="text-emerald-600 hover:text-emerald-500 font-bold underline cursor-pointer">Lihat File</button>
               </span>
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Unggah Kartu NPWP (PDF/Gambar)</label>
-              <input type="file" @change="handleNpwpFileChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-emerald-500" />
-              <span v-if="activeVendor.file_npwp_url" class="text-3xs text-slate-400 mt-1 block">
-                Sudah terunggah: <button @click.prevent="viewVendorFile(activeVendor.file_npwp_url, 'NPWP_' + activeVendor.nama_vendor)" class="text-emerald-500 hover:text-emerald-400 font-bold underline cursor-pointer">Lihat File</button>
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Unggah Kartu NPWP (PDF/Gambar)</label>
+              <input type="file" @change="handleNpwpFileChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100 file:bg-slate-100 file:border-0 file:rounded file:text-2xs file:font-semibold dark:file:bg-slate-800 dark:file:text-slate-300" />
+              <span v-if="activeVendor.file_npwp_url" class="text-3xs text-slate-550 dark:text-slate-400 mt-1 block font-semibold">
+                Sudah terunggah: <button @click.prevent="viewVendorFile(activeVendor.file_npwp_url, 'NPWP_' + activeVendor.nama_vendor)" class="text-emerald-600 hover:text-emerald-500 font-bold underline cursor-pointer">Lihat File</button>
               </span>
             </div>
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">
-            <button type="button" :disabled="isSaving" @click="isModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">Batal</button>
-            <button type="submit" :disabled="isSaving" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer flex items-center justify-center space-x-1.5 disabled:opacity-60 disabled:cursor-not-allowed">
-              <svg v-if="isSaving" class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <button type="button" :disabled="isSaving" @click="isModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">Batal</button>
+            <button type="submit" :disabled="isSaving" class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg font-bold text-xs cursor-pointer flex items-center justify-center space-x-1.5 disabled:opacity-60 disabled:cursor-not-allowed shadow-sm shadow-[#d4af37]/10">
+              <svg v-if="isSaving" class="animate-spin h-3.5 w-3.5 text-[#001b13]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>

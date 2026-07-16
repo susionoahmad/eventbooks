@@ -421,30 +421,36 @@ onMounted(() => {
       </div>
 
       <!-- Pagination Footer -->
-      <div v-if="logs.length > 0" class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 px-5 py-4 text-slate-500">
-        <span class="text-2xs font-medium">
-          Menampilkan <span class="font-bold text-slate-900 dark:text-white">{{ logs.length }}</span> dari <span class="font-bold text-slate-900 dark:text-white">{{ totalLogs }}</span> log aktivitas
+      <div v-if="logs.length > 0" class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 px-5 py-4 text-slate-550 dark:text-slate-400">
+        <span class="text-2xs font-semibold">
+          Menampilkan <span class="font-bold text-slate-850 dark:text-white">{{ logs.length }}</span> dari <span class="font-bold text-slate-850 dark:text-white">{{ totalLogs }}</span> log aktivitas
         </span>
 
         <div class="flex items-center gap-2">
           <button 
             @click="fetchLogs(currentPage - 1)" 
             :disabled="currentPage === 1"
-            class="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed border border-slate-250 dark:border-slate-700 rounded-lg text-2xs font-bold transition-all text-slate-700 dark:text-slate-350 cursor-pointer"
+            class="inline-flex items-center px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-2xs font-bold text-slate-750 dark:text-slate-300 hover:text-[#d4af37] dark:hover:text-[#d4af37] hover:border-[#d4af37]/40 dark:hover:border-[#d4af37]/40 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer shadow-2xs"
           >
+            <svg class="w-3.5 h-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
             Sebelumnya
           </button>
           
-          <span class="text-2xs font-semibold px-2">
-            Halaman <span class="text-slate-900 dark:text-white">{{ currentPage }}</span> dari <span class="text-slate-900 dark:text-white">{{ totalPages }}</span>
+          <span class="text-2xs font-bold text-slate-750 dark:text-slate-300 px-2">
+            Halaman <span class="text-slate-900 dark:text-white font-extrabold">{{ currentPage }}</span> dari <span class="text-slate-900 dark:text-white font-extrabold">{{ totalPages }}</span>
           </span>
 
           <button 
             @click="fetchLogs(currentPage + 1)" 
             :disabled="currentPage === totalPages"
-            class="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed border border-slate-250 dark:border-slate-700 rounded-lg text-2xs font-bold transition-all text-slate-700 dark:text-slate-350 cursor-pointer"
+            class="inline-flex items-center px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-2xs font-bold text-slate-750 dark:text-slate-300 hover:text-[#d4af37] dark:hover:text-[#d4af37] hover:border-[#d4af37]/40 dark:hover:border-[#d4af37]/40 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer shadow-2xs"
           >
             Selanjutnya
+            <svg class="w-3.5 h-3.5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
       </div>

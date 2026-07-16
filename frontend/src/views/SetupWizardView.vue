@@ -145,7 +145,7 @@ const skipStep = () => {
   <div class="min-h-screen bg-slate-900 flex items-center justify-center px-4 py-10">
     <!-- Background -->
     <div class="fixed inset-0 pointer-events-none overflow-hidden">
-      <div class="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
+      <div class="absolute top-0 left-1/4 w-96 h-96 bg-[#d4af37]/5 rounded-full blur-3xl"></div>
       <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
     </div>
 
@@ -174,7 +174,7 @@ const skipStep = () => {
               <div class="h-1.5 rounded-full overflow-hidden bg-slate-800">
                 <div
                   class="h-full rounded-full transition-all duration-500"
-                  :class="n <= currentStep ? 'bg-emerald-500' : 'bg-slate-800'"
+                  :class="n <= currentStep ? 'bg-[#d4af37]' : 'bg-slate-800'"
                   :style="n === currentStep ? `width: 60%` : n < currentStep ? `width: 100%` : `width: 0%`"
                 ></div>
               </div>
@@ -184,7 +184,7 @@ const skipStep = () => {
         <!-- Step labels -->
         <div class="grid grid-cols-3 text-center">
           <div v-for="(label, i) in ['Pengaturan Portal', 'Data Legal & Pajak', 'Hak Akses Tim']" :key="i"
-            :class="i + 1 === currentStep ? 'text-emerald-400 font-semibold' : i + 1 < currentStep ? 'text-slate-500' : 'text-slate-600'"
+            :class="i + 1 === currentStep ? 'text-[#d4af37] font-semibold' : i + 1 < currentStep ? 'text-slate-500' : 'text-slate-655'"
             class="text-xs transition-colors"
           >{{ label }}</div>
         </div>
@@ -207,14 +207,14 @@ const skipStep = () => {
         <div v-if="currentStep === 1">
           <div class="mb-6">
             <div class="flex items-center gap-3 mb-2">
-              <div class="w-10 h-10 bg-emerald-500/15 border border-emerald-500/30 rounded-xl flex items-center justify-center">
-                <svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div class="w-10 h-10 bg-[#d4af37]/15 border border-[#d4af37]/30 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 text-[#d4af37]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                 </svg>
               </div>
               <div>
                 <h2 class="text-xl font-bold text-white">Pengaturan Portal</h2>
-                <p class="text-slate-400 text-sm">Konfigurasi identitas organisasi Anda</p>
+                <p class="text-slate-350 text-sm">Konfigurasi identitas organisasi Anda</p>
               </div>
             </div>
           </div>
@@ -222,21 +222,21 @@ const skipStep = () => {
           <div class="space-y-5">
             <!-- Nama Organisasi -->
             <div>
-              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+              <label class="block text-xs font-bold text-slate-350 uppercase tracking-wider mb-2">
                 Nama Organisasi <span class="text-rose-500">*</span>
               </label>
               <input
                 v-model="s1.name"
                 type="text"
                 placeholder="contoh: Royal Event Organizer"
-                class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all placeholder:text-slate-600"
+                class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37]/20 transition-all placeholder:text-slate-600"
                 required
               />
             </div>
 
             <!-- Jenis Usaha -->
             <div>
-              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+              <label class="block text-xs font-bold text-slate-350 uppercase tracking-wider mb-2">
                 Jenis Usaha <span class="text-rose-500">*</span>
               </label>
               <div class="grid grid-cols-2 gap-3">
@@ -247,8 +247,8 @@ const skipStep = () => {
                   :class="[
                     'px-4 py-3 rounded-xl border text-sm font-semibold text-left transition-all',
                     s1.jenis_usaha === val
-                      ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
-                      : 'border-slate-800 bg-slate-900 text-slate-400 hover:border-slate-600 hover:text-slate-300'
+                      ? 'border-[#d4af37] bg-[#d4af37]/10 text-[#d4af37]'
+                      : 'border-slate-800 bg-slate-900 text-slate-350 hover:border-slate-600 hover:text-slate-300'
                   ]"
                 >
                   {{ label }}
@@ -258,7 +258,7 @@ const skipStep = () => {
 
             <!-- Website -->
             <div>
-              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+              <label class="block text-xs font-bold text-slate-350 uppercase tracking-wider mb-2">
                 Website / Instagram <span class="text-slate-600">(opsional)</span>
               </label>
               <div class="relative">
@@ -267,7 +267,7 @@ const skipStep = () => {
                   v-model="s1.website"
                   type="text"
                   placeholder="https://organisasi.com atau @handle_ig"
-                  class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-200 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all placeholder:text-slate-600"
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-200 outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37]/20 transition-all placeholder:text-slate-600"
                 />
               </div>
             </div>
@@ -287,7 +287,7 @@ const skipStep = () => {
               </div>
               <div>
                 <h2 class="text-xl font-bold text-white">Data Legal &amp; Wajib Pajak</h2>
-                <p class="text-slate-400 text-sm">Informasi untuk keperluan perpajakan &amp; penagihan</p>
+                <p class="text-slate-350 text-sm">Informasi untuk keperluan perpajakan &amp; penagihan</p>
               </div>
             </div>
             <div class="mt-3 bg-blue-950/30 border border-blue-900/40 rounded-xl px-4 py-2.5 text-xs text-blue-300 flex items-center gap-2">
@@ -301,54 +301,54 @@ const skipStep = () => {
           <div class="space-y-4">
             <!-- NPWP -->
             <div>
-              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">NPWP</label>
+              <label class="block text-xs font-bold text-slate-350 uppercase tracking-wider mb-2">NPWP</label>
               <input
                 :value="s2.npwp"
                 @input="onNpwpInput"
                 type="text"
                 placeholder="00.000.000.0-000.000"
                 maxlength="21"
-                class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all font-mono placeholder:text-slate-600"
+                class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37]/20 transition-all font-mono placeholder:text-slate-600"
               />
             </div>
 
             <!-- Email & Telepon -->
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Email Kontak</label>
+                <label class="block text-xs font-bold text-slate-350 uppercase tracking-wider mb-2">Email Kontak</label>
                 <input v-model="s2.email" type="email" placeholder="billing@org.com"
-                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all placeholder:text-slate-600"/>
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37]/20 transition-all placeholder:text-slate-600"/>
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Telepon</label>
+                <label class="block text-xs font-bold text-slate-350 uppercase tracking-wider mb-2">Telepon</label>
                 <input v-model="s2.telepon" type="text" placeholder="0812-xxxx-xxxx"
-                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all placeholder:text-slate-600"/>
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37]/20 transition-all placeholder:text-slate-600"/>
               </div>
             </div>
 
             <!-- Alamat -->
             <div>
-              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Alamat Lengkap</label>
+              <label class="block text-xs font-bold text-slate-350 uppercase tracking-wider mb-2">Alamat Lengkap</label>
               <textarea v-model="s2.alamat" rows="2" placeholder="Jl. contoh No. 123..."
-                class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all resize-none placeholder:text-slate-600"></textarea>
+                class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37]/20 transition-all resize-none placeholder:text-slate-600"></textarea>
             </div>
 
             <!-- Kota, Provinsi, Kode Pos -->
             <div class="grid grid-cols-3 gap-3">
               <div class="col-span-1">
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Kota</label>
+                <label class="block text-xs font-bold text-slate-350 uppercase tracking-wider mb-2">Kota</label>
                 <input v-model="s2.kota" type="text" placeholder="Jakarta"
-                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all placeholder:text-slate-600"/>
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37]/20 transition-all placeholder:text-slate-600"/>
               </div>
               <div class="col-span-1">
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Provinsi</label>
+                <label class="block text-xs font-bold text-slate-350 uppercase tracking-wider mb-2">Provinsi</label>
                 <input v-model="s2.provinsi" type="text" placeholder="DKI Jakarta"
-                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all placeholder:text-slate-600"/>
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37]/20 transition-all placeholder:text-slate-600"/>
               </div>
               <div class="col-span-1">
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Kode Pos</label>
+                <label class="block text-xs font-bold text-slate-350 uppercase tracking-wider mb-2">Kode Pos</label>
                 <input v-model="s2.kode_pos" type="text" maxlength="5" placeholder="12345"
-                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all placeholder:text-slate-600"/>
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37]/20 transition-all placeholder:text-slate-600"/>
               </div>
             </div>
           </div>
@@ -367,7 +367,7 @@ const skipStep = () => {
               </div>
               <div>
                 <h2 class="text-xl font-bold text-white">Hak Akses Tim</h2>
-                <p class="text-slate-400 text-sm">Undang anggota tim ke dalam portal Anda</p>
+                <p class="text-slate-350 text-sm">Undang anggota tim ke dalam portal Anda</p>
               </div>
             </div>
           </div>
@@ -376,15 +376,15 @@ const skipStep = () => {
           <div class="mb-5 p-4 bg-slate-900/60 border border-slate-800 rounded-xl">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-emerald-500/20 rounded-full flex items-center justify-center text-emerald-400 font-bold text-sm">
+                <div class="w-9 h-9 bg-[#d4af37]/20 rounded-full flex items-center justify-center text-[#d4af37] font-bold text-sm">
                   {{ authStore.user?.name?.charAt(0).toUpperCase() }}
                 </div>
                 <div>
                   <p class="text-sm font-semibold text-white">{{ authStore.user?.name }}</p>
-                  <p class="text-xs text-slate-400">{{ authStore.user?.email }}</p>
+                  <p class="text-xs text-slate-350">{{ authStore.user?.email }}</p>
                 </div>
               </div>
-              <span class="text-xs bg-emerald-950/60 border border-emerald-800/50 text-emerald-400 px-2.5 py-1 rounded-full font-semibold">Owner</span>
+              <span class="text-xs bg-[#00271c] border border-[#d4af37]/20 text-[#d4af37] px-2.5 py-1 rounded-full font-semibold">Owner</span>
             </div>
           </div>
 
@@ -395,8 +395,8 @@ const skipStep = () => {
               class="p-4 bg-slate-900/40 border border-slate-800 rounded-xl space-y-3"
             >
               <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Anggota {{ i + 1 }}</span>
-                <button type="button" @click="removeMember(i)" class="text-slate-600 hover:text-rose-400 transition-colors">
+                <span class="text-xs font-bold text-slate-350 uppercase tracking-wider">Anggota {{ i + 1 }}</span>
+                <button type="button" @click="removeMember(i)" class="text-slate-655 hover:text-rose-400 transition-colors">
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                   </svg>
@@ -404,12 +404,12 @@ const skipStep = () => {
               </div>
               <div class="grid grid-cols-2 gap-3">
                 <input v-model="m.name" type="text" placeholder="Nama lengkap"
-                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-200 outline-none focus:border-emerald-500 transition-all placeholder:text-slate-600"/>
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-200 outline-none focus:border-[#d4af37] transition-all placeholder:text-slate-600"/>
                 <input v-model="m.email" type="email" placeholder="email@org.com"
-                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-200 outline-none focus:border-emerald-500 transition-all placeholder:text-slate-600"/>
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-200 outline-none focus:border-[#d4af37] transition-all placeholder:text-slate-600"/>
               </div>
               <select v-model="m.role"
-                class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-200 outline-none focus:border-emerald-500 transition-all">
+                class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-200 outline-none focus:border-[#d4af37] transition-all">
                 <option v-for="(label, val) in roleLabels" :key="val" :value="val">{{ label }}</option>
               </select>
             </div>
@@ -418,7 +418,7 @@ const skipStep = () => {
           <button
             type="button"
             @click="addMember"
-            class="w-full py-3 border border-dashed border-slate-700 hover:border-emerald-600 text-slate-500 hover:text-emerald-400 rounded-xl transition-all text-sm font-semibold flex items-center justify-center gap-2"
+            class="w-full py-3 border border-dashed border-slate-700 hover:border-[#d4af37] text-slate-350 hover:text-[#d4af37] rounded-xl transition-all text-sm font-semibold flex items-center justify-center gap-2"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -441,7 +441,7 @@ const skipStep = () => {
             v-if="currentStep > 1"
             type="button"
             @click="goBack"
-            class="flex items-center gap-2 text-slate-400 hover:text-white text-sm font-semibold transition-colors px-4 py-2.5 rounded-xl hover:bg-slate-800"
+            class="flex items-center gap-2 text-slate-350 hover:text-white text-sm font-semibold transition-colors px-4 py-2.5 rounded-xl hover:bg-slate-800"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -456,7 +456,7 @@ const skipStep = () => {
               v-if="currentStep >= 2"
               type="button"
               @click="currentStep === 3 ? saveStep() : skipStep()"
-              class="px-4 py-2.5 text-slate-500 hover:text-slate-300 text-sm font-semibold transition-colors rounded-xl hover:bg-slate-800"
+              class="px-4 py-2.5 text-slate-350 hover:text-slate-300 text-sm font-semibold transition-colors rounded-xl hover:bg-slate-800"
             >
               {{ currentStep === 3 ? 'Lewati & Selesai' : 'Lewati' }}
             </button>
@@ -466,7 +466,7 @@ const skipStep = () => {
               type="button"
               @click="saveStep"
               :disabled="isSaving"
-              class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 text-white font-bold px-6 py-2.5 rounded-xl transition-all text-sm shadow-lg shadow-emerald-950/30"
+              class="flex items-center gap-2 bg-[#d4af37] hover:bg-[#e5c158] disabled:bg-slate-750 disabled:text-slate-500 text-[#001b13] font-bold px-6 py-2.5 rounded-xl transition-all text-sm shadow-lg shadow-[#d4af37]/10"
             >
               <svg v-if="isSaving" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -490,7 +490,7 @@ const skipStep = () => {
         <div v-for="n in totalSteps" :key="n"
           :class="[
             'h-1.5 rounded-full transition-all duration-300',
-            n === currentStep ? 'w-8 bg-emerald-500' : n < currentStep ? 'w-3 bg-emerald-700' : 'w-3 bg-slate-700'
+            n === currentStep ? 'w-8 bg-[#d4af37]' : n < currentStep ? 'w-3 bg-[#96761c]' : 'w-3 bg-slate-700'
           ]"
         ></div>
       </div>

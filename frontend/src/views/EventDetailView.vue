@@ -590,18 +590,18 @@ const formatDate = (dateString: string) => {
       <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
         <div>
           <div class="flex items-center space-x-2">
-            <span class="text-3xs uppercase font-bold tracking-wider px-2 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-400 font-mono">{{ event.nomor_event }}</span>
+            <span class="text-3xs uppercase font-bold tracking-wider px-2 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-200 font-mono">{{ event.nomor_event }}</span>
             <span class="text-3xs uppercase font-extrabold px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded tracking-wider">{{ event.status }}</span>
             <span v-if="event.kategori" class="text-3xs uppercase font-extrabold px-2 py-0.5 bg-indigo-950 text-indigo-400 border border-indigo-800 rounded tracking-wider">Kategori: {{ event.kategori }}</span>
           </div>
           <h2 class="text-xl font-bold mt-2.5">{{ event.nama_event }}</h2>
-          <p class="text-xs text-slate-400 mt-1 flex items-center">
+          <p class="text-xs text-slate-300 mt-1 flex items-center">
             <span class="mr-3">📍 {{ event.lokasi }}</span>
             <span>📅 {{ event.tanggal_mulai }} s/d {{ event.tanggal_selesai }}</span>
           </p>
         </div>
         <div class="text-left md:text-right">
-          <span class="text-3xs uppercase font-bold text-slate-500 tracking-wider block">Nilai Kontrak Klien</span>
+          <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider block">Nilai Kontrak Klien</span>
           <span class="text-lg font-extrabold text-slate-100">{{ formatIDR(event.nilai_kontrak) }}</span>
         </div>
       </div>
@@ -610,31 +610,31 @@ const formatDate = (dateString: string) => {
       <div class="flex overflow-x-auto no-scrollbar space-x-1 border-t border-slate-800/80 pt-4 mt-6 pb-1">
         <button 
           @click="activeTab = 'detail'"
-          :class="[activeTab === 'detail' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
+          :class="[activeTab === 'detail' ? 'bg-slate-800 text-[#d4af37]' : 'text-slate-400 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
         >
           Detail Event
         </button>
         <button 
           @click="activeTab = 'rab'"
-          :class="[activeTab === 'rab' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
+          :class="[activeTab === 'rab' ? 'bg-slate-800 text-[#d4af37]' : 'text-slate-400 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
         >
           RAB Anggaran
         </button>
         <button 
           @click="activeTab = 'documents'"
-          :class="[activeTab === 'documents' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
+          :class="[activeTab === 'documents' ? 'bg-slate-800 text-[#d4af37]' : 'text-slate-400 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
         >
           Berkas Lampiran ({{ documents.length }})
         </button>
         <button 
           @click="activeTab = 'tasks'"
-          :class="[activeTab === 'tasks' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
+          :class="[activeTab === 'tasks' ? 'bg-slate-800 text-[#d4af37]' : 'text-slate-400 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
         >
           Daftar Tugas ({{ tasks.length }})
         </button>
         <button 
           @click="activeTab = 'invitation'"
-          :class="[activeTab === 'invitation' ? 'bg-slate-800 text-emerald-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
+          :class="[activeTab === 'invitation' ? 'bg-slate-800 text-[#d4af37]' : 'text-slate-400 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-800/40', 'px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0']"
         >
           Desain Undangan
         </button>
@@ -647,21 +647,21 @@ const formatDate = (dateString: string) => {
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm md:col-span-2 space-y-4">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
           <h3 class="font-bold text-slate-900 dark:text-white">Informasi Utama</h3>
-          <button @click="openEditModal" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-800 dark:border-slate-700 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer">
+          <button @click="openEditModal" class="px-3 py-1.5 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg text-2xs font-bold transition-colors cursor-pointer shadow-sm shadow-[#d4af37]/10">
             Edit Event
           </button>
         </div>
         <div class="grid grid-cols-3 gap-4 text-xs">
           <div>
-            <span class="text-slate-450 block font-semibold mb-0.5">Nama Event</span>
+            <span class="text-slate-550 dark:text-slate-400 block font-semibold mb-0.5">Nama Event</span>
             <span class="font-bold text-slate-800 dark:text-slate-200">{{ event.nama_event }}</span>
           </div>
           <div>
-            <span class="text-slate-450 block font-semibold mb-0.5">Jenis Event</span>
+            <span class="text-slate-550 dark:text-slate-400 block font-semibold mb-0.5">Jenis Event</span>
             <span class="font-bold text-slate-800 dark:text-slate-200">{{ event.jenis_event }}</span>
           </div>
           <div>
-            <span class="text-slate-450 block font-semibold mb-0.5">Kategori</span>
+            <span class="text-slate-550 dark:text-slate-400 block font-semibold mb-0.5">Kategori</span>
             <span class="font-bold uppercase text-slate-800 dark:text-slate-200">
               <span v-if="event.kategori === 'small'" class="px-2 py-0.5 text-3xs font-bold rounded bg-blue-100/80 text-blue-800 dark:bg-blue-950/50 dark:text-blue-400 border border-blue-200/50 dark:border-blue-900/50">Small</span>
               <span v-else-if="event.kategori === 'large'" class="px-2 py-0.5 text-3xs font-bold rounded bg-rose-100/80 text-rose-800 dark:bg-rose-950/50 dark:text-rose-400 border border-rose-200/50 dark:border-rose-900/50">Large</span>
@@ -669,16 +669,16 @@ const formatDate = (dateString: string) => {
             </span>
           </div>
           <div>
-            <span class="text-slate-450 block font-semibold mb-0.5">Tanggal Mulai</span>
+            <span class="text-slate-550 dark:text-slate-400 block font-semibold mb-0.5">Tanggal Mulai</span>
             <span class="font-medium text-slate-800 dark:text-slate-200">{{ event.tanggal_mulai }}</span>
           </div>
           <div>
-            <span class="text-slate-450 block font-semibold mb-0.5">Tanggal Selesai</span>
+            <span class="text-slate-550 dark:text-slate-400 block font-semibold mb-0.5">Tanggal Selesai</span>
             <span class="font-medium text-slate-800 dark:text-slate-200">{{ event.tanggal_selesai }}</span>
           </div>
           <div></div>
           <div class="col-span-3">
-            <span class="text-slate-450 block font-semibold mb-0.5">Lokasi Venue</span>
+            <span class="text-slate-550 dark:text-slate-400 block font-semibold mb-0.5">Lokasi Venue</span>
             <span class="font-medium text-slate-800 dark:text-slate-200">{{ event.lokasi }}</span>
           </div>
         </div>
@@ -688,24 +688,24 @@ const formatDate = (dateString: string) => {
         <h3 class="font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">Informasi Klien</h3>
         <div class="text-xs space-y-2.5">
           <div>
-            <span class="text-slate-450 block font-semibold">Nama Klien</span>
+            <span class="text-slate-550 dark:text-slate-400 block font-semibold">Nama Klien</span>
             <span class="font-bold text-slate-800 dark:text-slate-200">{{ event.client.nama }}</span>
           </div>
           <div>
-            <span class="text-slate-450 block font-semibold">Perusahaan</span>
+            <span class="text-slate-550 dark:text-slate-400 block font-semibold">Perusahaan</span>
             <span class="font-medium text-slate-800 dark:text-slate-200">{{ event.client.perusahaan }}</span>
           </div>
           <div>
-            <span class="text-slate-450 block font-semibold">NPWP Klien</span>
-            <span class="font-mono text-slate-700 dark:text-slate-400">{{ event.client.npwp || 'Tidak ada NPWP' }}</span>
+            <span class="text-slate-550 dark:text-slate-400 block font-semibold">NPWP Klien</span>
+            <span class="font-mono text-slate-700 dark:text-slate-300">{{ event.client.npwp || 'Tidak ada NPWP' }}</span>
           </div>
           <div>
-            <span class="text-slate-450 block font-semibold">Email</span>
-            <span class="font-medium text-slate-900 dark:text-slate-350">{{ event.client.email || 'Tidak ada Email' }}</span>
+            <span class="text-slate-550 dark:text-slate-400 block font-semibold">Email</span>
+            <span class="font-medium text-slate-900 dark:text-slate-200">{{ event.client.email || 'Tidak ada Email' }}</span>
           </div>
           <div>
-            <span class="text-slate-450 block font-semibold">Telepon</span>
-            <span class="font-medium text-slate-900 dark:text-slate-350">{{ event.client.telepon || 'Tidak ada Telepon' }}</span>
+            <span class="text-slate-550 dark:text-slate-400 block font-semibold">Telepon</span>
+            <span class="font-medium text-slate-900 dark:text-slate-200">{{ event.client.telepon || 'Tidak ada Telepon' }}</span>
           </div>
         </div>
       </div>
@@ -716,19 +716,19 @@ const formatDate = (dateString: string) => {
       <!-- RAB Summary Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 p-4 rounded-xl shadow-xs">
-          <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Nilai Kontrak</span>
+          <span class="text-3xs uppercase font-bold text-slate-500 dark:text-slate-350 tracking-wider">Nilai Kontrak</span>
           <span class="text-lg font-bold text-slate-800 dark:text-white block mt-1">{{ formatIDR(event.nilai_kontrak) }}</span>
         </div>
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 p-4 rounded-xl shadow-xs">
-          <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Anggaran RAB</span>
+          <span class="text-3xs uppercase font-bold text-slate-500 dark:text-slate-350 tracking-wider">Anggaran RAB</span>
           <span class="text-lg font-bold text-slate-800 dark:text-white block mt-1">{{ formatIDR(totalRabBudget) }}</span>
         </div>
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 p-4 rounded-xl shadow-xs">
-          <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Realisasi Biaya</span>
+          <span class="text-3xs uppercase font-bold text-slate-500 dark:text-slate-350 tracking-wider">Realisasi Biaya</span>
           <span class="text-lg font-bold text-amber-500 block mt-1">{{ formatIDR(totalRealisasi) }}</span>
         </div>
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 p-4 rounded-xl shadow-xs">
-          <span class="text-3xs uppercase font-bold text-slate-400 tracking-wider">Sisa / Laba (RAB)</span>
+          <span class="text-3xs uppercase font-bold text-slate-500 dark:text-slate-350 tracking-wider">Sisa / Laba (RAB)</span>
           <span class="text-lg font-bold text-emerald-500 block mt-1">
             {{ formatIDR(profitMargin) }} <span class="text-2xs font-semibold uppercase bg-emerald-950 text-emerald-400 px-1 py-0.5 rounded border border-emerald-800/40 ml-1">{{ marginPercentage }}%</span>
           </span>
@@ -739,7 +739,7 @@ const formatDate = (dateString: string) => {
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
         <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
           <h3 class="font-bold text-slate-900 dark:text-white text-sm">Rincian Rencana Anggaran Biaya (RAB)</h3>
-          <button @click="openRabModal" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-800 dark:border-slate-700 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer">
+          <button @click="openRabModal" class="px-3.5 py-1.5 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg text-2xs font-bold transition-colors cursor-pointer shadow-sm shadow-[#d4af37]/10">
             + Tambah Item Anggaran
           </button>
         </div>
@@ -747,7 +747,7 @@ const formatDate = (dateString: string) => {
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-400 text-3xs font-bold uppercase tracking-wider">
+              <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-550 dark:text-slate-350 text-3xs font-bold uppercase tracking-wider">
                 <th class="p-4">Kategori</th>
                 <th class="p-4">Deskripsi</th>
                 <th class="p-4 text-center">Qty</th>
@@ -758,14 +758,14 @@ const formatDate = (dateString: string) => {
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50 text-sm">
-              <tr v-for="item in rabItems" :key="item.id" class="text-slate-700 dark:text-slate-350 hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-colors">
+              <tr v-for="item in rabItems" :key="item.id" class="text-slate-800 dark:text-slate-200 hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-colors">
                 <td class="p-4 font-semibold text-xs">{{ item.kategori }}</td>
-                <td class="p-4 text-xs font-medium">{{ item.deskripsi }}</td>
+                <td class="p-4 text-xs font-medium text-slate-650 dark:text-slate-300">{{ item.deskripsi }}</td>
                 <td class="p-4 text-center font-mono text-xs">{{ item.qty }}</td>
-                <td class="p-4">{{ formatIDR(item.harga) }}</td>
-                <td class="p-4 font-bold text-slate-900 dark:text-white">{{ formatIDR(item.subtotal) }}</td>
+                <td class="p-4 font-mono">{{ formatIDR(item.harga) }}</td>
+                <td class="p-4 font-bold font-mono text-slate-900 dark:text-white">{{ formatIDR(item.subtotal) }}</td>
                 <td class="p-4">
-                  <span :class="[item.aktual > 0 ? 'text-amber-500 font-semibold' : 'text-slate-400', 'text-xs']">
+                  <span :class="[item.aktual > 0 ? 'text-amber-500 font-semibold' : 'text-slate-500 dark:text-slate-400', 'text-xs font-mono']">
                     {{ item.aktual > 0 ? formatIDR(item.aktual) : 'Belum Realisasi' }}
                   </span>
                 </td>
@@ -787,29 +787,29 @@ const formatDate = (dateString: string) => {
     <div v-if="activeTab === 'documents'" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm space-y-4">
       <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
         <h3 class="font-bold text-slate-900 dark:text-white text-sm">Dokumen & Lampiran Legal</h3>
-        <button @click="openDocModal" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer">
+        <button @click="openDocModal" class="px-3.5 py-1.5 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg text-2xs font-bold transition-colors cursor-pointer shadow-sm shadow-[#d4af37]/10">
           + Upload Berkas
         </button>
       </div>
 
-      <div v-if="documents.length === 0" class="text-center py-10 text-xs text-slate-500 dark:text-slate-400">
+      <div v-if="documents.length === 0" class="text-center py-10 text-xs text-slate-550 dark:text-slate-350">
         Belum ada berkas lampiran untuk event ini. Klik "+ Upload Berkas" untuk menambahkan.
       </div>
 
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div v-for="doc in documents" :key="doc.id" class="border border-slate-200 dark:border-slate-800 p-4 rounded-xl flex items-center justify-between hover:border-slate-350 dark:hover:border-slate-700 transition-colors">
           <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-450">
+            <div class="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-500 dark:text-slate-350">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
               </svg>
             </div>
             <div>
               <span class="font-bold text-xs text-slate-900 dark:text-white block">{{ doc.nama_dokumen }}</span>
-              <span class="text-3xs text-slate-400 font-semibold tracking-wider block mt-0.5">
+              <span class="text-3xs text-slate-500 dark:text-slate-350 font-semibold tracking-wider block mt-0.5">
                 {{ getDocTypeName(doc.tipe_dokumen) }} &bull; {{ formatBytes(doc.file_size) }}
               </span>
-              <span class="text-4xs text-slate-500 block mt-0.5">
+              <span class="text-4xs text-slate-600 dark:text-slate-400 block mt-0.5">
                 Oleh {{ doc.uploaded_by }} &bull; {{ new Date(doc.created_at).toLocaleDateString('id-ID') }}
               </span>
             </div>
@@ -828,19 +828,19 @@ const formatDate = (dateString: string) => {
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
         <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
           <h3 class="font-bold text-slate-900 dark:text-white text-sm">Daftar Tugas Event</h3>
-          <button @click="openAddTaskModal" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-800 dark:border-slate-700 text-white rounded-lg text-2xs font-bold transition-colors cursor-pointer">
+          <button @click="openAddTaskModal" class="px-3.5 py-1.5 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg text-2xs font-bold transition-colors cursor-pointer shadow-sm shadow-[#d4af37]/10">
             + Tambah Tugas
           </button>
         </div>
 
-        <div v-if="tasks.length === 0" class="text-center py-10 text-xs text-slate-500 dark:text-slate-400">
+        <div v-if="tasks.length === 0" class="text-center py-10 text-xs text-slate-550 dark:text-slate-350">
           Belum ada tugas untuk event ini. Klik "+ Tambah Tugas" untuk membuat tugas baru.
         </div>
 
         <div v-else class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-400 text-3xs font-bold uppercase tracking-wider">
+              <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-550 dark:text-slate-350 text-3xs font-bold uppercase tracking-wider">
                 <th class="p-4 w-28 text-center">Status</th>
                 <th class="p-4">Nama Tugas</th>
                 <th class="p-4">PIC</th>
@@ -850,7 +850,7 @@ const formatDate = (dateString: string) => {
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50 text-sm">
-              <tr v-for="task in tasks" :key="task.id" class="text-slate-700 dark:text-slate-350 hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-colors">
+              <tr v-for="task in tasks" :key="task.id" class="text-slate-800 dark:text-slate-200 hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-colors">
                 <td class="p-4 text-center">
                   <button @click="toggleTaskStatus(task)" class="focus:outline-none cursor-pointer" title="Klik untuk mengubah status">
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold border" :class="getTaskStatusClass(task.status)">
@@ -859,24 +859,24 @@ const formatDate = (dateString: string) => {
                   </button>
                 </td>
                 <td class="p-4 font-semibold text-xs text-slate-900 dark:text-white">
-                  <span :class="{ 'line-through text-slate-400 dark:text-slate-500': task.status === 'completed' }">
+                  <span :class="{ 'line-through text-slate-450 dark:text-slate-500': task.status === 'completed' }">
                     {{ task.nama_task }}
                   </span>
                 </td>
-                <td class="p-4 text-xs font-semibold text-slate-700 dark:text-slate-350">
-                  <span v-if="task.pic" class="inline-flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-2xs text-slate-650 dark:text-slate-350">
+                <td class="p-4 text-xs font-semibold text-slate-750 dark:text-slate-250">
+                  <span v-if="task.pic" class="inline-flex items-center gap-1 bg-slate-105 dark:bg-slate-800 px-2 py-0.5 rounded text-2xs text-slate-750 dark:text-slate-250">
                     👤 {{ task.pic }}
                   </span>
-                  <span v-else class="text-slate-400 dark:text-slate-600 font-mono text-2xs">-</span>
+                  <span v-else class="text-slate-500 font-mono text-2xs">-</span>
                 </td>
                 <td class="p-4 text-xs font-medium font-mono">
                   <span v-if="task.target_date" :class="{ 'text-rose-500 font-bold': isOverdue(task.target_date) && task.status !== 'completed' }">
                     {{ formatDate(task.target_date) }}
                     <span v-if="isOverdue(task.target_date) && task.status !== 'completed'" class="text-3xs block font-semibold uppercase tracking-wider text-rose-500">Terlambat</span>
                   </span>
-                  <span v-else class="text-slate-400 dark:text-slate-600">-</span>
+                  <span v-else class="text-slate-500">-</span>
                 </td>
-                <td class="p-4 text-xs text-slate-500 dark:text-slate-400 max-w-xs truncate" :title="task.keterangan">
+                <td class="p-4 text-xs text-slate-600 dark:text-slate-300 max-w-xs truncate" :title="task.keterangan">
                   {{ task.keterangan || '-' }}
                 </td>
                 <td class="p-4 text-right space-x-2">
@@ -909,18 +909,18 @@ const formatDate = (dateString: string) => {
 
         <form @submit.prevent="saveInvitation" class="space-y-4">
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Judul Undangan</label>
-            <input v-model="invitationForm.title" type="text" placeholder="e.g. The Grand Wedding of Alice & Bob" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500 font-semibold" required />
+            <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Judul Undangan</label>
+            <input v-model="invitationForm.title" type="text" placeholder="e.g. The Grand Wedding of Alice & Bob" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-[#d4af37] font-semibold text-slate-900 dark:text-slate-100" required />
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Waktu & Tanggal Informasi</label>
-              <input v-model="invitationForm.date_time_info" type="text" placeholder="e.g. Minggu, 12 Oktober 2026 jam 19.00 WIB" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Waktu & Tanggal Informasi</label>
+              <input v-model="invitationForm.date_time_info" type="text" placeholder="e.g. Minggu, 12 Oktober 2026 jam 19.00 WIB" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Font Family</label>
-              <select v-model="invitationForm.font_family" @change="loadGoogleFont(invitationForm.font_family)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500">
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Font Family</label>
+              <select v-model="invitationForm.font_family" @change="loadGoogleFont(invitationForm.font_family)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
                 <option value="Inter">Inter (Sans-serif Modern)</option>
                 <option value="Playfair Display">Playfair Display (Serif Elegan)</option>
                 <option value="Montserrat">Montserrat (Sans Bold)</option>
@@ -933,35 +933,35 @@ const formatDate = (dateString: string) => {
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Link Google Maps Lokasi</label>
-              <input v-model="invitationForm.maps_url" type="text" placeholder="e.g. https://maps.app.goo.gl/..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500" />
-              <p class="text-4xs text-slate-450 dark:text-slate-500 mt-1">Masukkan URL Google Maps lengkap.</p>
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Link Google Maps Lokasi</label>
+              <input v-model="invitationForm.maps_url" type="text" placeholder="e.g. https://maps.app.goo.gl/..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" />
+              <p class="text-4xs text-slate-550 dark:text-slate-400 mt-1">Masukkan URL Google Maps lengkap.</p>
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Label Tombol Maps</label>
-              <input v-model="invitationForm.maps_btn_text" type="text" placeholder="e.g. Buka Google Maps" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500 font-semibold" />
-              <p class="text-4xs text-slate-450 dark:text-slate-500 mt-1">Teks yang akan muncul di tombol peta.</p>
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Label Tombol Maps</label>
+              <input v-model="invitationForm.maps_btn_text" type="text" placeholder="e.g. Buka Google Maps" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-[#d4af37] font-semibold text-slate-900 dark:text-slate-100" />
+              <p class="text-4xs text-slate-550 dark:text-slate-400 mt-1">Teks yang akan muncul di tombol peta.</p>
             </div>
           </div>
 
           <div class="border-t border-slate-100 dark:border-slate-800 pt-4">
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tipe Latar Belakang</label>
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-2">Tipe Latar Belakang</label>
             <div class="flex space-x-4">
               <label class="inline-flex items-center space-x-2 cursor-pointer">
-                <input type="radio" :value="false" v-model="invitationForm.is_custom_template" class="text-emerald-500 focus:ring-emerald-500" />
-                <span class="text-xs font-semibold">Gunakan Preset Bawaan</span>
+                <input type="radio" :value="false" v-model="invitationForm.is_custom_template" class="text-[#00271c] focus:ring-[#d4af37]" />
+                <span class="text-xs font-semibold text-slate-750 dark:text-slate-250">Gunakan Preset Bawaan</span>
               </label>
               <label class="inline-flex items-center space-x-2 cursor-pointer">
-                <input type="radio" :value="true" v-model="invitationForm.is_custom_template" class="text-emerald-500 focus:ring-emerald-500" />
-                <span class="text-xs font-semibold">Upload Gambar Kustom (Desainer Sendiri)</span>
+                <input type="radio" :value="true" v-model="invitationForm.is_custom_template" class="text-[#00271c] focus:ring-[#d4af37]" />
+                <span class="text-xs font-semibold text-slate-750 dark:text-slate-250">Upload Gambar Kustom (Desainer Sendiri)</span>
               </label>
             </div>
           </div>
 
           <!-- Preset template options -->
           <div v-if="!invitationForm.is_custom_template" class="space-y-3">
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Pilihan Preset Desain</label>
-            <select v-model="invitationForm.preset_template" @change="selectPresetColors(invitationForm.preset_template)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-emerald-500 font-semibold capitalize">
+            <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Pilihan Preset Desain</label>
+            <select v-model="invitationForm.preset_template" @change="selectPresetColors(invitationForm.preset_template)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-[#d4af37] font-semibold capitalize text-slate-900 dark:text-slate-100">
               <option value="classic">Classic (Clean White)</option>
               <option value="elegant">Elegant (Gold & Dark Gray)</option>
               <option value="floral">Floral (Romantic Pink)</option>
@@ -977,49 +977,49 @@ const formatDate = (dateString: string) => {
           <!-- Custom background image upload option -->
           <div v-else class="space-y-4">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Unggah Gambar Latar Belakang</label>
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Unggah Gambar Latar Belakang</label>
               <div class="flex items-center space-x-4">
-                <input type="file" @change="handleBgFileChange" accept="image/*" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-emerald-500" />
+                <input type="file" @change="handleBgFileChange" accept="image/*" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-xs outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" />
               </div>
-              <p class="text-4xs text-emerald-500 dark:text-emerald-400 font-medium mt-1">Sistem otomatis mendeteksi palet warna dominan (Color Extraction) dan menjamin visibilitas teks agar anti teks mati.</p>
+              <p class="text-4xs text-emerald-650 dark:text-emerald-400 font-medium mt-1">Sistem otomatis mendeteksi palet warna dominan (Color Extraction) dan menjamin visibilitas teks agar anti teks mati.</p>
             </div>
 
             <!-- Posisi Tombol Google Maps (Persentase) -->
             <div class="border-t border-slate-100 dark:border-slate-800 pt-4 space-y-3">
               <div class="flex items-center justify-between">
-                <h4 class="text-2xs font-bold text-slate-400 uppercase tracking-wider">Atur Posisi Tombol Google Maps</h4>
-                <button type="button" @click="invitationForm.maps_btn_top = 72; invitationForm.maps_btn_left = 15; invitationForm.maps_btn_width = 70; invitationForm.maps_btn_height = 6" class="text-4xs text-emerald-500 hover:text-emerald-400 font-bold uppercase transition-colors">Reset Posisi</button>
+                <h4 class="text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider">Atur Posisi Tombol Google Maps</h4>
+                <button type="button" @click="invitationForm.maps_btn_top = 72; invitationForm.maps_btn_left = 15; invitationForm.maps_btn_width = 70; invitationForm.maps_btn_height = 6" class="text-4xs text-[#d4af37] hover:text-[#e5c158] font-bold uppercase transition-colors">Reset Posisi</button>
               </div>
               
               <div>
-                <label class="flex justify-between text-4xs font-bold text-slate-450 dark:text-slate-500 uppercase mb-1">
+                <label class="flex justify-between text-4xs font-bold text-slate-550 dark:text-slate-400 uppercase mb-1">
                   <span>Posisi Vertikal (Tinggi dari Atas)</span>
                   <span class="font-mono">{{ invitationForm.maps_btn_top }}%</span>
                 </label>
-                <input type="range" min="0" max="100" step="0.5" v-model="invitationForm.maps_btn_top" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+                <input type="range" min="0" max="100" step="0.5" v-model="invitationForm.maps_btn_top" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]" />
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label class="flex justify-between text-4xs font-bold text-slate-450 dark:text-slate-500 uppercase mb-1">
+                  <label class="flex justify-between text-4xs font-bold text-slate-550 dark:text-slate-400 uppercase mb-1">
                     <span>Posisi Horizontal (Kiri)</span>
                     <span class="font-mono">{{ invitationForm.maps_btn_left }}%</span>
                   </label>
-                  <input type="range" min="0" max="100" step="0.5" v-model="invitationForm.maps_btn_left" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+                  <input type="range" min="0" max="100" step="0.5" v-model="invitationForm.maps_btn_left" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]" />
                 </div>
                 <div>
-                  <label class="flex justify-between text-4xs font-bold text-slate-450 dark:text-slate-500 uppercase mb-1">
+                  <label class="flex justify-between text-4xs font-bold text-slate-550 dark:text-slate-400 uppercase mb-1">
                     <span>Lebar Tombol</span>
                     <span class="font-mono">{{ invitationForm.maps_btn_width }}%</span>
                   </label>
-                  <input type="range" min="10" max="100" step="0.5" v-model="invitationForm.maps_btn_width" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+                  <input type="range" min="10" max="100" step="0.5" v-model="invitationForm.maps_btn_width" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]" />
                 </div>
                 <div>
-                  <label class="flex justify-between text-4xs font-bold text-slate-450 dark:text-slate-500 uppercase mb-1">
+                  <label class="flex justify-between text-4xs font-bold text-slate-550 dark:text-slate-400 uppercase mb-1">
                     <span>Tinggi Tombol</span>
                     <span class="font-mono">{{ invitationForm.maps_btn_height }}%</span>
                   </label>
-                  <input type="range" min="2" max="30" step="0.5" v-model="invitationForm.maps_btn_height" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+                  <input type="range" min="2" max="30" step="0.5" v-model="invitationForm.maps_btn_height" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]" />
                 </div>
               </div>
             </div>
@@ -1028,41 +1028,41 @@ const formatDate = (dateString: string) => {
           <!-- Advanced: Color adjustments (visible but automated) -->
           <div class="border-t border-slate-100 dark:border-slate-800 pt-4 space-y-3">
             <div class="flex items-center justify-between">
-              <span class="text-2xs font-bold text-slate-400 uppercase tracking-wider">Warna Palette Terdeteksi</span>
-              <span class="text-4xs bg-slate-100 dark:bg-slate-800 text-slate-500 px-1.5 py-0.5 rounded font-mono uppercase">Latar Belakang Otomatis</span>
+              <span class="text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider">Warna Palette Terdeteksi</span>
+              <span class="text-4xs bg-slate-100 dark:bg-slate-800 text-slate-650 dark:text-slate-300 px-1.5 py-0.5 rounded font-mono uppercase">Latar Belakang Otomatis</span>
             </div>
             
             <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
               <div>
-                <label class="block text-4xs font-semibold text-slate-400 mb-0.5">Background</label>
+                <label class="block text-4xs font-semibold text-slate-500 dark:text-slate-350 mb-0.5">Background</label>
                 <div class="flex items-center space-x-1.5">
                   <input type="color" v-model="invitationForm.background_color" class="w-6 h-6 rounded border-0 cursor-pointer p-0" />
                   <span class="font-mono text-3xs">{{ invitationForm.background_color }}</span>
                 </div>
               </div>
               <div>
-                <label class="block text-4xs font-semibold text-slate-400 mb-0.5">Aksen / Tombol</label>
+                <label class="block text-4xs font-semibold text-slate-500 dark:text-slate-350 mb-0.5">Aksen / Tombol</label>
                 <div class="flex items-center space-x-1.5">
                   <input type="color" v-model="invitationForm.accent_color" class="w-6 h-6 rounded border-0 cursor-pointer p-0" />
                   <span class="font-mono text-3xs">{{ invitationForm.accent_color }}</span>
                 </div>
               </div>
               <div>
-                <label class="block text-4xs font-semibold text-slate-400 mb-0.5">Warna Judul</label>
+                <label class="block text-4xs font-semibold text-slate-500 dark:text-slate-350 mb-0.5">Warna Judul</label>
                 <div class="flex items-center space-x-1.5">
                   <input type="color" v-model="invitationForm.primary_color" class="w-6 h-6 rounded border-0 cursor-pointer p-0" />
                   <span class="font-mono text-3xs">{{ invitationForm.primary_color }}</span>
                 </div>
               </div>
               <div>
-                <label class="block text-4xs font-semibold text-slate-400 mb-0.5">Warna Teks</label>
+                <label class="block text-4xs font-semibold text-slate-500 dark:text-slate-350 mb-0.5">Warna Teks</label>
                 <div class="flex items-center space-x-1.5">
                   <div class="w-6 h-6 rounded border border-slate-350 dark:border-slate-700 flex items-center justify-center font-bold text-3xs" :style="{ backgroundColor: invitationForm.background_color, color: invitationForm.text_color }">T</div>
                   <span class="font-mono text-3xs">{{ invitationForm.text_color }}</span>
                 </div>
               </div>
               <div>
-                <label class="block text-4xs font-semibold text-slate-400 mb-0.5">Teks Tombol</label>
+                <label class="block text-4xs font-semibold text-slate-500 dark:text-slate-350 mb-0.5">Teks Tombol</label>
                 <div class="flex items-center space-x-1.5">
                   <div class="w-6 h-6 rounded border border-slate-350 dark:border-slate-700 flex items-center justify-center font-bold text-3xs" :style="{ backgroundColor: invitationForm.accent_color, color: invitationForm.button_text_color }">B</div>
                   <span class="font-mono text-3xs">{{ invitationForm.button_text_color }}</span>
@@ -1072,7 +1072,7 @@ const formatDate = (dateString: string) => {
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-            <button type="submit" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-800 dark:border-slate-700 text-white rounded-xl font-bold cursor-pointer transition-colors" :disabled="isSavingInvitation">
+            <button type="submit" class="px-5 py-2.5 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-xl font-bold cursor-pointer transition-colors shadow-sm shadow-[#d4af37]/10" :disabled="isSavingInvitation">
               {{ isSavingInvitation ? 'Menyimpan...' : 'Simpan Konfigurasi Undangan' }}
             </button>
           </div>
@@ -1080,13 +1080,13 @@ const formatDate = (dateString: string) => {
 
         <!-- Share & Public Link section -->
         <div class="border-t border-slate-100 dark:border-slate-800 pt-4 space-y-3">
-          <h4 class="text-2xs font-bold text-slate-400 uppercase tracking-wider">Bagikan Undangan Digital</h4>
+          <h4 class="text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider">Bagikan Undangan Digital</h4>
           <div class="flex items-center space-x-2">
-            <input type="text" readonly :value="publicInvitationUrl" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg font-mono text-xs select-all text-slate-500" />
-            <button @click="copyInvitationLink" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg cursor-pointer transition-colors flex items-center space-x-1 shrink-0">
+            <input type="text" readonly :value="publicInvitationUrl" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg font-mono text-xs select-all text-slate-700 dark:text-slate-300 font-semibold" />
+            <button @click="copyInvitationLink" class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] font-bold rounded-lg cursor-pointer transition-colors flex items-center space-x-1 shrink-0 shadow-sm shadow-[#d4af37]/10">
               <span>{{ invitationLinkCopied ? 'Tersalin!' : 'Salin Link' }}</span>
             </button>
-            <a :href="publicInvitationRelativeUrl" target="_blank" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition-colors flex items-center justify-center shrink-0">
+            <a :href="publicInvitationRelativeUrl" target="_blank" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold transition-colors flex items-center justify-center shrink-0">
               Buka
             </a>
           </div>
@@ -1183,10 +1183,10 @@ const formatDate = (dateString: string) => {
       <div class="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-xl space-y-4">
         <h3 class="text-base font-bold text-slate-900 dark:text-white">Tambah Anggaran RAB</h3>
 
-        <form @submit.prevent="addRabItem" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-350">
+        <form @submit.prevent="addRabItem" class="space-y-3.5 text-xs text-slate-800 dark:text-slate-200">
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Kategori Biaya</label>
-            <select v-model="newRabItem.kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Kategori Biaya</label>
+            <select v-model="newRabItem.kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
               <option value="Catering">Catering</option>
               <option value="Dekorasi">Dekorasi</option>
               <option value="Sound System">Sound System</option>
@@ -1200,24 +1200,24 @@ const formatDate = (dateString: string) => {
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Deskripsi Item</label>
-            <input v-model="newRabItem.deskripsi" type="text" placeholder="e.g. Sewa LED Par Lights 20 unit" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Deskripsi Item</label>
+            <input v-model="newRabItem.deskripsi" type="text" placeholder="e.g. Sewa LED Par Lights 20 unit" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Qty</label>
-              <input v-model="newRabItem.qty" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Qty</label>
+              <input v-model="newRabItem.qty" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Harga Satuan (Rp)</label>
-              <input v-model="newRabItem.harga" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Harga Satuan (Rp)</label>
+              <input v-model="newRabItem.harga" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">
-            <button type="button" @click="isRabModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-655 dark:text-slate-350 cursor-pointer">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Tambahkan</button>
+            <button type="button" @click="isRabModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg font-bold text-xs cursor-pointer shadow-sm shadow-[#d4af37]/10">Tambahkan</button>
           </div>
         </form>
       </div>
@@ -1229,20 +1229,20 @@ const formatDate = (dateString: string) => {
       <div class="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-xl space-y-4">
         <h3 class="text-base font-bold text-slate-900 dark:text-white">Upload Berkas Lampiran</h3>
 
-        <form @submit.prevent="uploadDocument" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-350">
+        <form @submit.prevent="uploadDocument" class="space-y-3.5 text-xs text-slate-800 dark:text-slate-200">
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Pilih File</label>
-            <input type="file" @change="handleFileChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Pilih File</label>
+            <input type="file" @change="handleFileChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Dokumen</label>
-            <input v-model="docForm.nama_dokumen" type="text" placeholder="e.g. Surat Perjanjian Kerjasama" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nama Dokumen</label>
+            <input v-model="docForm.nama_dokumen" type="text" placeholder="e.g. Surat Perjanjian Kerjasama" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Jenis Dokumen</label>
-            <select v-model="docForm.tipe_dokumen" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Jenis Dokumen</label>
+            <select v-model="docForm.tipe_dokumen" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
               <option value="kontrak">Surat Kontrak</option>
               <option value="invoice">Invoice</option>
               <option value="kwitansi">Kwitansi</option>
@@ -1252,8 +1252,8 @@ const formatDate = (dateString: string) => {
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">
-            <button type="button" @click="isDocModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-655 dark:text-slate-350 cursor-pointer">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Unggah</button>
+            <button type="button" @click="isDocModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg font-bold text-xs cursor-pointer shadow-sm shadow-[#d4af37]/10">Unggah</button>
           </div>
         </form>
       </div>
@@ -1265,15 +1265,15 @@ const formatDate = (dateString: string) => {
       <div class="relative w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-xl space-y-4">
         <h3 class="text-base font-bold text-slate-900 dark:text-white">Edit Detail Event</h3>
 
-        <form @submit.prevent="updateEvent" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-350">
+        <form @submit.prevent="updateEvent" class="space-y-3.5 text-xs text-slate-800 dark:text-slate-200">
           <div class="grid grid-cols-3 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nomor Event</label>
-              <input v-model="editForm.nomor_event" type="text" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none opacity-60 cursor-not-allowed" disabled />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nomor Event</label>
+              <input v-model="editForm.nomor_event" type="text" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none opacity-60 cursor-not-allowed text-slate-700 dark:text-slate-400" disabled />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Jenis Event</label>
-              <select v-model="editForm.jenis_event" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Jenis Event</label>
+              <select v-model="editForm.jenis_event" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
                 <option value="Wedding">Wedding</option>
                 <option value="Concert">Concert</option>
                 <option value="Corporate Event">Corporate Event</option>
@@ -1282,8 +1282,8 @@ const formatDate = (dateString: string) => {
               </select>
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Kategori</label>
-              <select v-model="editForm.kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Kategori</label>
+              <select v-model="editForm.kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
                 <option value="small">Small</option>
                 <option value="medium">Medium</option>
                 <option value="large">Large</option>
@@ -1292,36 +1292,36 @@ const formatDate = (dateString: string) => {
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Event</label>
-            <input v-model="editForm.nama_event" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nama Event</label>
+            <input v-model="editForm.nama_event" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Tanggal Mulai</label>
-              <input v-model="editForm.tanggal_mulai" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Tanggal Mulai</label>
+              <input v-model="editForm.tanggal_mulai" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Tanggal Selesai</label>
-              <input v-model="editForm.tanggal_selesai" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Tanggal Selesai</label>
+              <input v-model="editForm.tanggal_selesai" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Lokasi Venue</label>
-            <input v-model="editForm.lokasi" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Lokasi Venue</label>
+            <input v-model="editForm.lokasi" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nilai Kontrak Klien (Rp)</label>
-              <input v-model="editForm.nilai_kontrak" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nilai Kontrak Klien (Rp)</label>
+              <input v-model="editForm.nilai_kontrak" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Status Event</label>
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Status Event</label>
               <select 
                 v-model="editForm.status" 
-                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500"
+                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100"
               >
                 <option value="draft">Draft</option>
                 <option value="negosiasi">Negosiasi</option>
@@ -1334,8 +1334,8 @@ const formatDate = (dateString: string) => {
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">
-            <button type="button" @click="isEditModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-655 dark:text-slate-350 cursor-pointer">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Simpan Perubahan</button>
+            <button type="button" @click="isEditModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg font-bold text-xs cursor-pointer shadow-sm shadow-[#d4af37]/10">Simpan Perubahan</button>
           </div>
         </form>
       </div>
@@ -1347,25 +1347,25 @@ const formatDate = (dateString: string) => {
       <div class="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-xl space-y-4">
         <h3 class="text-base font-bold text-slate-900 dark:text-white">{{ isEditTask ? 'Edit Tugas' : 'Tambah Tugas Baru' }}</h3>
 
-        <form @submit.prevent="saveTask" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-350">
+        <form @submit.prevent="saveTask" class="space-y-3.5 text-xs text-slate-800 dark:text-slate-200">
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Tugas</label>
-            <input v-model="taskForm.nama_task" type="text" placeholder="e.g. Booking Sound System" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nama Tugas</label>
+            <input v-model="taskForm.nama_task" type="text" placeholder="e.g. Booking Sound System" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">PIC (Penanggung Jawab)</label>
-            <input v-model="taskForm.pic" type="text" placeholder="e.g. John Doe" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">PIC (Penanggung Jawab)</label>
+            <input v-model="taskForm.pic" type="text" placeholder="e.g. John Doe" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" />
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Target Tanggal Selesai</label>
-            <input v-model="taskForm.target_date" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Target Tanggal Selesai</label>
+            <input v-model="taskForm.target_date" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" />
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Status</label>
-            <select v-model="taskForm.status" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Status</label>
+            <select v-model="taskForm.status" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
               <option value="pending">Belum Mulai</option>
               <option value="in_progress">Dalam Proses</option>
               <option value="completed">Selesai</option>
@@ -1373,13 +1373,13 @@ const formatDate = (dateString: string) => {
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Keterangan / Catatan</label>
-            <textarea v-model="taskForm.keterangan" rows="3" placeholder="Detail deskripsi tugas..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500"></textarea>
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Keterangan / Catatan</label>
+            <textarea v-model="taskForm.keterangan" rows="3" placeholder="Detail deskripsi tugas..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100"></textarea>
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">
-            <button type="button" @click="isTaskModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-655 dark:text-slate-350 cursor-pointer">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer">Simpan</button>
+            <button type="button" @click="isTaskModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg font-bold text-xs cursor-pointer shadow-sm shadow-[#d4af37]/10">Simpan</button>
           </div>
         </form>
       </div>

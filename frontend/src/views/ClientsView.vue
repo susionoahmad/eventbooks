@@ -196,7 +196,7 @@ const deleteClient = async (id: number) => {
       <button 
         v-if="authStore.userRole !== 'staff'"
         @click="openCreateModal"
-        class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
+        class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg text-xs font-bold transition-colors cursor-pointer shadow-sm shadow-[#d4af37]/10"
       >
         + Tambah Klien
       </button>
@@ -272,17 +272,16 @@ const deleteClient = async (id: number) => {
         <h3 class="text-lg font-bold text-slate-900 dark:text-white">
           {{ modalMode === 'create' ? 'Tambah Klien Baru' : 'Edit Detail Klien' }}
         </h3>
-
-        <form @submit.prevent="saveClient" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-300">
+        <form @submit.prevent="saveClient" class="space-y-3.5 text-xs text-slate-800 dark:text-slate-200">
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tipe Klien</label>
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1.5">Tipe Klien</label>
             <div class="flex items-center space-x-5 py-1">
               <label class="flex items-center space-x-2 text-sm text-slate-800 dark:text-slate-200 cursor-pointer">
-                <input type="radio" v-model="activeClient.tipe" value="perorangan" class="accent-emerald-600 w-4 h-4" />
+                <input type="radio" v-model="activeClient.tipe" value="perorangan" class="accent-[#d4af37] w-4 h-4" />
                 <span>Perorangan</span>
               </label>
               <label class="flex items-center space-x-2 text-sm text-slate-800 dark:text-slate-200 cursor-pointer">
-                <input type="radio" v-model="activeClient.tipe" value="non_perorangan" class="accent-emerald-600 w-4 h-4" />
+                <input type="radio" v-model="activeClient.tipe" value="non_perorangan" class="accent-[#d4af37] w-4 h-4" />
                 <span>Non-Perorangan (Badan/Perusahaan)</span>
               </label>
             </div>
@@ -290,60 +289,60 @@ const deleteClient = async (id: number) => {
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Kode Klien</label>
-              <input v-model="activeClient.kode_klien" type="text" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none opacity-60 cursor-not-allowed" disabled />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Kode Klien</label>
+              <input v-model="activeClient.kode_klien" type="text" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none opacity-60 cursor-not-allowed text-slate-700 dark:text-slate-400" disabled />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">
                 NPWP Klien <span v-if="activeClient.tipe === 'non_perorangan'" class="text-rose-500">*</span>
               </label>
-              <input :value="activeClient.npwp" @input="onNpwpInput" type="text" placeholder="00.000.000.0-000.000" maxlength="21" :required="activeClient.tipe === 'non_perorangan'" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500 font-mono" />
+              <input :value="activeClient.npwp" @input="onNpwpInput" type="text" placeholder="00.000.000.0-000.000" maxlength="21" :required="activeClient.tipe === 'non_perorangan'" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] font-mono text-slate-900 dark:text-slate-100" />
             </div>
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Kontak Utama / Nama Klien</label>
-            <input v-model="activeClient.nama" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nama Kontak Utama / Nama Klien</label>
+            <input v-model="activeClient.nama" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Perusahaan <span v-if="activeClient.tipe === 'non_perorangan'" class="text-slate-400">(opsional)</span></label>
-            <input v-model="activeClient.perusahaan" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nama Perusahaan <span v-if="activeClient.tipe === 'non_perorangan'" class="text-slate-500 dark:text-slate-400">(opsional)</span></label>
+            <input v-model="activeClient.perusahaan" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email</label>
-              <input v-model="activeClient.email" type="email" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Email</label>
+              <input v-model="activeClient.email" type="email" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Telepon</label>
-              <input v-model="activeClient.telepon" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Telepon</label>
+              <input v-model="activeClient.telepon" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Alamat Lengkap</label>
-            <textarea v-model="activeClient.alamat" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500"></textarea>
+            <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Alamat Lengkap</label>
+            <textarea v-model="activeClient.alamat" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100"></textarea>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Unggah KTP</label>
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Unggah KTP</label>
               <input type="file" @change="handleKtpFileChange" accept="image/*,application/pdf" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-2xs file:font-semibold file:bg-slate-100 file:text-slate-750 hover:file:bg-slate-200 dark:file:bg-slate-800 dark:file:text-slate-300 dark:hover:file:bg-slate-700 cursor-pointer" />
-              <span v-if="activeClient.file_ktp" class="text-3xs text-emerald-500 font-semibold block mt-1">✓ KTP Terunggah</span>
+              <span v-if="activeClient.file_ktp" class="text-3xs text-emerald-600 dark:text-emerald-450 font-semibold block mt-1">✓ KTP Terunggah</span>
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Unggah NPWP</label>
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Unggah NPWP</label>
               <input type="file" @change="handleNpwpFileChange" accept="image/*,application/pdf" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-2xs file:font-semibold file:bg-slate-100 file:text-slate-750 hover:file:bg-slate-200 dark:file:bg-slate-800 dark:file:text-slate-300 dark:hover:file:bg-slate-700 cursor-pointer" />
-              <span v-if="activeClient.file_npwp" class="text-3xs text-emerald-500 font-semibold block mt-1">✓ NPWP Terunggah</span>
+              <span v-if="activeClient.file_npwp" class="text-3xs text-emerald-600 dark:text-emerald-450 font-semibold block mt-1">✓ NPWP Terunggah</span>
             </div>
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">
-            <button type="button" :disabled="isSaving" @click="isModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">Batal</button>
-            <button type="submit" :disabled="isSaving" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer flex items-center justify-center space-x-1.5 disabled:opacity-60 disabled:cursor-not-allowed">
-              <svg v-if="isSaving" class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <button type="button" :disabled="isSaving" @click="isModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">Batal</button>
+            <button type="submit" :disabled="isSaving" class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg font-bold text-xs cursor-pointer flex items-center justify-center space-x-1.5 disabled:opacity-60 disabled:cursor-not-allowed shadow-sm shadow-[#d4af37]/10">
+              <svg v-if="isSaving" class="animate-spin h-3.5 w-3.5 text-[#001b13]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>

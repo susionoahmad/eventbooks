@@ -300,7 +300,7 @@ const formatIDR = (value: number) => {
       </div>
       <button 
         @click="isModalOpen = true"
-        class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
+        class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg text-xs font-bold transition-colors cursor-pointer shadow-sm shadow-[#d4af37]/10"
       >
         + Catat Transaksi
       </button>
@@ -309,9 +309,9 @@ const formatIDR = (value: number) => {
     <!-- Filters -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div class="flex space-x-1.5">
-        <button @click="changeFilterTipe('all')" :class="[filterTipe === 'all' ? 'bg-slate-900 dark:bg-slate-800 text-white' : 'bg-white dark:bg-slate-900 text-slate-400', 'px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800/85 text-xs font-semibold cursor-pointer']">Semua</button>
-        <button @click="changeFilterTipe('kas_masuk')" :class="[filterTipe === 'kas_masuk' ? 'bg-emerald-950 text-emerald-400 border-emerald-800' : 'bg-white dark:bg-slate-900 text-slate-400', 'px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800/85 text-xs font-semibold cursor-pointer']">Kas Masuk</button>
-        <button @click="changeFilterTipe('kas_keluar')" :class="[filterTipe === 'kas_keluar' ? 'bg-rose-950 text-rose-400 border-rose-800' : 'bg-white dark:bg-slate-900 text-slate-400', 'px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800/85 text-xs font-semibold cursor-pointer']">Kas Keluar</button>
+        <button @click="changeFilterTipe('all')" :class="[filterTipe === 'all' ? 'bg-[#00271c] text-[#d4af37] border-[#d4af37]/30' : 'bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200', 'px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800/85 text-xs font-semibold cursor-pointer']">Semua</button>
+        <button @click="changeFilterTipe('kas_masuk')" :class="[filterTipe === 'kas_masuk' ? 'bg-[#00271c] text-[#d4af37] border-[#d4af37]/30' : 'bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200', 'px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800/85 text-xs font-semibold cursor-pointer']">Kas Masuk</button>
+        <button @click="changeFilterTipe('kas_keluar')" :class="[filterTipe === 'kas_keluar' ? 'bg-[#00271c] text-[#d4af37] border-[#d4af37]/30' : 'bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200', 'px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800/85 text-xs font-semibold cursor-pointer']">Kas Keluar</button>
       </div>
 
       <!-- Date Range Filters -->
@@ -398,15 +398,15 @@ const formatIDR = (value: number) => {
       <div class="relative w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-xl space-y-4 max-h-[90vh] overflow-y-auto">
         <h3 class="text-base font-bold text-slate-900 dark:text-white">Pencatatan Buku Kas Baru</h3>
 
-        <form @submit.prevent="saveTransaction" class="space-y-3.5 text-xs text-slate-700 dark:text-slate-300">
+        <form @submit.prevent="saveTransaction" class="space-y-3.5 text-xs text-slate-850 dark:text-slate-200">
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Tanggal Transaksi</label>
-              <input v-model="newTrx.tanggal" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Tanggal Transaksi</label>
+              <input v-model="newTrx.tanggal" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Tipe Kas</label>
-              <select v-model="newTrx.tipe" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+              <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Tipe Kas</label>
+              <select v-model="newTrx.tipe" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
                 <option value="kas_masuk">Kas Masuk (Inflow)</option>
                 <option value="kas_keluar">Kas Keluar (Outflow)</option>
               </select>
@@ -415,11 +415,11 @@ const formatIDR = (value: number) => {
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Kategori Transaksi</label>
-              <select v-model="newTrx.kategori" @change="onKategoriChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Kategori Transaksi</label>
+              <select v-model="newTrx.kategori" @change="onKategoriChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
                 <template v-if="newTrx.tipe === 'kas_masuk'">
-                  <option value="dp_event" disabled class="opacity-50 text-slate-400">DP Event (Wajib dibuat via Invoice)</option>
-                  <option value="pelunasan_event" disabled class="opacity-50 text-slate-400">Pelunasan Event (Wajib dibuat via Invoice)</option>
+                  <option value="dp_event" disabled class="opacity-50 text-slate-500">DP Event (Wajib dibuat via Invoice)</option>
+                  <option value="pelunasan_event" disabled class="opacity-50 text-slate-500">Pelunasan Event (Wajib dibuat via Invoice)</option>
                   <option value="pendapatan_lain">Pendapatan Lain</option>
                 </template>
                 <template v-else>
@@ -432,8 +432,8 @@ const formatIDR = (value: number) => {
               </select>
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Metode Pembayaran</label>
-              <select v-model="newTrx.metode_pembayaran" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Metode Pembayaran</label>
+              <select v-model="newTrx.metode_pembayaran" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
                 <option value="transfer_bank">Transfer Bank</option>
                 <option value="cash">Tunai / Cash</option>
                 <option value="card">Kartu Kredit/Debet</option>
@@ -444,12 +444,12 @@ const formatIDR = (value: number) => {
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nominal (Rupiah)</label>
-              <input v-model="newTrx.nominal" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required />
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Nominal (Rupiah)</label>
+              <input v-model="newTrx.nominal" type="number" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required />
             </div>
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Tautkan ke Event</label>
-              <select v-model="newTrx.event_id" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Tautkan ke Event</label>
+              <select v-model="newTrx.event_id" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
                 <option value="">-- Tanpa Event --</option>
                 <option v-for="ev in events" :key="ev.id" :value="ev.id">{{ ev.nama_event }}</option>
               </select>
@@ -458,8 +458,8 @@ const formatIDR = (value: number) => {
 
           <div v-if="newTrx.tipe === 'kas_keluar' && newTrx.kategori === 'operasional'" class="grid grid-cols-1 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Sub-Kategori Biaya Operasional</label>
-              <select v-model="newTrx.sub_kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500" required>
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Sub-Kategori Biaya Operasional</label>
+              <select v-model="newTrx.sub_kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required>
                 <option value="">-- Pilih Sub-Kategori --</option>
                 <option value="gaji_honor_staff">Gaji & Honor Staf</option>
                 <option value="sewa_kantor_utilitas">Sewa Kantor & Utilitas</option>
@@ -473,8 +473,8 @@ const formatIDR = (value: number) => {
 
           <div v-if="newTrx.tipe === 'kas_keluar' && newTrx.kategori === 'pembayaran_vendor'" class="grid grid-cols-1 gap-3">
             <div>
-              <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Pilih Vendor</label>
-              <select v-model="newTrx.vendor_id" @change="onVendorChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-500">
+              <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Pilih Vendor</label>
+              <select v-model="newTrx.vendor_id" @change="onVendorChange" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100">
                 <option value="">-- Pilih Vendor --</option>
                 <option v-for="v in vendors" :key="v.id" :value="v.id">{{ v.nama_vendor }} ({{ v.kategori }})</option>
               </select>
@@ -482,51 +482,51 @@ const formatIDR = (value: number) => {
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Deskripsi Detail</label>
-            <textarea v-model="newTrx.deskripsi" rows="2" placeholder="e.g. Pembayaran DP sewa panggung ke vendor Dekorindo" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-500" required></textarea>
+            <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Deskripsi Detail</label>
+            <textarea v-model="newTrx.deskripsi" rows="2" placeholder="e.g. Pembayaran DP sewa panggung ke vendor Dekorindo" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" required></textarea>
           </div>
 
           <div>
-            <label class="block text-2xs font-bold text-slate-400 uppercase tracking-wider mb-1">Dokumen Pendukung / Bukti Transaksi</label>
+            <label class="block text-2xs font-bold text-slate-555 dark:text-slate-350 uppercase tracking-wider mb-1">Dokumen Pendukung / Bukti Transaksi</label>
             <input type="file" @change="handleDocumentFileChange" accept="image/*,application/pdf,application/zip,application/x-rar-compressed" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-2xs file:font-semibold file:bg-slate-100 file:text-slate-750 hover:file:bg-slate-200 dark:file:bg-slate-800 dark:file:text-slate-300 dark:hover:file:bg-slate-700 cursor-pointer" />
-            <span class="text-3xs text-slate-450 block mt-1">Format: PDF, Gambar, atau ZIP/RAR (Maks. 10MB)</span>
+            <span class="text-3xs text-slate-550 dark:text-slate-400 block mt-1 font-semibold">Format: PDF, Gambar, atau ZIP/RAR (Maks. 10MB)</span>
           </div>
 
           <!-- Tax Action Box (Outflows only) -->
           <div v-if="newTrx.tipe === 'kas_keluar'" class="border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-3 bg-slate-50/50 dark:bg-slate-800/20">
-            <h4 class="font-bold text-2xs uppercase tracking-wider text-slate-400">Integrasi Pajak Vendor & Payout</h4>
+            <h4 class="font-bold text-2xs uppercase tracking-wider text-slate-500 dark:text-slate-350">Integrasi Pajak Vendor & Payout</h4>
             
             <div class="flex flex-wrap items-center gap-4 text-xs font-semibold">
               <label class="flex items-center space-x-2 cursor-pointer">
-                <input v-model="newTrx.calculate_pph23" type="checkbox" :disabled="newTrx.calculate_pph21" class="rounded text-emerald-600 focus:ring-emerald-500" />
-                <span>PPh 23 (Jasa/Sewa)</span>
+                <input v-model="newTrx.calculate_pph23" type="checkbox" :disabled="newTrx.calculate_pph21" class="rounded text-[#00271c] focus:ring-[#d4af37] accent-[#d4af37]" />
+                <span class="text-slate-750 dark:text-slate-250">PPh 23 (Jasa/Sewa)</span>
               </label>
               <label class="flex items-center space-x-2 cursor-pointer">
-                <input v-model="newTrx.calculate_pph21" type="checkbox" :disabled="newTrx.calculate_pph23" class="rounded text-emerald-600 focus:ring-emerald-500" />
-                <span>PPh 21 (Freelancer)</span>
+                <input v-model="newTrx.calculate_pph21" type="checkbox" :disabled="newTrx.calculate_pph23" class="rounded text-[#00271c] focus:ring-[#d4af37] accent-[#d4af37]" />
+                <span class="text-slate-750 dark:text-slate-250">PPh 21 (Freelancer)</span>
               </label>
               <label class="flex items-center space-x-2 cursor-pointer">
-                <input v-model="newTrx.calculate_ppn_masukan" type="checkbox" class="rounded text-emerald-600 focus:ring-emerald-500" />
-                <span>PPN Masukan (12%)</span>
+                <input v-model="newTrx.calculate_ppn_masukan" type="checkbox" class="rounded text-[#00271c] focus:ring-[#d4af37] accent-[#d4af37]" />
+                <span class="text-slate-750 dark:text-slate-250">PPN Masukan (12%)</span>
               </label>
             </div>
 
             <div v-if="newTrx.calculate_pph23 || newTrx.calculate_pph21 || newTrx.calculate_ppn_masukan" class="space-y-3 pt-2">
               <div class="grid grid-cols-2 gap-2">
                 <div>
-                  <label class="block text-3xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Vendor/Penerima</label>
-                  <input v-model="newTrx.pihak_terkait_nama" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 rounded-lg text-xs" required />
+                  <label class="block text-3xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nama Vendor/Penerima</label>
+                  <input v-model="newTrx.pihak_terkait_nama" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 rounded-lg text-xs outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100 font-semibold" required />
                 </div>
                 <div>
-                  <label class="block text-3xs font-bold text-slate-400 uppercase tracking-wider mb-1">NPWP Vendor/Penerima</label>
-                  <input v-model="newTrx.pihak_terkait_npwp" type="text" placeholder="Jika tidak ada, PPh 2x lipat" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 rounded-lg text-xs" />
+                  <label class="block text-3xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">NPWP Vendor/Penerima</label>
+                  <input v-model="newTrx.pihak_terkait_npwp" type="text" placeholder="Jika tidak ada, PPh 2x lipat" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 rounded-lg text-xs outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100 font-semibold" />
                 </div>
               </div>
 
               <div v-if="newTrx.calculate_ppn_masukan" class="grid grid-cols-1 gap-2">
                 <div>
-                  <label class="block text-3xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nomor Faktur Pajak Masukan</label>
-                  <input v-model="newTrx.nomor_faktur_pajak" type="text" placeholder="Masukkan 16 digit Nomor Seri Faktur Pajak" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 rounded-lg text-xs" />
+                  <label class="block text-3xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-1">Nomor Faktur Pajak Masukan</label>
+                  <input v-model="newTrx.nomor_faktur_pajak" type="text" placeholder="Masukkan 16 digit Nomor Seri Faktur Pajak" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 rounded-lg text-xs outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100 font-semibold" />
                 </div>
               </div>
 
@@ -534,18 +534,18 @@ const formatIDR = (value: number) => {
               <div v-if="taxPreview" class="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 p-4 rounded-xl text-xs space-y-2 text-emerald-800 dark:text-emerald-400">
                 <div class="flex justify-between items-center border-b border-emerald-200 dark:border-emerald-900/40 pb-2">
                   <span class="font-bold">Buku Kas Bersih (Net Payout Ledger)</span>
-                  <span class="text-3xs text-emerald-600 dark:text-slate-500 uppercase font-extrabold tracking-wider">Kalkulasi Otomatis</span>
+                  <span class="text-3xs text-emerald-650 dark:text-slate-400 uppercase font-extrabold tracking-wider">Kalkulasi Otomatis</span>
                 </div>
-                <div class="space-y-1.5 text-emerald-700 dark:text-slate-350">
+                <div class="space-y-1.5 text-emerald-700 dark:text-slate-300 font-medium">
                   <div class="flex justify-between">
                     <span>Nominal Bruto (Gross Contract):</span>
                     <span class="font-mono font-bold text-slate-800 dark:text-slate-200">{{ formatIDR(newTrx.nominal) }}</span>
                   </div>
-                  <div v-if="taxPreview.pphAmount > 0" class="flex justify-between text-rose-600 dark:text-rose-400 font-medium">
+                  <div v-if="taxPreview.pphAmount > 0" class="flex justify-between text-rose-600 dark:text-rose-400 font-semibold">
                     <span>Potongan {{ taxPreview.pphType }} ({{ taxPreview.pphRateText }}):</span>
                     <span class="font-mono">- {{ formatIDR(taxPreview.pphAmount) }}</span>
                   </div>
-                  <div v-if="taxPreview.ppnAmount > 0" class="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
+                  <div v-if="taxPreview.ppnAmount > 0" class="flex justify-between text-emerald-600 dark:text-emerald-400 font-semibold">
                     <span>Tambahan PPN Masukan ({{ taxPreview.ppnRateText }}):</span>
                     <span class="font-mono">+ {{ formatIDR(taxPreview.ppnAmount) }}</span>
                   </div>
@@ -554,15 +554,15 @@ const formatIDR = (value: number) => {
                   <span>Kas Bersih Ditransfer (Net Payout):</span>
                   <span class="font-mono">{{ formatIDR(taxPreview.netPayout) }}</span>
                 </div>
-                <span class="block text-3xs text-emerald-600/90 dark:text-slate-400 italic">Ledger akan membukukan nominal Net Payout untuk sinkronisasi mutasi bank yang presisi. Selisih PPh akan diposting ke Utang Pajak.</span>
+                <span class="block text-3xs text-emerald-655/90 dark:text-slate-400 italic font-semibold">Ledger akan membukukan nominal Net Payout untuk sinkronisasi mutasi bank yang presisi. Selisih PPh akan diposting ke Utang Pajak.</span>
               </div>
             </div>
           </div>
 
           <div class="flex items-center justify-end space-x-2 pt-2">
-            <button type="button" :disabled="isSaving" @click="isModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-655 dark:text-slate-350 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">Batal</button>
-            <button type="submit" :disabled="isSaving" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs cursor-pointer flex items-center justify-center space-x-1.5 disabled:opacity-60 disabled:cursor-not-allowed">
-              <svg v-if="isSaving" class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <button type="button" :disabled="isSaving" @click="isModalOpen = false" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">Batal</button>
+            <button type="submit" :disabled="isSaving" class="px-4 py-2 bg-[#d4af37] hover:bg-[#e5c158] text-[#001b13] rounded-lg font-bold text-xs cursor-pointer flex items-center justify-center space-x-1.5 disabled:opacity-60 disabled:cursor-not-allowed shadow-sm shadow-[#d4af37]/10">
+              <svg v-if="isSaving" class="animate-spin h-3.5 w-3.5 text-[#001b13]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>

@@ -53,7 +53,7 @@ const handleRegister = async () => {
 }
 </script>
 
-<<template>
+<template>
   <div class="min-h-screen bg-[#00271c] flex items-center justify-center px-4 py-12 transition-colors">
     <!-- Background blobs -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none">
