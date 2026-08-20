@@ -20,6 +20,9 @@ const invitationForm = ref({
   title: '',
   date_time_info: '',
   maps_url: '',
+  zoom_url: '',
+  zoom_meeting_id: '',
+  zoom_passcode: '',
   is_custom_template: false,
   preset_template: 'classic',
   background_image: null as File | null,
@@ -33,7 +36,12 @@ const invitationForm = ref({
   maps_btn_left: 15,
   maps_btn_width: 70,
   maps_btn_height: 6,
-  maps_btn_text: 'Buka Google Maps'
+  maps_btn_text: 'Buka Google Maps',
+  zoom_btn_top: 80,
+  zoom_btn_left: 15,
+  zoom_btn_width: 70,
+  zoom_btn_height: 6,
+  zoom_btn_text: 'Gabung Zoom'
 })
 
 const isCustomImagePreview = ref<string | null>(null)
@@ -47,6 +55,9 @@ const fetchInvitation = async () => {
     invitationForm.value.title = invData.title || ''
     invitationForm.value.date_time_info = invData.date_time_info || ''
     invitationForm.value.maps_url = invData.maps_url || ''
+    invitationForm.value.zoom_url = invData.zoom_url || ''
+    invitationForm.value.zoom_meeting_id = invData.zoom_meeting_id || ''
+    invitationForm.value.zoom_passcode = invData.zoom_passcode || ''
     invitationForm.value.is_custom_template = !!invData.is_custom_template
     invitationForm.value.preset_template = invData.preset_template || 'classic'
     invitationForm.value.background_color = invData.background_color || '#ffffff'
@@ -60,6 +71,12 @@ const fetchInvitation = async () => {
     invitationForm.value.maps_btn_width = invData.maps_btn_width !== undefined && invData.maps_btn_width !== null ? parseFloat(invData.maps_btn_width) : 70
     invitationForm.value.maps_btn_height = invData.maps_btn_height !== undefined && invData.maps_btn_height !== null ? parseFloat(invData.maps_btn_height) : 6
     invitationForm.value.maps_btn_text = invData.maps_btn_text || 'Buka Google Maps'
+
+    invitationForm.value.zoom_btn_top = invData.zoom_btn_top !== undefined && invData.zoom_btn_top !== null ? parseFloat(invData.zoom_btn_top) : 80
+    invitationForm.value.zoom_btn_left = invData.zoom_btn_left !== undefined && invData.zoom_btn_left !== null ? parseFloat(invData.zoom_btn_left) : 15
+    invitationForm.value.zoom_btn_width = invData.zoom_btn_width !== undefined && invData.zoom_btn_width !== null ? parseFloat(invData.zoom_btn_width) : 70
+    invitationForm.value.zoom_btn_height = invData.zoom_btn_height !== undefined && invData.zoom_btn_height !== null ? parseFloat(invData.zoom_btn_height) : 6
+    invitationForm.value.zoom_btn_text = invData.zoom_btn_text || 'Gabung Zoom'
     
     if (invData.template_background_url) {
       isCustomImagePreview.value = invData.template_background_url
@@ -125,16 +142,26 @@ const saveInvitation = async () => {
   formData.append('title', invitationForm.value.title)
   formData.append('date_time_info', invitationForm.value.date_time_info)
   formData.append('maps_url', invitationForm.value.maps_url || '')
+  formData.append('zoom_url', invitationForm.value.zoom_url || '')
+  formData.append('zoom_meeting_id', invitationForm.value.zoom_meeting_id || '')
+  formData.append('zoom_passcode', invitationForm.value.zoom_passcode || '')
   formData.append('is_custom_template', invitationForm.value.is_custom_template ? '1' : '0')
   formData.append('preset_template', invitationForm.value.preset_template)
   formData.append('font_family', invitationForm.value.font_family)
   formData.append('maps_btn_text', invitationForm.value.maps_btn_text || 'Buka Google Maps')
+  formData.append('zoom_btn_text', invitationForm.value.zoom_btn_text || 'Gabung Zoom')
   
   if (invitationForm.value.is_custom_template) {
     formData.append('maps_btn_top', String(invitationForm.value.maps_btn_top))
     formData.append('maps_btn_left', String(invitationForm.value.maps_btn_left))
     formData.append('maps_btn_width', String(invitationForm.value.maps_btn_width))
     formData.append('maps_btn_height', String(invitationForm.value.maps_btn_height))
+
+    formData.append('zoom_btn_top', String(invitationForm.value.zoom_btn_top))
+    formData.append('zoom_btn_left', String(invitationForm.value.zoom_btn_left))
+    formData.append('zoom_btn_width', String(invitationForm.value.zoom_btn_width))
+    formData.append('zoom_btn_height', String(invitationForm.value.zoom_btn_height))
+
     if (invitationForm.value.background_image) {
       formData.append('background_image', invitationForm.value.background_image)
     }
@@ -944,6 +971,19 @@ const formatDate = (dateString: string) => {
             </div>
           </div>
 
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Link Undangan Online Zoom</label>
+              <input v-model="invitationForm.zoom_url" type="text" placeholder="e.g. https://zoom.us/j/1234567890..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-[#d4af37] text-slate-900 dark:text-slate-100" />
+              <p class="text-4xs text-slate-550 dark:text-slate-400 mt-1">Masukkan link Zoom Meeting atau Google Meet.</p>
+            </div>
+            <div>
+              <label class="block text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider mb-1">Label Tombol Zoom</label>
+              <input v-model="invitationForm.zoom_btn_text" type="text" placeholder="e.g. Gabung Zoom" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-lg text-xs outline-none focus:border-[#d4af37] font-semibold text-slate-900 dark:text-slate-100" />
+              <p class="text-4xs text-slate-550 dark:text-slate-400 mt-1">Teks yang akan muncul di tombol Zoom.</p>
+            </div>
+          </div>
+
           <div class="border-t border-slate-100 dark:border-slate-800 pt-4">
             <label class="block text-2xs font-bold text-slate-550 dark:text-slate-350 uppercase tracking-wider mb-2">Tipe Latar Belakang</label>
             <div class="flex space-x-4">
@@ -1020,6 +1060,46 @@ const formatDate = (dateString: string) => {
                     <span class="font-mono">{{ invitationForm.maps_btn_height }}%</span>
                   </label>
                   <input type="range" min="2" max="30" step="0.5" v-model="invitationForm.maps_btn_height" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Posisi Tombol Zoom (Persentase) -->
+            <div class="border-t border-slate-100 dark:border-slate-800 pt-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-2xs font-bold text-slate-500 dark:text-slate-350 uppercase tracking-wider">Atur Posisi Tombol Zoom</h4>
+                <button type="button" @click="invitationForm.zoom_btn_top = 80; invitationForm.zoom_btn_left = 15; invitationForm.zoom_btn_width = 70; invitationForm.zoom_btn_height = 6" class="text-4xs text-[#d4af37] hover:text-[#e5c158] font-bold uppercase transition-colors">Reset Posisi</button>
+              </div>
+              
+              <div>
+                <label class="flex justify-between text-4xs font-bold text-slate-550 dark:text-slate-400 uppercase mb-1">
+                  <span>Posisi Vertikal (Tinggi dari Atas)</span>
+                  <span class="font-mono">{{ invitationForm.zoom_btn_top }}%</span>
+                </label>
+                <input type="range" min="0" max="100" step="0.5" v-model="invitationForm.zoom_btn_top" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]" />
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="flex justify-between text-4xs font-bold text-slate-550 dark:text-slate-400 uppercase mb-1">
+                    <span>Posisi Horizontal (Kiri)</span>
+                    <span class="font-mono">{{ invitationForm.zoom_btn_left }}%</span>
+                  </label>
+                  <input type="range" min="0" max="100" step="0.5" v-model="invitationForm.zoom_btn_left" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]" />
+                </div>
+                <div>
+                  <label class="flex justify-between text-4xs font-bold text-slate-550 dark:text-slate-400 uppercase mb-1">
+                    <span>Lebar Tombol</span>
+                    <span class="font-mono">{{ invitationForm.zoom_btn_width }}%</span>
+                  </label>
+                  <input type="range" min="10" max="100" step="0.5" v-model="invitationForm.zoom_btn_width" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]" />
+                </div>
+                <div>
+                  <label class="flex justify-between text-4xs font-bold text-slate-550 dark:text-slate-400 uppercase mb-1">
+                    <span>Tinggi Tombol</span>
+                    <span class="font-mono">{{ invitationForm.zoom_btn_height }}%</span>
+                  </label>
+                  <input type="range" min="2" max="30" step="0.5" v-model="invitationForm.zoom_btn_height" class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]" />
                 </div>
               </div>
             </div>
@@ -1163,13 +1243,43 @@ const formatDate = (dateString: string) => {
               </button>
             </div>
 
+            <!-- Absolute Zoom Button for Custom Template (Mockup Preview) -->
+            <div 
+              v-if="invitationForm.is_custom_template && invitationForm.zoom_url" 
+              class="absolute z-10 flex items-center justify-center pointer-events-none"
+              :style="{ 
+                top: invitationForm.zoom_btn_top + '%', 
+                left: invitationForm.zoom_btn_left + '%', 
+                width: invitationForm.zoom_btn_width + '%',
+                height: invitationForm.zoom_btn_height + '%'
+              }"
+            >
+              <button 
+                type="button" 
+                class="w-full h-full rounded-lg text-[8px] font-bold shadow-md transition-all flex items-center justify-center space-x-1 focus:outline-none pointer-events-auto cursor-pointer" 
+                :style="{ backgroundColor: invitationForm.accent_color, color: invitationForm.button_text_color }"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-2.5 h-2.5 shrink-0">
+                  <path d="M4.5 4.5a3 3 0 00-3 3v9a3 3 0 003 3h8.25a3 3 0 003-3v-9a3 3 0 00-3-3H4.5zM19.94 18.75l-2.69-2.69V7.94l2.69-2.69c.944-.945 2.56-.276 2.56 1.06v11.38c0 1.336-1.616 2.005-2.56 1.06z" />
+                </svg>
+                <span>{{ invitationForm.zoom_btn_text || 'Gabung Zoom' }}</span>
+              </button>
+            </div>
+
             <!-- Button Action (Non-Custom Template) -->
-            <div v-if="!invitationForm.is_custom_template" class="relative z-1 pt-2 flex flex-col items-center">
-              <button v-if="invitationForm.maps_url" type="button" class="px-4 py-2 rounded-lg text-[9px] font-bold shadow-md transition-all flex items-center space-x-1 focus:outline-none cursor-pointer" :style="{ backgroundColor: invitationForm.accent_color, color: invitationForm.button_text_color }">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3">
+            <div v-if="!invitationForm.is_custom_template" class="relative z-1 pt-2 flex flex-wrap items-center justify-center gap-1.5">
+              <button v-if="invitationForm.maps_url" type="button" class="px-3 py-1.5 rounded-lg text-[8px] font-bold shadow-md transition-all flex items-center space-x-1 focus:outline-none cursor-pointer" :style="{ backgroundColor: invitationForm.accent_color, color: invitationForm.button_text_color }">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-2.5 h-2.5">
                   <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
                 </svg>
                 <span>{{ invitationForm.maps_btn_text || 'Buka Google Maps' }}</span>
+              </button>
+
+              <button v-if="invitationForm.zoom_url" type="button" class="px-3 py-1.5 rounded-lg text-[8px] font-bold shadow-md transition-all flex items-center space-x-1 focus:outline-none cursor-pointer" :style="{ backgroundColor: invitationForm.accent_color, color: invitationForm.button_text_color }">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-2.5 h-2.5">
+                  <path d="M4.5 4.5a3 3 0 00-3 3v9a3 3 0 003 3h8.25a3 3 0 003-3v-9a3 3 0 00-3-3H4.5zM19.94 18.75l-2.69-2.69V7.94l2.69-2.69c.944-.945 2.56-.276 2.56 1.06v11.38c0 1.336-1.616 2.005-2.56 1.06z" />
+                </svg>
+                <span>{{ invitationForm.zoom_btn_text || 'Gabung Zoom' }}</span>
               </button>
             </div>
           </div>

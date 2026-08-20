@@ -121,6 +121,14 @@ class EventInvitationController extends Controller
                     'maps_btn_width' => 70.00,
                     'maps_btn_text' => 'Buka Google Maps',
                     'maps_btn_height' => 6.00,
+                    'zoom_url' => '',
+                    'zoom_meeting_id' => '',
+                    'zoom_passcode' => '',
+                    'zoom_btn_text' => 'Gabung Zoom',
+                    'zoom_btn_top' => 80.00,
+                    'zoom_btn_left' => 15.00,
+                    'zoom_btn_width' => 70.00,
+                    'zoom_btn_height' => 6.00,
                 ]
             ]);
         }
@@ -128,6 +136,15 @@ class EventInvitationController extends Controller
         $data = $invitation->toArray();
         if (isset($data['maps_url']) && ($data['maps_url'] === 'null' || $data['maps_url'] === 'undefined')) {
             $data['maps_url'] = '';
+        }
+        if (isset($data['zoom_url']) && ($data['zoom_url'] === 'null' || $data['zoom_url'] === 'undefined')) {
+            $data['zoom_url'] = '';
+        }
+        if (isset($data['zoom_meeting_id']) && ($data['zoom_meeting_id'] === 'null' || $data['zoom_meeting_id'] === 'undefined')) {
+            $data['zoom_meeting_id'] = '';
+        }
+        if (isset($data['zoom_passcode']) && ($data['zoom_passcode'] === 'null' || $data['zoom_passcode'] === 'undefined')) {
+            $data['zoom_passcode'] = '';
         }
         if ($invitation->template_background) {
             $data['template_background_url'] = request()->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background';
@@ -147,6 +164,9 @@ class EventInvitationController extends Controller
             'title' => 'nullable|string|max:255',
             'date_time_info' => 'nullable|string',
             'maps_url' => 'nullable|string',
+            'zoom_url' => 'nullable|string',
+            'zoom_meeting_id' => 'nullable|string|max:100',
+            'zoom_passcode' => 'nullable|string|max:100',
             'is_custom_template' => 'required|boolean',
             'preset_template' => 'required|string',
             'font_family' => 'required|string',
@@ -157,12 +177,18 @@ class EventInvitationController extends Controller
             'accent_color' => 'nullable|string|size:7',
             'text_color' => 'nullable|string|size:7',
             'button_text_color' => 'nullable|string|size:7',
-            // Coordinates validation
+            // Maps coordinates validation
             'maps_btn_top' => 'nullable|numeric|between:0,100',
             'maps_btn_left' => 'nullable|numeric|between:0,100',
             'maps_btn_width' => 'nullable|numeric|between:0,100',
             'maps_btn_height' => 'nullable|numeric|between:0,100',
             'maps_btn_text' => 'nullable|string|max:100',
+            // Zoom coordinates validation
+            'zoom_btn_top' => 'nullable|numeric|between:0,100',
+            'zoom_btn_left' => 'nullable|numeric|between:0,100',
+            'zoom_btn_width' => 'nullable|numeric|between:0,100',
+            'zoom_btn_height' => 'nullable|numeric|between:0,100',
+            'zoom_btn_text' => 'nullable|string|max:100',
         ]);
 
         $invitation = $event->invitation ?: new EventInvitation();
@@ -177,6 +203,25 @@ class EventInvitationController extends Controller
             $mapsUrl = '';
         }
         $invitation->maps_url = $mapsUrl ?: '';
+
+        $zoomUrl = $request->input('zoom_url');
+        if ($zoomUrl === 'null' || $zoomUrl === 'undefined') {
+            $zoomUrl = '';
+        }
+        $invitation->zoom_url = $zoomUrl ?: '';
+
+        $zoomMeetingId = $request->input('zoom_meeting_id');
+        if ($zoomMeetingId === 'null' || $zoomMeetingId === 'undefined') {
+            $zoomMeetingId = '';
+        }
+        $invitation->zoom_meeting_id = $zoomMeetingId ?: '';
+
+        $zoomPasscode = $request->input('zoom_passcode');
+        if ($zoomPasscode === 'null' || $zoomPasscode === 'undefined') {
+            $zoomPasscode = '';
+        }
+        $invitation->zoom_passcode = $zoomPasscode ?: '';
+
         $invitation->font_family = $request->input('font_family') ?: 'Inter';
 
         $isCustom = $request->boolean('is_custom_template');
@@ -230,13 +275,20 @@ class EventInvitationController extends Controller
                 $invitation->text_color = ColorExtractor::isDark($bgColor) ? '#ffffff' : '#1a1a1a';
                 $invitation->button_text_color = ColorExtractor::isDark($accentColor) ? '#ffffff' : '#1a1a1a';
 
-                // OCR Processing for Address Bounding Box / Google Maps link
+                // OCR Processing for Address Bounding Box / Google Maps link / Zoom link
                 $ocrData = \App\Services\OcrService::extractAddressCoordinates($absolutePath);
                 $invitation->maps_btn_top = $ocrData['maps_btn_top'];
                 $invitation->maps_btn_left = $ocrData['maps_btn_left'];
                 $invitation->maps_btn_width = $ocrData['maps_btn_width'];
                 if ($ocrData['maps_url'] && !$invitation->maps_url) {
                     $invitation->maps_url = $ocrData['maps_url'];
+                }
+
+                $invitation->zoom_btn_top = $ocrData['zoom_btn_top'];
+                $invitation->zoom_btn_left = $ocrData['zoom_btn_left'];
+                $invitation->zoom_btn_width = $ocrData['zoom_btn_width'];
+                if ($ocrData['zoom_url'] && !$invitation->zoom_url) {
+                    $invitation->zoom_url = $ocrData['zoom_url'];
                 }
             } else {
                 // If custom is toggled but no new file is uploaded, keep old image settings or apply values
@@ -268,7 +320,7 @@ class EventInvitationController extends Controller
             $invitation->button_text_color = $request->input('button_text_color') ?: $preset['button_text_color'];
         }
 
-        // Allow manual coordinates overrides
+        // Allow manual maps coordinates overrides
         if ($request->has('maps_btn_top')) {
             $invitation->maps_btn_top = $request->input('maps_btn_top') !== null && $request->input('maps_btn_top') !== 'null' ? (float)$request->input('maps_btn_top') : null;
         }
@@ -283,6 +335,23 @@ class EventInvitationController extends Controller
         }
         if ($request->has('maps_btn_text')) {
             $invitation->maps_btn_text = $request->input('maps_btn_text') ?: 'Buka Google Maps';
+        }
+
+        // Allow manual zoom coordinates overrides
+        if ($request->has('zoom_btn_top')) {
+            $invitation->zoom_btn_top = $request->input('zoom_btn_top') !== null && $request->input('zoom_btn_top') !== 'null' ? (float)$request->input('zoom_btn_top') : null;
+        }
+        if ($request->has('zoom_btn_left')) {
+            $invitation->zoom_btn_left = $request->input('zoom_btn_left') !== null && $request->input('zoom_btn_left') !== 'null' ? (float)$request->input('zoom_btn_left') : null;
+        }
+        if ($request->has('zoom_btn_width')) {
+            $invitation->zoom_btn_width = $request->input('zoom_btn_width') !== null && $request->input('zoom_btn_width') !== 'null' ? (float)$request->input('zoom_btn_width') : null;
+        }
+        if ($request->has('zoom_btn_height')) {
+            $invitation->zoom_btn_height = $request->input('zoom_btn_height') !== null && $request->input('zoom_btn_height') !== 'null' ? (float)$request->input('zoom_btn_height') : null;
+        }
+        if ($request->has('zoom_btn_text')) {
+            $invitation->zoom_btn_text = $request->input('zoom_btn_text') ?: 'Gabung Zoom';
         }
 
         // Allow manual color code override if user specifically requested (gives maximum freedom)
@@ -319,6 +388,15 @@ class EventInvitationController extends Controller
         $data = $invitation->toArray();
         if (isset($data['maps_url']) && ($data['maps_url'] === 'null' || $data['maps_url'] === 'undefined')) {
             $data['maps_url'] = '';
+        }
+        if (isset($data['zoom_url']) && ($data['zoom_url'] === 'null' || $data['zoom_url'] === 'undefined')) {
+            $data['zoom_url'] = '';
+        }
+        if (isset($data['zoom_meeting_id']) && ($data['zoom_meeting_id'] === 'null' || $data['zoom_meeting_id'] === 'undefined')) {
+            $data['zoom_meeting_id'] = '';
+        }
+        if (isset($data['zoom_passcode']) && ($data['zoom_passcode'] === 'null' || $data['zoom_passcode'] === 'undefined')) {
+            $data['zoom_passcode'] = '';
         }
         if ($invitation->template_background) {
             $data['template_background_url'] = $request->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background';
@@ -379,6 +457,14 @@ class EventInvitationController extends Controller
                     'maps_btn_width' => 70.00,
                     'maps_btn_text' => 'Buka Google Maps',
                     'maps_btn_height' => 6.00,
+                    'zoom_url' => '',
+                    'zoom_meeting_id' => '',
+                    'zoom_passcode' => '',
+                    'zoom_btn_text' => 'Gabung Zoom',
+                    'zoom_btn_top' => 80.00,
+                    'zoom_btn_left' => 15.00,
+                    'zoom_btn_width' => 70.00,
+                    'zoom_btn_height' => 6.00,
                 ]
             ]);
         }
@@ -386,6 +472,15 @@ class EventInvitationController extends Controller
         $invData = $invitation->toArray();
         if (isset($invData['maps_url']) && ($invData['maps_url'] === 'null' || $invData['maps_url'] === 'undefined')) {
             $invData['maps_url'] = '';
+        }
+        if (isset($invData['zoom_url']) && ($invData['zoom_url'] === 'null' || $invData['zoom_url'] === 'undefined')) {
+            $invData['zoom_url'] = '';
+        }
+        if (isset($invData['zoom_meeting_id']) && ($invData['zoom_meeting_id'] === 'null' || $invData['zoom_meeting_id'] === 'undefined')) {
+            $invData['zoom_meeting_id'] = '';
+        }
+        if (isset($invData['zoom_passcode']) && ($invData['zoom_passcode'] === 'null' || $invData['zoom_passcode'] === 'undefined')) {
+            $invData['zoom_passcode'] = '';
         }
         if ($invitation->template_background) {
             $invData['template_background_url'] = $request->schemeAndHttpHost() . '/api/v1/events/' . $event->id . '/invitation/background';

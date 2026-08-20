@@ -31,6 +31,14 @@ class EventInvitation extends Model
         'maps_btn_width',
         'maps_btn_text',
         'maps_btn_height',
+        'zoom_url',
+        'zoom_meeting_id',
+        'zoom_passcode',
+        'zoom_btn_text',
+        'zoom_btn_top',
+        'zoom_btn_left',
+        'zoom_btn_width',
+        'zoom_btn_height',
     ];
 
     protected $casts = [
@@ -39,6 +47,10 @@ class EventInvitation extends Model
         'maps_btn_left' => 'float',
         'maps_btn_width' => 'float',
         'maps_btn_height' => 'float',
+        'zoom_btn_top' => 'float',
+        'zoom_btn_left' => 'float',
+        'zoom_btn_width' => 'float',
+        'zoom_btn_height' => 'float',
     ];
 
     public function event()

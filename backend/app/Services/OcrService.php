@@ -21,6 +21,11 @@ class OcrService
             'maps_btn_width' => 70.00,
             'maps_btn_height' => 6.00,
             'maps_url' => null,
+            'zoom_btn_top' => 80.00,
+            'zoom_btn_left' => 15.00,
+            'zoom_btn_width' => 70.00,
+            'zoom_btn_height' => 6.00,
+            'zoom_url' => null,
         ];
 
         // 1. Check if the image exists
@@ -59,7 +64,8 @@ class OcrService
 
             $imageContent = file_get_contents($imagePath);
             $response = $imageAnnotator->documentTextDetection($imageContent);
-            $annotation = $response->getFullTextAnnotation();
+            $foundMaps = false;
+            $foundZoom = false;
 
             if ($annotation) {
                 foreach ($annotation->getPages() as $page) {
@@ -75,44 +81,75 @@ class OcrService
                         }
 
                         // Search for address indicators or maps URL
-                        if (stripos($blockText, 'Jl.') !== false || 
+                        if (!$foundMaps && (
+                            stripos($blockText, 'Jl.') !== false || 
                             stripos($blockText, 'Jalan') !== false || 
                             stripos($blockText, 'maps.app.goo.gl') !== false ||
-                            stripos($blockText, 'maps.google.com') !== false) {
+                            stripos($blockText, 'maps.google.com') !== false)) {
 
                             $vertices = $block->getBoundingBox()->getVertices();
                             if (count($vertices) >= 4) {
-                                // Get bounding box coordinates in pixels
                                 $xMin = $vertices[0]->getX();
                                 $yMin = $vertices[0]->getY();
-                                $yMax = $vertices[2]->getY(); // bottom-most Y coordinate of the block
+                                $yMax = $vertices[2]->getY();
                                 $xMax = $vertices[1]->getX();
 
                                 $blockWidth = $xMax - $xMin;
                                 $blockHeight = $yMax - $yMin;
 
-                                // Convert to percentages
-                                // Position the button exactly below the address (bottom-most Y + vertical margin)
-                                $verticalMargin = 25; // 25 pixels
+                                $verticalMargin = 25;
                                 $topPercent = (($yMax + $verticalMargin) / $imgHeight) * 100;
                                 $leftPercent = ($xMin / $imgWidth) * 100;
                                 $widthPercent = ($blockWidth / $imgWidth) * 100;
                                 $heightPercent = ($blockHeight / $imgHeight) * 100;
 
-                                // Bound the percentages to ensure visibility
                                 $result['maps_btn_top'] = round(min(92.00, max(5.00, $topPercent)), 2);
                                 $result['maps_btn_left'] = round(min(80.00, max(5.00, $leftPercent)), 2);
                                 $result['maps_btn_width'] = round(min(90.00, max(10.00, $widthPercent)), 2);
                                 $result['maps_btn_height'] = round(min(20.00, max(2.00, $heightPercent)), 2);
 
-                                // Try to extract maps URL if present in the text block
                                 $regex = '/https?:\/\/(?:maps\.)?google\.[a-z\.]+\/\S+|https?:\/\/maps\.app\.goo\.gl\/\S+/i';
                                 if (preg_match($regex, $blockText, $matches)) {
                                     $result['maps_url'] = trim($matches[0]);
                                 }
 
-                                Log::info("OCR Service: Successfully extracted coordinates. Top: {$result['maps_btn_top']}%, Left: {$result['maps_btn_left']}%, Width: {$result['maps_btn_width']}%");
-                                break 2;
+                                $foundMaps = true;
+                            }
+                        }
+
+                        // Search for Zoom / Online meeting indicators
+                        if (!$foundZoom && (
+                            stripos($blockText, 'zoom') !== false || 
+                            stripos($blockText, 'zoom.us') !== false || 
+                            stripos($blockText, 'meet.google.com') !== false)) {
+
+                            $vertices = $block->getBoundingBox()->getVertices();
+                            if (count($vertices) >= 4) {
+                                $xMin = $vertices[0]->getX();
+                                $yMin = $vertices[0]->getY();
+                                $yMax = $vertices[2]->getY();
+                                $xMax = $vertices[1]->getX();
+
+                                $blockWidth = $xMax - $xMin;
+                                $blockHeight = $yMax - $yMin;
+
+                                $verticalMargin = 20;
+                                $topPercent = (($yMax + $verticalMargin) / $imgHeight) * 100;
+                                $leftPercent = ($xMin / $imgWidth) * 100;
+                                $widthPercent = ($blockWidth / $imgWidth) * 100;
+                                $heightPercent = ($blockHeight / $imgHeight) * 100;
+
+                                $result['zoom_btn_top'] = round(min(95.00, max(5.00, $topPercent)), 2);
+                                $result['zoom_btn_left'] = round(min(80.00, max(5.00, $leftPercent)), 2);
+                                $result['zoom_btn_width'] = round(min(90.00, max(10.00, $widthPercent)), 2);
+                                $result['zoom_btn_height'] = round(min(20.00, max(2.00, $heightPercent)), 2);
+
+                                $regexZoom = '/https?:\/\/(?:[a-zA-Z0-9-]+\.)?zoom\.us\/\S+|https?:\/\/meet\.google\.com\/\S+/i';
+                                if (preg_match($regexZoom, $blockText, $matches)) {
+                                    $result['zoom_url'] = trim($matches[0]);
+                                }
+
+                                $foundZoom = true;
                             }
                         }
                     }

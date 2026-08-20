@@ -25,6 +25,9 @@ interface InvitationData {
   title: string
   date_time_info: string
   maps_url: string
+  zoom_url?: string
+  zoom_meeting_id?: string
+  zoom_passcode?: string
   is_custom_template: boolean
   preset_template: string
   template_background_url?: string
@@ -39,6 +42,11 @@ interface InvitationData {
   maps_btn_width?: number | string
   maps_btn_height?: number | string
   maps_btn_text?: string
+  zoom_btn_top?: number | string
+  zoom_btn_left?: number | string
+  zoom_btn_width?: number | string
+  zoom_btn_height?: number | string
+  zoom_btn_text?: string
 }
 
 const eventInfo = ref<EventInfo>({
@@ -52,6 +60,9 @@ const invitation = ref<InvitationData>({
   title: '',
   date_time_info: '',
   maps_url: '',
+  zoom_url: '',
+  zoom_meeting_id: '',
+  zoom_passcode: '',
   is_custom_template: false,
   preset_template: 'classic',
   background_color: '#ffffff',
@@ -64,7 +75,12 @@ const invitation = ref<InvitationData>({
   maps_btn_left: 15,
   maps_btn_width: 70,
   maps_btn_height: 6,
-  maps_btn_text: 'Buka Google Maps'
+  maps_btn_text: 'Buka Google Maps',
+  zoom_btn_top: 80,
+  zoom_btn_left: 15,
+  zoom_btn_width: 70,
+  zoom_btn_height: 6,
+  zoom_btn_text: 'Gabung Zoom'
 })
 
 // Dynamic Google Fonts loader
@@ -142,6 +158,19 @@ const formatDateRange = (start: string, end: string) => {
   return `${startDate} s/d ${endDate}`
 }
 
+const copiedField = ref<string | null>(null)
+
+const copyText = (text: string, fieldName: string) => {
+  if (!text) return
+  navigator.clipboard.writeText(text)
+  copiedField.value = fieldName
+  setTimeout(() => {
+    if (copiedField.value === fieldName) {
+      copiedField.value = null
+    }
+  }, 2000)
+}
+
 const handlePrint = () => {
   window.print()
 }
@@ -205,6 +234,27 @@ const handlePrint = () => {
         <span>{{ invitation.maps_btn_text || 'Buka Google Maps' }}</span>
       </a>
 
+      <!-- Absolute Zoom Button for Custom Template (Public View) -->
+      <a 
+        v-if="invitation.is_custom_template && invitation.zoom_url && invitation.zoom_btn_top !== undefined && invitation.zoom_btn_top !== null"
+        :href="invitation.zoom_url"
+        target="_blank"
+        class="absolute flex items-center justify-center text-center px-4 rounded-xl text-xs font-bold tracking-wide shadow-md transition-all hover:scale-103 hover:shadow-lg focus:outline-none print-hidden z-10"
+        :style="{ 
+          top: invitation.zoom_btn_top + '%', 
+          left: invitation.zoom_btn_left + '%', 
+          width: invitation.zoom_btn_width + '%',
+          height: (invitation.zoom_btn_height || 6) + '%',
+          backgroundColor: invitation.accent_color,
+          color: invitation.button_text_color
+        }"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 mr-2 shrink-0">
+          <path d="M4.5 4.5a3 3 0 00-3 3v9a3 3 0 003 3h8.25a3 3 0 003-3v-9a3 3 0 00-3-3H4.5zM19.94 18.75l-2.69-2.69V7.94l2.69-2.69c.944-.945 2.56-.276 2.56 1.06v11.38c0 1.336-1.616 2.005-2.56 1.06z" />
+        </svg>
+        <span>{{ invitation.zoom_btn_text || 'Gabung Zoom' }}</span>
+      </a>
+
       <!-- Content wrapper -->
       <div class="relative z-1 flex-1 flex flex-col text-center" :class="[invitation.is_custom_template ? 'justify-end p-6' : 'justify-between p-8 sm:p-12 md:p-16']">
         <!-- Header Section -->
@@ -245,24 +295,40 @@ const handlePrint = () => {
         </div>
 
         <!-- Footer Actions -->
-        <div class="pt-4 space-y-4">
-          <!-- Only render inline button if it's NOT a custom template -->
-          <a 
-            v-if="!invitation.is_custom_template && invitation.maps_url"
-            :href="invitation.maps_url"
-            target="_blank"
-            class="inline-flex items-center space-x-2.5 px-6 py-3.5 rounded-xl text-xs font-bold tracking-wide shadow-md transition-all hover:scale-103 hover:shadow-lg focus:outline-none print-hidden"
-            :style="{ backgroundColor: invitation.accent_color, color: invitation.button_text_color }"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
-              <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
-            </svg>
-            <span>{{ invitation.maps_btn_text || 'Buka Google Maps' }}</span>
-          </a>
+        <div v-if="!invitation.is_custom_template" class="pt-4 flex flex-col items-center space-y-3">
+          <!-- Action Buttons (Google Maps & Zoom) -->
+          <div class="flex flex-wrap items-center justify-center gap-3 w-full">
+            <a 
+              v-if="invitation.maps_url"
+              :href="invitation.maps_url"
+              target="_blank"
+              class="inline-flex items-center space-x-2 px-5 py-3 rounded-xl text-xs font-bold tracking-wide shadow-md transition-all hover:scale-103 hover:shadow-lg focus:outline-none print-hidden cursor-pointer"
+              :style="{ backgroundColor: invitation.accent_color, color: invitation.button_text_color }"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+              </svg>
+              <span>{{ invitation.maps_btn_text || 'Buka Google Maps' }}</span>
+            </a>
 
-          <!-- Functional maps text address for printed versions -->
-          <div class="hidden print-block text-4xs opacity-50 mt-4 leading-relaxed font-mono">
-            Link Peta Lokasi: {{ invitation.maps_url || 'https://maps.google.com' }}
+            <a 
+              v-if="invitation.zoom_url"
+              :href="invitation.zoom_url"
+              target="_blank"
+              class="inline-flex items-center space-x-2 px-5 py-3 rounded-xl text-xs font-bold tracking-wide shadow-md transition-all hover:scale-103 hover:shadow-lg focus:outline-none print-hidden cursor-pointer"
+              :style="{ backgroundColor: invitation.accent_color, color: invitation.button_text_color }"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                <path d="M4.5 4.5a3 3 0 00-3 3v9a3 3 0 003 3h8.25a3 3 0 003-3v-9a3 3 0 00-3-3H4.5zM19.94 18.75l-2.69-2.69V7.94l2.69-2.69c.944-.945 2.56-.276 2.56 1.06v11.38c0 1.336-1.616 2.005-2.56 1.06z" />
+              </svg>
+              <span>{{ invitation.zoom_btn_text || 'Gabung Zoom' }}</span>
+            </a>
+          </div>
+
+          <!-- Functional text address for printed versions -->
+          <div class="hidden print-block text-4xs opacity-50 mt-4 leading-relaxed font-mono space-y-1">
+            <div v-if="invitation.maps_url">Link Peta Lokasi: {{ invitation.maps_url }}</div>
+            <div v-if="invitation.zoom_url">Link Zoom Meeting: {{ invitation.zoom_url }}</div>
           </div>
         </div>
       </div>
